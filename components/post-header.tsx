@@ -7,7 +7,7 @@ type Props = {
 export function PostHeader({ title, date, author }: Props) {
   return (
     <>
-      <h1 className="mb-12 text-center font-bold text-5xl leading-tight tracking-tighter md:text-left md:text-7xl md:leading-none lg:text-8xl">
+      <h1 className="mb-12 text-center font-bold text-5xl leading-tight tracking-tighter md:text-7xl md:leading-none lg:text-8xl">
         {title}
       </h1>
 

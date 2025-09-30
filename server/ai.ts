@@ -42,7 +42,7 @@ export async function generateBlog(youtubeUrl: string) {
                     * Organize the main content using clear, descriptive level-2 headings ('##') for major sections and level-3 headings ('###') for sub-points.
                     * End with a brief, summarizing **Conclusion**.
 
-                **Output Format Constraint:** The output must be the complete, ready-to-publish MDX content, starting with the title and ending with the conclusion.`,
+                **Output Format Constraint:** The output must be the complete, ready-to-publish MDX content, starting with the title and ending with the conclusion. Do NOT include any frontmatter (YAML metadata with --- markers) at the beginning.`,
     });
 
     const blog = await createBlog({
