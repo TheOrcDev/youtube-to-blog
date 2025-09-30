@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostHeader } from "@/components/post-header";
-import { getAllPosts, getPostBySlug } from "@/lib/api";
 import markdownToHtml from "@/lib/markdown-to-html";
+import { getBlogs, getPostBySlug } from "@/server/blogs";
 import markdownStyles from "./markdown-styles.module.css";
 
 export default async function Post(props: Params) {
   const params = await props.params;
-  const post = getPostBySlug(params.slug);
+  const post = await getPostBySlug(params.slug);
 
   if (!post) {
     return notFound();
@@ -20,9 +20,8 @@ export default async function Post(props: Params) {
       <div className="container mx-auto px-5">
         <article className="mb-32">
           <PostHeader
-            author={post.author}
-            coverImage={post.coverImage}
-            date={post.date}
+            author="OrcDev"
+            date={post.createdAt.toLocaleDateString()}
             title={post.title}
           />
           <div className="mx-auto max-w-2xl">
@@ -45,7 +44,7 @@ type Params = {
 
 export async function generateMetadata(props: Params): Promise<Metadata> {
   const params = await props.params;
-  const post = getPostBySlug(params.slug);
+  const post = await getPostBySlug(params.slug);
 
   if (!post) {
     return notFound();
@@ -57,13 +56,12 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     title,
     openGraph: {
       title,
-      images: [post.ogImage.url],
     },
   };
 }
 
-export function generateStaticParams() {
-  const posts = getAllPosts();
+export async function generateStaticParams() {
+  const posts = await getBlogs();
 
   return posts.map((post) => ({
     slug: post.slug,

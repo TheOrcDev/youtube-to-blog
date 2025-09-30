@@ -15,7 +15,8 @@ export async function getBlogs() {
 
 export async function getPostBySlug(slug: string) {
   try {
-    return await db.select().from(blogs).where(eq(blogs.slug, slug));
+    const [post] = await db.select().from(blogs).where(eq(blogs.slug, slug));
+    return post;
   } catch (error) {
     throw new Error("Failed to get post by slug", { cause: error });
   }
