@@ -5,8 +5,6 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { remark } from "remark";
-import html from "remark-html";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -19,7 +17,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import type { SelectBlog } from "@/db/schema";
 import { generateBlog } from "@/server/ai";
+import { BlogCard } from "../blog-card";
 
 const formSchema = z.object({
   youtubeUrl: z.url().min(1, {
@@ -29,7 +29,7 @@ const formSchema = z.object({
 
 export function MainForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [blog, setBlog] = useState<string>("");
+  const [blog, setBlog] = useState<SelectBlog | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,9 +42,8 @@ export function MainForm() {
     try {
       setIsLoading(true);
       const generatedBlog = await generateBlog(values.youtubeUrl);
-      const result = await remark().use(html).process(generatedBlog);
-      const htmlBlog = result.toString();
-      setBlog(htmlBlog);
+
+      setBlog(generatedBlog);
       toast.success("Blog has been created.");
     } catch {
       toast.error("Error creating blog.");
@@ -85,15 +84,15 @@ export function MainForm() {
       </Form>
 
       {blog && (
-        <div className="max-w-3xl">
+        <div className="flex max-w-3xl flex-col gap-4">
           <div className="flex justify-end gap-2">
             <Button asChild variant="outline">
-              <Link href={`/blog/${blog}`}>View Blog</Link>
+              <Link href={`/blog/${blog.slug}`}>View Blog</Link>
             </Button>
 
             <Button
               onClick={() => {
-                navigator.clipboard.writeText(blog);
+                navigator.clipboard.writeText(blog.content);
                 toast.success("Blog has been copied to clipboard.");
               }}
               variant="outline"
@@ -101,9 +100,8 @@ export function MainForm() {
               Copy Markdown
             </Button>
           </div>
-          <div className="typography">
-            <div dangerouslySetInnerHTML={{ __html: blog }} />
-          </div>
+
+          <BlogCard blog={blog} />
         </div>
       )}
     </>

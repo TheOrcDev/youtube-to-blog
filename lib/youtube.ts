@@ -6,6 +6,7 @@ export type YouTubeVideoData = {
   description: string;
   transcript: string;
   duration: string;
+  slug: string;
   author: string;
 };
 
@@ -51,6 +52,7 @@ export async function extractYouTubeData(
       transcript,
       duration: videoDetails.duration?.toString() || "0",
       author: videoDetails.author || "Unknown Author",
+      slug: videoId,
     };
   } catch (error) {
     throw new Error(

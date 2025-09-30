@@ -3,6 +3,7 @@
 import { generateText } from "ai";
 
 import { extractYouTubeData } from "@/lib/youtube";
+import { createBlog } from "./blogs";
 
 const SECONDS_PER_MINUTE = 60;
 const MAX_DESCRIPTION_LENGTH = 500;
@@ -44,8 +45,14 @@ export async function generateBlog(youtubeUrl: string) {
                 **Output Format Constraint:** The output must be the complete, ready-to-publish MDX content, starting with the title and ending with the conclusion.`,
     });
 
-    return text;
+    const blog = await createBlog({
+      content: text,
+      slug: videoData.slug,
+      title: videoData.title,
+    });
+
+    return blog;
   } catch (error) {
-    return `Error: ${error instanceof Error ? error.message : "Failed to generate blog post"}`;
+    throw new Error("Failed to generate blog", { cause: error });
   }
 }
