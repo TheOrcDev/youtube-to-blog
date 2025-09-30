@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { SelectBlog } from "@/db/schema";
 import { generateBlog } from "@/server/ai";
+import { checkBlogExists } from "@/server/blogs";
 import { BlogCard } from "../blog-card";
 
 const formSchema = z.object({
@@ -41,6 +42,14 @@ export function MainForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true);
+      const check = await checkBlogExists(values.youtubeUrl);
+
+      if (check) {
+        setBlog(check);
+        toast.success("Blog already exists for this video.");
+        return;
+      }
+
       const generatedBlog = await generateBlog(values.youtubeUrl);
 
       setBlog(generatedBlog);

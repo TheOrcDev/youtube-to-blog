@@ -16,15 +16,36 @@ const VIDEO_ID_PATTERNS = [
   /youtube\.com\/v\/([^&\n?#]+)/,
 ];
 
+// Regex to remove @ prefix from URLs
+const AT_PREFIX_REGEX = /^@+/;
+
+// Function to clean YouTube URLs (remove @ prefix and other invalid characters)
+export function cleanYouTubeUrl(url: string): string {
+  // Remove @ prefix if present
+  let cleanedUrl = url.replace(AT_PREFIX_REGEX, "");
+
+  // Ensure it starts with http:// or https://
+  const hasProtocol =
+    cleanedUrl.startsWith("http://") || cleanedUrl.startsWith("https://");
+  if (!hasProtocol) {
+    cleanedUrl = `https://${cleanedUrl}`;
+  }
+
+  return cleanedUrl;
+}
+
 export async function extractYouTubeData(
   url: string
 ): Promise<YouTubeVideoData> {
   try {
+    // Clean the URL first
+    const cleanedUrl = cleanYouTubeUrl(url);
+
     // Initialize YouTube client
     const yt = await Innertube.create();
 
-    // Extract video ID from URL
-    const videoId = extractVideoId(url);
+    // Extract video ID from cleaned URL
+    const videoId = extractVideoId(cleanedUrl);
     if (!videoId) {
       throw new Error("Invalid YouTube URL");
     }
@@ -61,7 +82,7 @@ export async function extractYouTubeData(
   }
 }
 
-function extractVideoId(url: string): string | null {
+export function extractVideoId(url: string): string | null {
   for (const pattern of VIDEO_ID_PATTERNS) {
     const match = url.match(pattern);
     if (match) {

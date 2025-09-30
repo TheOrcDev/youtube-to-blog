@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db/drizzle";
 import { blogs, type InsertBlog } from "@/db/schema";
+import { cleanYouTubeUrl, extractVideoId } from "@/lib/youtube";
 
 export async function getBlogs() {
   try {
@@ -28,5 +29,22 @@ export async function createBlog(blog: InsertBlog) {
     return newBlog;
   } catch (error) {
     throw new Error("Failed to create blog", { cause: error });
+  }
+}
+
+export async function checkBlogExists(youtubeUrl: string) {
+  try {
+    // Clean the URL and extract video ID as slug
+    const cleanedUrl = cleanYouTubeUrl(youtubeUrl);
+    const slug = extractVideoId(cleanedUrl);
+
+    if (!slug) {
+      throw new Error("Invalid YouTube URL");
+    }
+
+    const [blog] = await db.select().from(blogs).where(eq(blogs.slug, slug));
+    return blog;
+  } catch (error) {
+    throw new Error("Failed to check blog exists", { cause: error });
   }
 }
