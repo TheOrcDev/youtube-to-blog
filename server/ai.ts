@@ -49,6 +49,7 @@ export async function generateBlog(youtubeUrl: string) {
       content: text,
       slug: videoData.slug,
       title: videoData.title,
+      author: videoData.author,
     });
 
     return blog;

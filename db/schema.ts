@@ -5,6 +5,7 @@ export const blogs = pgTable("blogs", {
   slug: text("slug").notNull(),
   title: text("title").notNull(),
   content: text("content").notNull(),
+  author: text("author").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

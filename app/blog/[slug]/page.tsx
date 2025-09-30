@@ -25,7 +25,7 @@ export default async function Post(props: Params) {
       <div className="container mx-auto px-5">
         <article className="mb-32">
           <PostHeader
-            author="OrcDev"
+            author={post.author}
             date={post.createdAt.toLocaleDateString()}
             title={post.title}
           />
