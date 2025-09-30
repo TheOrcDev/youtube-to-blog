@@ -32,6 +32,7 @@ export default async function Post(props: Params) {
           <div className="mx-auto max-w-2xl">
             <div
               className={markdownStyles.markdown}
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: This is safe
               dangerouslySetInnerHTML={{ __html: content }}
             />
           </div>
@@ -55,7 +56,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     return notFound();
   }
 
-  const title = `${post.title} | OrcDev`;
+  const title = `${post.title} | ${post.author}`;
 
   return {
     title,
