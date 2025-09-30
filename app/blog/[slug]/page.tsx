@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostHeader } from "@/components/post-header";
+import { Button } from "@/components/ui/button";
 import markdownToHtml from "@/lib/markdown-to-html";
 import { getBlogs, getPostBySlug } from "@/server/blogs";
 import markdownStyles from "./markdown-styles.module.css";
@@ -16,7 +18,10 @@ export default async function Post(props: Params) {
   const content = await markdownToHtml(post.content || "");
 
   return (
-    <main>
+    <main className="pt-30">
+      <Button asChild className="absolute top-4 left-4" variant="outline">
+        <Link href="/">Back</Link>
+      </Button>
       <div className="container mx-auto px-5">
         <article className="mb-32">
           <PostHeader
