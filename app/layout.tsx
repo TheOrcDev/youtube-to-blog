@@ -112,7 +112,7 @@ export default function RootLayout({
           enableSystem
         >
           <Header />
-          <main className="mt-30">{children}</main>
+          <main className="mt-10">{children}</main>
           <Footer />
 
           <Toaster />
