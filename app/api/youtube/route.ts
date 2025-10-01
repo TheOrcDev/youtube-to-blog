@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { YoutubeTranscript } from "youtube-transcript";
 import { Innertube } from "youtubei.js";
 
+export const runtime = "nodejs";
+
 export type YouTubeVideoData = {
   title: string;
   description: string;
