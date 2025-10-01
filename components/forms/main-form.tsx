@@ -13,7 +13,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -73,7 +72,6 @@ export function MainForm() {
             name="youtubeUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>YouTube URL</FormLabel>
                 <FormControl>
                   <Input placeholder="YouTube URL" {...field} />
                 </FormControl>

@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import Image from "next/image";
-import Link from "next/link";
-import { ModeSwitcher } from "@/components/mode-switcher";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -112,30 +111,10 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          <header className="absolute top-4 flex w-full items-center justify-between gap-2 px-4">
-            <Link href="/">
-              <Image
-                alt="Youtube to Blog"
-                height={50}
-                src="/youtube-to-blog-logo.png"
-                width={50}
-              />
-            </Link>
-
-            <ModeSwitcher />
-          </header>
+          <Header />
           <main className="mt-30">{children}</main>
-          <footer className="fixed bottom-4 left-4 rounded-md bg-background p-2">
-            Made with 🪓 by{" "}
-            <Link
-              className="underline"
-              href="https://orcdev.com"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              OrcDev
-            </Link>
-          </footer>
+          <Footer />
+
           <Toaster />
           <Analytics />
         </ThemeProvider>
