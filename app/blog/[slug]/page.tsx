@@ -18,7 +18,7 @@ export default async function Post(props: Params) {
   const content = await markdownToHtml(post.content || "");
 
   return (
-    <main className="pt-30">
+    <main>
       <Button
         asChild
         className="-translate-x-1/2 absolute top-4 left-1/2 mx-auto"

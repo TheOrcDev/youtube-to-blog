@@ -113,16 +113,18 @@ export default function RootLayout({
           enableSystem
         >
           <header className="absolute top-4 flex w-full items-center justify-between gap-2 px-4">
-            <Image
-              alt="Youtube to Blog"
-              height={50}
-              src="/youtube-to-blog-logo.png"
-              width={50}
-            />
+            <Link href="/">
+              <Image
+                alt="Youtube to Blog"
+                height={50}
+                src="/youtube-to-blog-logo.png"
+                width={50}
+              />
+            </Link>
 
             <ModeSwitcher />
           </header>
-          {children}
+          <main className="mt-30">{children}</main>
           <footer className="absolute bottom-4 left-4">
             Made with 🪓 by{" "}
             <Link
