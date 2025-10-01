@@ -1,6 +1,3 @@
-import { YoutubeTranscript } from "youtube-transcript";
-import { Innertube } from "youtubei.js";
-
 export type YouTubeVideoData = {
   title: string;
   description: string;
@@ -38,43 +35,24 @@ export async function extractYouTubeData(
   url: string
 ): Promise<YouTubeVideoData> {
   try {
-    // Clean the URL first
-    const cleanedUrl = cleanYouTubeUrl(url);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/youtube`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }),
+      }
+    );
 
-    // Initialize YouTube client
-    const yt = await Innertube.create();
-
-    // Extract video ID from cleaned URL
-    const videoId = extractVideoId(cleanedUrl);
-    if (!videoId) {
-      throw new Error("Invalid YouTube URL");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to extract YouTube data");
     }
 
-    // Get video info
-    const info = await yt.getInfo(videoId);
-    const videoDetails = info.basic_info;
-
-    // Get transcript
-    let transcript = "";
-    try {
-      const transcriptData = await YoutubeTranscript.fetchTranscript(videoId);
-      transcript = transcriptData
-        .map((item) => item.text)
-        .join(" ")
-        .replace(/\s+/g, " ")
-        .trim();
-    } catch {
-      transcript = "Transcript not available for this video.";
-    }
-
-    return {
-      title: videoDetails.title || "Unknown Title",
-      description: videoDetails.short_description || "",
-      transcript,
-      duration: videoDetails.duration?.toString() || "0",
-      author: videoDetails.author || "Unknown Author",
-      slug: videoId,
-    };
+    const videoData = await response.json();
+    return videoData;
   } catch (error) {
     throw new Error(
       `Failed to extract YouTube data: ${error instanceof Error ? error.message : "Unknown error"}`
