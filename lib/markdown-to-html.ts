@@ -10,10 +10,10 @@ const CODE_BLOCK_REGEX = /^```(?:md|mdx)?\s*\n/;
 function stripFrontmatter(content: string): string {
   // Remove frontmatter (YAML metadata between --- markers)
   let cleanedContent = content.replace(FRONTMATTER_REGEX, "");
-  
+
   // Remove markdown code block markers at the beginning
   cleanedContent = cleanedContent.replace(CODE_BLOCK_REGEX, "");
-  
+
   return cleanedContent.trim();
 }
 
