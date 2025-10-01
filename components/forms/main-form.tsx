@@ -64,14 +64,14 @@ export function MainForm() {
     <>
       <Form {...form}>
         <form
-          className="w-full space-y-4"
+          className="flex w-full gap-2"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
             control={form.control}
             name="youtubeUrl"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex-1">
                 <FormControl>
                   <Input placeholder="YouTube URL" {...field} />
                 </FormControl>

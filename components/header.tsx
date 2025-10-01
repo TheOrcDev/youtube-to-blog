@@ -16,6 +16,11 @@ export function Header() {
       </Link>
 
       <div className="flex items-center gap-2">
+        <Link href="/why">
+          <Button size="sm" variant="ghost">
+            Why Multiple Blogs?
+          </Button>
+        </Link>
         <Link
           href="https://github.com/TheOrcDev/youtube-to-blog"
           target="_blank"
