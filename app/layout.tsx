@@ -125,7 +125,7 @@ export default function RootLayout({
             <ModeSwitcher />
           </header>
           <main className="mt-30">{children}</main>
-          <footer className="fixed bottom-4 left-4">
+          <footer className="fixed bottom-4 left-4 rounded-md bg-background p-2">
             Made with 🪓 by{" "}
             <Link
               className="underline"
