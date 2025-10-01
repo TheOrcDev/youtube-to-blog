@@ -19,7 +19,11 @@ export default async function Post(props: Params) {
 
   return (
     <main className="pt-30">
-      <Button asChild className="absolute top-4 left-4" variant="outline">
+      <Button
+        asChild
+        className="-translate-x-1/2 absolute top-4 left-1/2 mx-auto"
+        variant="outline"
+      >
         <Link href="/">Back</Link>
       </Button>
       <div className="container mx-auto px-5">
