@@ -27,6 +27,9 @@ const AT_PREFIX_REGEX = /^@+/;
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 2000;
 
+// Global YouTube client cache to avoid re-fetching player script
+let ytClient: Innertube | null = null;
+
 // Function to clean YouTube URLs (remove @ prefix and other invalid characters)
 function cleanYouTubeUrl(url: string): string {
   // Remove @ prefix if present
@@ -58,7 +61,17 @@ async function initializeYouTubeClient(): Promise<Innertube> {
 
   while (retries > 0) {
     try {
-      return await Innertube.create();
+      return await Innertube.create({
+        fetch: (input, init) =>
+          fetch(input, {
+            ...init,
+            headers: {
+              ...init?.headers,
+              "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            },
+          }),
+      });
     } catch (error) {
       if (
         error instanceof Error &&
@@ -74,6 +87,13 @@ async function initializeYouTubeClient(): Promise<Innertube> {
   }
 
   throw new Error("Failed to initialize YouTube client after retries");
+}
+
+async function getYouTubeClient(): Promise<Innertube> {
+  if (!ytClient) {
+    ytClient = await initializeYouTubeClient();
+  }
+  return ytClient;
 }
 
 async function getVideoInfo(yt: Innertube, videoId: string) {
@@ -117,8 +137,8 @@ async function extractYouTubeData(url: string): Promise<YouTubeVideoData> {
     // Clean the URL first
     const cleanedUrl = cleanYouTubeUrl(url);
 
-    // Initialize YouTube client
-    const yt = await initializeYouTubeClient();
+    // Get cached YouTube client
+    const yt = await getYouTubeClient();
 
     // Extract video ID from cleaned URL
     const videoId = extractVideoId(cleanedUrl);
