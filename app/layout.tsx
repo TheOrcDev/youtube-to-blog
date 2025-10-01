@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import Image from "next/image";
 import { ModeSwitcher } from "@/components/mode-switcher";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -37,7 +38,14 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-4 flex w-full items-center justify-between gap-2 px-4">
+            <Image
+              alt="Youtube to Blog"
+              height={50}
+              src="/youtube-to-blog-logo.png"
+              width={50}
+            />
+
             <ModeSwitcher />
           </div>
           {children}
