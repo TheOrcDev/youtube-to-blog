@@ -1,7 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { YoutubeTranscript } from "youtube-transcript";
-import { Innertube } from "youtubei.js";
 
 export const runtime = "nodejs";
 
@@ -22,13 +21,6 @@ const VIDEO_ID_PATTERNS = [
 
 // Regex to remove @ prefix from URLs
 const AT_PREFIX_REGEX = /^@+/;
-
-// Constants for retry logic
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 2000;
-
-// Global YouTube client cache to avoid re-fetching player script
-let ytClient: Innertube | null = null;
 
 // Function to clean YouTube URLs (remove @ prefix and other invalid characters)
 function cleanYouTubeUrl(url: string): string {
@@ -56,67 +48,41 @@ function extractVideoId(url: string): string | null {
   return null;
 }
 
-async function initializeYouTubeClient(): Promise<Innertube> {
-  let retries = MAX_RETRIES;
+async function getVideoInfoFromYouTubeAPI(videoId: string) {
+  const apiKey = process.env.YOUTUBE_API_KEY;
 
-  while (retries > 0) {
-    try {
-      return await Innertube.create({
-        fetch: (input, init) =>
-          fetch(input, {
-            ...init,
-            headers: {
-              ...init?.headers,
-              "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-            },
-          }),
-      });
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message.includes("signature decipher algorithm") &&
-        retries > 1
-      ) {
-        retries--;
-        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
-        continue;
-      }
-      throw error;
-    }
+  if (!apiKey) {
+    throw new Error(
+      "YouTube API key is not configured. Please set YOUTUBE_API_KEY environment variable."
+    );
   }
 
-  throw new Error("Failed to initialize YouTube client after retries");
-}
+  const response = await fetch(
+    `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
+  );
 
-async function getYouTubeClient(): Promise<Innertube> {
-  if (!ytClient) {
-    ytClient = await initializeYouTubeClient();
-  }
-  return ytClient;
-}
-
-async function getVideoInfo(yt: Innertube, videoId: string) {
-  let retries = MAX_RETRIES;
-
-  while (retries > 0) {
-    try {
-      return await yt.getInfo(videoId);
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message.includes("signature decipher algorithm") &&
-        retries > 1
-      ) {
-        retries--;
-        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
-        continue;
-      }
-      throw error;
-    }
+  if (!response.ok) {
+    throw new Error(
+      `YouTube API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
-  throw new Error("Failed to get video info after retries");
+  const data = await response.json();
+
+  if (!data.items || data.items.length === 0) {
+    throw new Error("Video not found or not accessible");
+  }
+
+  const video = data.items[0];
+  const snippet = video.snippet;
+  const contentDetails = video.contentDetails;
+
+  return {
+    title: snippet.title,
+    description: snippet.description,
+    channelTitle: snippet.channelTitle,
+    duration: contentDetails.duration,
+  };
 }
 
 async function getTranscript(videoId: string): Promise<string> {
@@ -137,28 +103,24 @@ async function extractYouTubeData(url: string): Promise<YouTubeVideoData> {
     // Clean the URL first
     const cleanedUrl = cleanYouTubeUrl(url);
 
-    // Get cached YouTube client
-    const yt = await getYouTubeClient();
-
     // Extract video ID from cleaned URL
     const videoId = extractVideoId(cleanedUrl);
     if (!videoId) {
       throw new Error("Invalid YouTube URL");
     }
 
-    // Get video info
-    const info = await getVideoInfo(yt, videoId);
-    const videoDetails = info.basic_info;
+    // Get video info from YouTube Data API v3
+    const videoInfo = await getVideoInfoFromYouTubeAPI(videoId);
 
     // Get transcript
     const transcript = await getTranscript(videoId);
 
     return {
-      title: videoDetails.title || "Unknown Title",
-      description: videoDetails.short_description || "",
+      title: videoInfo.title || "Unknown Title",
+      description: videoInfo.description || "",
       transcript,
-      duration: videoDetails.duration?.toString() || "0",
-      author: videoDetails.author || "Unknown Author",
+      duration: videoInfo.duration || "PT0S",
+      author: videoInfo.channelTitle || "Unknown Author",
       slug: videoId,
     };
   } catch (error) {

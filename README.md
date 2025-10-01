@@ -1,5 +1,21 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment Setup
+
+Before running the application, you need to set up the following environment variable:
+
+### YouTube Data API v3 Key
+
+1. Go to the [Google Cloud Console](https://console.developers.google.com/)
+2. Create a new project or select an existing one
+3. Enable the YouTube Data API v3
+4. Create credentials (API Key)
+5. Add the API key to your environment variables:
+
+```bash
+YOUTUBE_API_KEY=your_youtube_api_key_here
+```
+
 ## Getting Started
 
 First, run the development server:
