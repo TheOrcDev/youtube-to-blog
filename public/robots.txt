@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow crawling of blog pages
+Disallow: /blog/
+
+# Allow crawling of main pages
+Allow: /
+Allow: /api/
