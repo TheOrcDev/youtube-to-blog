@@ -1,7 +1,6 @@
 export type YouTubeVideoData = {
   title: string;
   description: string;
-  transcript: string;
   duration: string;
   slug: string;
   author: string;

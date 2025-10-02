@@ -1,13 +1,11 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { YoutubeTranscript } from "youtube-transcript";
 
 export const runtime = "nodejs";
 
 export type YouTubeVideoData = {
   title: string;
   description: string;
-  transcript: string;
   duration: string;
   slug: string;
   author: string;
@@ -85,19 +83,6 @@ async function getVideoInfoFromYouTubeAPI(videoId: string) {
   };
 }
 
-async function getTranscript(videoId: string): Promise<string> {
-  try {
-    const transcriptData = await YoutubeTranscript.fetchTranscript(videoId);
-    return transcriptData
-      .map((item) => item.text)
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
-  } catch {
-    return "Transcript not available for this video.";
-  }
-}
-
 async function extractYouTubeData(url: string): Promise<YouTubeVideoData> {
   try {
     // Clean the URL first
@@ -112,13 +97,9 @@ async function extractYouTubeData(url: string): Promise<YouTubeVideoData> {
     // Get video info from YouTube Data API v3
     const videoInfo = await getVideoInfoFromYouTubeAPI(videoId);
 
-    // Get transcript
-    const transcript = await getTranscript(videoId);
-
     return {
       title: videoInfo.title || "Unknown Title",
       description: videoInfo.description || "",
-      transcript,
       duration: videoInfo.duration || "PT0S",
       author: videoInfo.channelTitle || "Unknown Author",
       slug: videoId,
