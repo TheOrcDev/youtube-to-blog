@@ -1,7 +1,14 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getSubtitles } from "youtube-caption-extractor";
 
 export const runtime = "nodejs";
+
+export type Subtitle = {
+  start: string;
+  dur: string;
+  text: string;
+};
 
 export type YouTubeVideoData = {
   title: string;
@@ -9,6 +16,7 @@ export type YouTubeVideoData = {
   duration: string;
   slug: string;
   author: string;
+  captions: Subtitle[];
 };
 
 // Regex patterns for extracting video ID
@@ -83,6 +91,18 @@ async function getVideoInfoFromYouTubeAPI(videoId: string) {
   };
 }
 
+async function getVideoCaptions(videoId: string): Promise<Subtitle[]> {
+  try {
+    const captions = await getSubtitles({ videoID: videoId, lang: "en" });
+    return captions;
+  } catch (error) {
+    // If captions are not available, throw an error
+    throw new Error(
+      `No captions available for this video. This video must have captions (auto-generated or manual) to generate a blog post. Error: ${error instanceof Error ? error.message : "Unknown error"}`
+    );
+  }
+}
+
 async function extractYouTubeData(url: string): Promise<YouTubeVideoData> {
   try {
     // Clean the URL first
@@ -97,12 +117,16 @@ async function extractYouTubeData(url: string): Promise<YouTubeVideoData> {
     // Get video info from YouTube Data API v3
     const videoInfo = await getVideoInfoFromYouTubeAPI(videoId);
 
+    // Get captions - this is required for blog generation
+    const captions = await getVideoCaptions(videoId);
+
     return {
       title: videoInfo.title || "Unknown Title",
       description: videoInfo.description || "",
       duration: videoInfo.duration || "PT0S",
       author: videoInfo.channelTitle || "Unknown Author",
       slug: videoId,
+      captions,
     };
   } catch (error) {
     throw new Error(

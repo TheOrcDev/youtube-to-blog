@@ -6,39 +6,66 @@ import { extractYouTubeData } from "@/lib/youtube";
 import { createBlog } from "./blogs";
 
 const SECONDS_PER_MINUTE = 60;
-const MAX_DESCRIPTION_LENGTH = 500;
 const MIN_BLOG_LENGTH = 500; // Minimum blog post length to ensure quality
+const MAX_CAPTION_LENGTH = 8000; // Maximum caption text length to include in prompt
+
+function formatCaptionsForPrompt(
+  captions: Array<{ start: string; dur: string; text: string }>
+): string {
+  // Combine all caption text
+  const fullText = captions.map((caption) => caption.text).join(" ");
+
+  // Truncate if too long
+  if (fullText.length > MAX_CAPTION_LENGTH) {
+    return `${fullText.substring(0, MAX_CAPTION_LENGTH)}...`;
+  }
+
+  return fullText;
+}
 
 export async function generateBlog(youtubeUrl: string) {
   try {
     // Extract YouTube video data
     const videoData = await extractYouTubeData(youtubeUrl);
 
+    // Validate that captions are available
+    if (!videoData.captions || videoData.captions.length === 0) {
+      throw new Error(
+        "No captions available for this video. The video must have captions (auto-generated or manual) to generate a blog post."
+      );
+    }
+
+    // Format captions for the prompt
+    const captionText = formatCaptionsForPrompt(videoData.captions);
+
     const { text } = await generateText({
       model: "gemini-2.5-flash",
-      prompt: `Generate a high-quality MDX blog post based on the following YouTube video information:
+      prompt: `Generate a high-quality MDX blog post based on the following YouTube video transcript and information:
 
                 **Video Information:**
                 - Title: ${videoData.title}
                 - Author: ${videoData.author}
                 - Duration: ${Math.floor(Number.parseInt(videoData.duration, 10) / SECONDS_PER_MINUTE)} minutes
-                - Description: ${videoData.description.substring(0, MAX_DESCRIPTION_LENGTH)}${videoData.description.length > MAX_DESCRIPTION_LENGTH ? "..." : ""}
 
-                **Objective:** Create a professional, engaging MDX blog post based on the video's title, description, and metadata. Since transcript is not available, focus on creating valuable content that would be relevant to the video's topic.
+                **Video Transcript (Primary Source):**
+                ${captionText}
 
-                **Target Audience Detection:** Analyze the video's title and description to automatically determine the appropriate target audience (e.g., developers, designers, marketers, general audience, etc.). Write the blog post for that specific audience.
+                **Objective:** Create a professional, engaging MDX blog post based primarily on the video transcript above. Transform the spoken content into a well-structured, written blog post that captures the key insights, explanations, and value from the video.
+
+                **Target Audience Detection:** Analyze the video's title and transcript content to automatically determine the appropriate target audience (e.g., developers, designers, marketers, general audience, etc.). Write the blog post for that specific audience.
 
                 **Style Guide:**
-                1.  **Content Creation:** Create informative content based on the video's topic and description
+                1.  **Content Creation:** Base the blog post primarily on the transcript content, organizing and structuring the spoken words into coherent written sections
                 2.  **Structure & Formatting:**
                     * Use Markdown for the main structure
                     * Format as a single, valid **MDX** file
                     * Start with a compelling title (adapt the video title if needed)
-                    * Use a clear **Introduction** section
+                    * Use a clear **Introduction** section that summarizes what the video covers
                     * Organize content using level-2 headings ('##') for major sections and level-3 headings ('###') for sub-points
-                    * End with a **Conclusion** that summarizes the key points
-                3.  **Code Inclusion:** Include relevant code examples where appropriate for the topic
-                4.  **Educational Value:** Ensure the content provides educational value related to the video's topic
+                    * End with a **Conclusion** that summarizes the key points from the transcript
+                3.  **Code Inclusion:** Include relevant code examples mentioned in the transcript
+                4.  **Educational Value:** Ensure the content provides educational value by properly structuring the information from the transcript
+                5.  **Transcription Fidelity:** Stay true to the original content while making it readable and well-organized
 
                 **Output Format:** Complete, ready-to-publish MDX content starting with the title and ending with the conclusion. NO frontmatter (YAML metadata with --- markers).`,
     });

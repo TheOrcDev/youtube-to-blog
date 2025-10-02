@@ -1,9 +1,16 @@
+export type Subtitle = {
+  start: string;
+  dur: string;
+  text: string;
+};
+
 export type YouTubeVideoData = {
   title: string;
   description: string;
   duration: string;
   slug: string;
   author: string;
+  captions: Subtitle[];
 };
 
 // Regex patterns for extracting video ID
