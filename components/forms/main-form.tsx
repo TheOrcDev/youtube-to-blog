@@ -91,7 +91,7 @@ export function MainForm() {
       </Form>
 
       {blog && (
-        <div className="flex max-w-3xl flex-col gap-4">
+        <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
           <div className="flex justify-end gap-2">
             <Button asChild variant="outline">
               <Link href={`/blog/${blog.slug}`}>View Blog</Link>
