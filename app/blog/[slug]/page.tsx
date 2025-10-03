@@ -5,6 +5,7 @@ import { PostHeader } from "@/components/post-header";
 import { Button } from "@/components/ui/button";
 import markdownToHtml from "@/lib/markdown-to-html";
 import { getBlogs, getPostBySlug } from "@/server/blogs";
+import ActionButtons from "./_components/action-buttons";
 import markdownStyles from "./markdown-styles.module.css";
 
 export default async function Post(props: Params) {
@@ -19,13 +20,7 @@ export default async function Post(props: Params) {
 
   return (
     <main className="mt-20">
-      <Button
-        asChild
-        className="-translate-x-1/2 absolute top-4 left-1/2 mx-auto"
-        variant="outline"
-      >
-        <Link href="/">Back</Link>
-      </Button>
+      <ActionButtons content={post.content || ""} />
       <div className="container mx-auto px-5">
         <article className="mb-32">
           <PostHeader

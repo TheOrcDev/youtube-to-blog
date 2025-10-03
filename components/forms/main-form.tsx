@@ -20,6 +20,7 @@ import type { SelectBlog } from "@/db/schema";
 import { generateBlog } from "@/server/ai";
 import { checkBlogExists } from "@/server/blogs";
 import { BlogCard } from "../blog-card";
+import { ButtonGroup } from "../ui/button-group";
 
 const formSchema = z.object({
   youtubeUrl: z.url().min(1, {
@@ -73,20 +74,25 @@ export function MainForm() {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input placeholder="YouTube URL" {...field} />
+                  <ButtonGroup className="w-full">
+                    <Input
+                      className="flex-1"
+                      placeholder="YouTube URL"
+                      {...field}
+                    />
+                    <Button aria-label="Search">
+                      {isLoading ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        "Convert"
+                      )}
+                    </Button>
+                  </ButtonGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <Button disabled={isLoading} type="submit">
-            {isLoading ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              "Convert"
-            )}
-          </Button>
         </form>
       </Form>
 
