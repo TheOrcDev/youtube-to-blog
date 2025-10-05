@@ -1,9 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-import { cn } from "@/lib/utils";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -21,21 +25,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import { z } from "zod";
-import { toast } from "sonner";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+const MIN_PASSWORD_LENGTH = 8;
 
 const formSchema = z.object({
-  password: z.string().min(8),
-  confirmPassword: z.string().min(8),
+  password: z.string().min(MIN_PASSWORD_LENGTH),
+  confirmPassword: z.string().min(MIN_PASSWORD_LENGTH),
 });
 
-export function ResetPasswordForm({
+function ResetPasswordFormContent({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -87,7 +88,7 @@ export function ResetPasswordForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
               <div className="grid gap-6">
                 <div className="grid gap-3">
                   <FormField
@@ -119,7 +120,7 @@ export function ResetPasswordForm({
                     )}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button className="w-full" disabled={isLoading} type="submit">
                   {isLoading ? (
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
@@ -129,7 +130,7 @@ export function ResetPasswordForm({
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <Link href="/signup" className="underline underline-offset-4">
+                <Link className="underline underline-offset-4" href="/signup">
                   Sign up
                 </Link>
               </div>
@@ -137,11 +138,38 @@ export function ResetPasswordForm({
           </Form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+      <div className="text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary">
         By clicking continue, you agree to our{" "}
         <Link href="#">Terms of Service</Link> and{" "}
         <Link href="#">Privacy Policy</Link>.
       </div>
     </div>
+  );
+}
+
+export function ResetPasswordForm({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <Suspense
+      fallback={
+        <div className={cn("flex flex-col gap-6", className)} {...props}>
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-xl">Reset Password</CardTitle>
+              <CardDescription>Loading...</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="size-6 animate-spin" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      }
+    >
+      <ResetPasswordFormContent className={className} {...props} />
+    </Suspense>
   );
 }

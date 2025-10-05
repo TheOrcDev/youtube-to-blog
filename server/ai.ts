@@ -26,11 +26,17 @@ function formatCaptionsForPrompt(
 
 export async function generateBlog(youtubeUrl: string) {
   try {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      throw new Error("User not found");
+    }
+
     // Extract YouTube video data
     const videoData = await extractYouTubeData(youtubeUrl);
 
-    // Validate that captions are available
     if (!videoData.captions || videoData.captions.length === 0) {
+      // Validate that captions are available
       throw new Error(
         "No captions available for this video. The video must have captions (auto-generated or manual) to generate a blog post."
       );
@@ -72,8 +78,8 @@ export async function generateBlog(youtubeUrl: string) {
                 **Output Format:** Complete, ready-to-publish MDX content starting with the title and ending with the conclusion. NO frontmatter (YAML metadata with --- markers).`,
     });
 
-    // Validate generated content quality
     if (!text || text.length < MIN_BLOG_LENGTH) {
+      // Validate generated content quality
       throw new Error(
         `Generated blog post is too short or empty. Length: ${text?.length || 0} characters. Minimum required: ${MIN_BLOG_LENGTH} characters. Please try again with a different video.`
       );
@@ -98,8 +104,6 @@ export async function generateBlog(youtubeUrl: string) {
       // Note: Content may contain external knowledge not from the video transcript
       // In production, this could trigger additional validation or user notification
     }
-
-    const currentUser = await getCurrentUser();
 
     const blog = await createBlog({
       userId: currentUser.user.id,
