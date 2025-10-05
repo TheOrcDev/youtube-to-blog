@@ -4,6 +4,7 @@ import { generateText } from "ai";
 
 import { extractYouTubeData } from "@/lib/youtube";
 import { createBlog } from "./blogs";
+import { getCurrentUser } from "./users";
 
 const SECONDS_PER_MINUTE = 60;
 const MIN_BLOG_LENGTH = 500; // Minimum blog post length to ensure quality
@@ -98,7 +99,10 @@ export async function generateBlog(youtubeUrl: string) {
       // In production, this could trigger additional validation or user notification
     }
 
+    const currentUser = await getCurrentUser();
+
     const blog = await createBlog({
+      userId: currentUser.user.id,
       content: text,
       slug: videoData.slug,
       title: videoData.title,
