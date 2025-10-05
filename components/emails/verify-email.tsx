@@ -10,10 +10,10 @@ import {
   Text,
 } from "@react-email/components";
 
-type VerifyEmailProps {
+type VerifyEmailProps = {
   username: string;
   verifyUrl: string;
-}
+};
 
 const VerifyEmail = (props: VerifyEmailProps) => {
   const { username, verifyUrl } = props;
