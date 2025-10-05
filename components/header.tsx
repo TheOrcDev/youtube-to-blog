@@ -36,6 +36,11 @@ export function Header() {
           </Button>
         </Link>
         <ModeSwitcher />
+        <Link href="/login">
+          <Button size="sm" variant="ghost">
+            Login
+          </Button>
+        </Link>
       </div>
     </header>
   );

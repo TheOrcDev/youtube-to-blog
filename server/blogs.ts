@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db/drizzle";
 import { blogs, type InsertBlog } from "@/db/schema";
 import { cleanYouTubeUrl, extractVideoId } from "@/lib/youtube";
+import { getCurrentUser } from "./users";
 
 export async function getBlogs() {
   try {
@@ -25,7 +26,11 @@ export async function getPostBySlug(slug: string) {
 
 export async function createBlog(blog: InsertBlog) {
   try {
-    const [newBlog] = await db.insert(blogs).values(blog).returning();
+    const currentUser = await getCurrentUser();
+    const [newBlog] = await db
+      .insert(blogs)
+      .values({ ...blog, userId: currentUser.user.id })
+      .returning();
     return newBlog;
   } catch (error) {
     throw new Error("Failed to create blog", { cause: error });
