@@ -8,8 +8,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const getCurrentUser = async () => {
+  // Call headers() at the top level to maintain proper async context
+  const headersList = await headers();
+
   const session = await auth.api.getSession({
-    headers: await headers(),
+    headers: headersList,
   });
 
   if (!session) {

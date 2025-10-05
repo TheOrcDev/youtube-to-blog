@@ -18,6 +18,7 @@ export async function getBlogs() {
 export async function getBlogsByUser() {
   try {
     const currentUser = await getCurrentUser();
+
     return await db
       .select()
       .from(blogs)
