@@ -4,6 +4,8 @@ import { CopyMarkdownButton } from "@/components/copy-markdown-button";
 import { Button } from "@/components/ui/button";
 import { getBlogsByUser } from "@/server/blogs";
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogsPage() {
   const blogs = await getBlogsByUser();
 
