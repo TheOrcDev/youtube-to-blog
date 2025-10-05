@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostHeader } from "@/components/post-header";
-import { Button } from "@/components/ui/button";
 import markdownToHtml from "@/lib/markdown-to-html";
 import { getBlogs, getPostBySlug } from "@/server/blogs";
 import ActionButtons from "./_components/action-buttons";

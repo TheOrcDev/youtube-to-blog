@@ -15,6 +15,18 @@ export async function getBlogs() {
   }
 }
 
+export async function getBlogsByUser() {
+  try {
+    const currentUser = await getCurrentUser();
+    return await db
+      .select()
+      .from(blogs)
+      .where(eq(blogs.userId, currentUser.user.id));
+  } catch (error) {
+    throw new Error("Failed to get posts", { cause: error });
+  }
+}
+
 export async function getPostBySlug(slug: string) {
   try {
     const [post] = await db.select().from(blogs).where(eq(blogs.slug, slug));
