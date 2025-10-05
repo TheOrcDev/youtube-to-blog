@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import type { SelectBlog } from "@/db/schema";
+import { authClient } from "@/lib/auth-client";
 import { generateBlog } from "@/server/ai";
 import { checkBlogExists } from "@/server/blogs";
 import { BlogCard } from "../blog-card";
@@ -41,6 +42,13 @@ export function MainForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      const user = await authClient.getSession();
+
+      if (!user.data) {
+        toast.error("Please login to create a blog.");
+        return;
+      }
+
       setIsLoading(true);
       const check = await checkBlogExists(values.youtubeUrl);
 
