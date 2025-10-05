@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ModeSwitcher } from "./mode-switcher";
 import { Button } from "./ui/button";
+import { UserButton } from "./user-button";
 
 export function Header() {
   return (
@@ -36,11 +37,7 @@ export function Header() {
           </Button>
         </Link>
         <ModeSwitcher />
-        <Link href="/login">
-          <Button size="sm" variant="ghost">
-            Login
-          </Button>
-        </Link>
+        <UserButton />
       </div>
     </header>
   );
