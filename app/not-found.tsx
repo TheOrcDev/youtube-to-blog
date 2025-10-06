@@ -30,9 +30,9 @@ export default function NotFound() {
         </EmptyMedia>
       </EmptyHeader>
       <EmptyTitle className="font-bold text-2xl tracking-tight sm:text-4xl">
-        You are lost.
+        Uh-oh!
       </EmptyTitle>
-      <EmptyDescription>Return to the home page.</EmptyDescription>
+      <EmptyDescription>You are lost.</EmptyDescription>
       <EmptyContent>
         <Button variant="outline">
           <Link href="/">Return to the home page</Link>
