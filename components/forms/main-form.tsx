@@ -73,7 +73,7 @@ export function MainForm() {
     <>
       <Form {...form}>
         <form
-          className="flex w-full gap-2"
+          className="flex w-full gap-2 px-5"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
