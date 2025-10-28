@@ -7,9 +7,10 @@ import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 export function UserButton() {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
 
   const handleLogout = async () => {
     try {
@@ -19,6 +20,10 @@ export function UserButton() {
       toast.error("Failed to log out");
     }
   };
+
+  if (isPending) {
+    return <Skeleton className="h-8 w-26" />;
+  }
 
   return (
     <>
