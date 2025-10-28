@@ -2,8 +2,6 @@ import { Suspense } from "react";
 import { BlogsList } from "@/components/blogs-list";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const dynamic = "force-dynamic";
-
 export default function BlogsPage() {
   return (
     <div className="container mx-auto max-w-3xl space-y-4 px-5 py-10">
