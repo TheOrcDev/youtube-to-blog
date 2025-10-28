@@ -1,13 +1,23 @@
 "use client";
 
+import { LogOutIcon } from "lucide-react";
 import Link from "next/link";
+
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+
 import { Button } from "./ui/button";
+
 export function UserButton() {
   const { data: session } = authClient.useSession();
 
   const handleLogout = async () => {
-    await authClient.signOut();
+    try {
+      await authClient.signOut();
+      toast.success("Logged out successfully");
+    } catch {
+      toast.error("Failed to log out");
+    }
   };
 
   return (
@@ -20,7 +30,7 @@ export function UserButton() {
             </Button>
           </Link>
           <Button onClick={handleLogout} size="sm" variant="ghost">
-            Logout
+            <LogOutIcon className="size-4" />
           </Button>
         </>
       ) : (
