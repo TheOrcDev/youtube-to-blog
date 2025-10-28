@@ -27,12 +27,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { signIn } from "@/server/users";
 import { Badge } from "../ui/badge";
+
+const MIN_PASSWORD_LENGTH = 8;
 
 const formSchema = z.object({
   email: z.email(),
-  password: z.string().min(8),
+  password: z.string().min(MIN_PASSWORD_LENGTH),
 });
 
 export function LoginForm({
@@ -62,13 +63,20 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const { success, message } = await signIn(values.email, values.password);
+    try {
+      const { error } = await authClient.signIn.email({
+        email: values.email,
+        password: values.password,
+      });
 
-    if (success) {
-      toast.success(message as string);
-      router.push("/");
-    } else {
-      toast.error(message as string);
+      if (error) {
+        toast.error(error.message || "Login failed");
+      } else {
+        toast.success("Signed in successfully");
+        router.push("/");
+      }
+    } catch {
+      toast.error("An unexpected error occurred");
     }
 
     setIsLoading(false);
