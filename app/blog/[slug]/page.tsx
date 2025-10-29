@@ -1,3 +1,5 @@
+"use cache";
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostHeader } from "@/components/post-header";

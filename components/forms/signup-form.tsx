@@ -33,8 +33,8 @@ const MIN_PASSWORD_LENGTH = 8;
 
 const formSchema = z.object({
   username: z.string().min(MIN_USERNAME_LENGTH),
-  email: z.email(),
   password: z.string().min(MIN_PASSWORD_LENGTH),
+  email: z.email(),
 });
 
 export function SignupForm({
