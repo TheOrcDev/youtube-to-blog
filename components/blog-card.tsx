@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/card";
 import type { SelectBlog } from "@/db/schema";
 
-type BlogCardProps = {
+interface BlogCardProps {
   blog: SelectBlog;
-};
+}
 
 const MAX_CONTENT_LENGTH = 100;
 

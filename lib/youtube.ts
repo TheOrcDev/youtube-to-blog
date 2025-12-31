@@ -1,17 +1,17 @@
-export type Subtitle = {
+export interface Subtitle {
   start: string;
   dur: string;
   text: string;
-};
+}
 
-export type YouTubeVideoData = {
+export interface YouTubeVideoData {
   title: string;
   description: string;
   duration: string;
   slug: string;
   author: string;
   captions: Subtitle[];
-};
+}
 
 // Regex patterns for extracting video ID
 const VIDEO_ID_PATTERNS = [

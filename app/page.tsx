@@ -13,7 +13,7 @@ export default function Generate() {
         width={500}
       />
 
-      <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 w-full max-w-3xl px-2">
+      <div className="absolute top-1/2 left-1/2 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 px-2">
         <MainForm />
       </div>
     </main>

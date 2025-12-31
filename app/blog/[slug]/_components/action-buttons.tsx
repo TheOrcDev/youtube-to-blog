@@ -10,7 +10,7 @@ type ActionButtonsProps = {
 
 export default function ActionButtons({ content }: ActionButtonsProps) {
   return (
-    <div className="-translate-x-1/2 absolute top-4 left-1/2 mx-auto flex gap-2">
+    <div className="absolute top-4 left-1/2 mx-auto flex -translate-x-1/2 gap-2">
       <Button asChild variant="outline">
         <Link href="/">Back</Link>
       </Button>

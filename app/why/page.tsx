@@ -31,7 +31,7 @@ export default function WhyPage() {
     <main className="mx-auto max-w-4xl px-4 py-8">
       <Button
         asChild
-        className="-translate-x-1/2 absolute top-4 left-1/2 mx-auto"
+        className="absolute top-4 left-1/2 mx-auto -translate-x-1/2"
         variant="outline"
       >
         <Link href="/">Back</Link>

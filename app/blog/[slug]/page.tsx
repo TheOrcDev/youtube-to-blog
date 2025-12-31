@@ -41,11 +41,11 @@ export default async function Post(props: Params) {
   );
 }
 
-type Params = {
+interface Params {
   params: Promise<{
     slug: string;
   }>;
-};
+}
 
 export async function generateMetadata(props: Params): Promise<Metadata> {
   const params = await props.params;

@@ -1,11 +1,11 @@
 "use server";
 
-import { db } from "@/db/drizzle";
-import { user } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { db } from "@/db/drizzle";
+import { user } from "@/db/schema";
+import { auth } from "@/lib/auth";
 
 export const getCurrentUser = async () => {
   // Call headers() at the top level to maintain proper async context
