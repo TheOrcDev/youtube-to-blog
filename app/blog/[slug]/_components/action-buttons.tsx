@@ -4,9 +4,9 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
-type ActionButtonsProps = {
+interface ActionButtonsProps {
   content: string;
-};
+}
 
 export default function ActionButtons({ content }: ActionButtonsProps) {
   return (

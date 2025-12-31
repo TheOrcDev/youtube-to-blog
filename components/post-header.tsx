@@ -1,8 +1,8 @@
-type Props = {
+interface Props {
   title: string;
   date: string;
   author: string;
-};
+}
 
 export function PostHeader({ title, date, author }: Props) {
   return (
