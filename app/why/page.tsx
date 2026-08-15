@@ -197,7 +197,7 @@ export default function WhyPage() {
               the difference it makes.
             </p>
             <a
-              className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-green-600 transition-colors hover:bg-gray-100"
+              className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-green-600 transition-colors hover:bg-gray-100 motion-reduce:transition-none"
               href="/"
             >
               Try YouTube to Blog Now

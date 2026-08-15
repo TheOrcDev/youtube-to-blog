@@ -1,6 +1,20 @@
 .markdown {
   font-size: 1.125rem;
   line-height: 1.75rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.markdown pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.markdown img,
+.markdown video {
+  height: auto;
+  max-width: 100%;
 }
 
 .markdown p,

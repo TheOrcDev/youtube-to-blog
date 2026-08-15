@@ -34,7 +34,7 @@ export default function NotFound() {
       </EmptyTitle>
       <EmptyDescription>You are lost.</EmptyDescription>
       <EmptyContent>
-        <Button variant="outline">
+        <Button asChild variant="outline">
           <Link href="/">Return to the home page</Link>
         </Button>
       </EmptyContent>

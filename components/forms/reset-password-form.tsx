@@ -98,7 +98,11 @@ function ResetPasswordFormContent({
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input {...field} type="password" />
+                          <Input
+                            autoComplete="new-password"
+                            {...field}
+                            type="password"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -113,7 +117,11 @@ function ResetPasswordFormContent({
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input {...field} type="password" />
+                          <Input
+                            autoComplete="new-password"
+                            {...field}
+                            type="password"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

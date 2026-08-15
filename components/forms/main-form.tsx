@@ -13,6 +13,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -82,6 +83,7 @@ export function MainForm() {
             name="youtubeUrl"
             render={({ field }) => (
               <FormItem className="flex-1">
+                <FormLabel className="sr-only">YouTube URL</FormLabel>
                 <FormControl>
                   <ButtonGroup className="w-full">
                     <Input
@@ -89,7 +91,11 @@ export function MainForm() {
                       placeholder="YouTube URL"
                       {...field}
                     />
-                    <Button aria-label="Search" disabled={isLoading}>
+                    <Button
+                      aria-label="Convert YouTube video to blog"
+                      disabled={isLoading}
+                      type="submit"
+                    >
                       {isLoading ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (

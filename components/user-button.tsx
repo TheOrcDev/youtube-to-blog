@@ -22,28 +22,31 @@ export function UserButton() {
   };
 
   if (isPending) {
-    return <Skeleton className="h-8 w-26" />;
+    return <Skeleton className="h-8 w-14 sm:w-26" />;
   }
 
   return (
     <>
       {session ? (
         <>
-          <Link href="/blogs">
-            <Button size="sm" variant="ghost">
-              My Blogs
-            </Button>
-          </Link>
-          <Button onClick={handleLogout} size="sm" variant="ghost">
+          <Button asChild size="sm" variant="ghost">
+            <Link href="/blogs">My Blogs</Link>
+          </Button>
+          <Button
+            aria-label="Log out"
+            onClick={handleLogout}
+            size="icon-sm"
+            title="Log out"
+            type="button"
+            variant="ghost"
+          >
             <LogOutIcon className="size-4" />
           </Button>
         </>
       ) : (
-        <Link href="/login">
-          <Button size="sm" variant="ghost">
-            Login
-          </Button>
-        </Link>
+        <Button asChild size="sm" variant="ghost">
+          <Link href="/login">Login</Link>
+        </Button>
       )}
     </>
   );
