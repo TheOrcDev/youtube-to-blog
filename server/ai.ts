@@ -6,12 +6,12 @@ import { assertAiGatewayConfiguration } from "./ai-gateway";
 import { createBlogGenerator } from "./blog-generator";
 import { createBlog } from "./blogs";
 import { getCurrentUser } from "./users";
-import { extractYouTubeData } from "./youtube";
+import { extractYouTubeMetadata } from "./youtube";
 
 const generateBlogWithDependencies = createBlogGenerator({
   createBlog,
-  extractYouTubeData,
-  generateText: ({ model, prompt }) => generateAiText({ model, prompt }),
+  extractYouTubeMetadata,
+  generateText: ({ messages, model }) => generateAiText({ messages, model }),
   getCurrentUser,
 });
 

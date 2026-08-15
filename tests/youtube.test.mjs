@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createYouTubeExtractor } from "../server/youtube.ts";
+import {
+  createYouTubeExtractor,
+  createYouTubeMetadataExtractor,
+} from "../server/youtube.ts";
 
 const VIDEO_ID = "7GeFt8suV8E";
 const VIDEO_URL = `https://www.youtube.com/watch?v=${VIDEO_ID}`;
 
-test("a captioned YouTube video can be prepared for blog generation", async () => {
+test("a captioned YouTube video can be extracted", async () => {
   const extractYouTubeData = createYouTubeExtractor({
     apiKey: "youtube-api-key",
     fetch: (input) => {
@@ -95,4 +98,31 @@ test("invalid YouTube URLs are rejected before external requests", async () => {
     (error) => error.code === "INVALID_YOUTUBE_URL"
   );
   assert.equal(fetchCalls, 0);
+});
+
+test("video metadata can be prepared without a server caption request", async () => {
+  const extractYouTubeMetadata = createYouTubeMetadataExtractor({
+    apiKey: "youtube-api-key",
+    fetch: () =>
+      Promise.resolve(
+        Response.json({
+          items: [
+            {
+              contentDetails: { duration: "PT8M42S" },
+              snippet: { title: "Master Web Scraping" },
+            },
+          ],
+        })
+      ),
+  });
+
+  const result = await extractYouTubeMetadata(VIDEO_URL);
+
+  assert.deepEqual(result, {
+    author: "Unknown Author",
+    description: "",
+    duration: "PT8M42S",
+    slug: VIDEO_ID,
+    title: "Master Web Scraping",
+  });
 });

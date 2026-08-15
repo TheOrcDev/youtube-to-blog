@@ -5,7 +5,7 @@ import { createBlogGenerator } from "../server/blog-generator.ts";
 
 const VIDEO_URL = "https://www.youtube.com/watch?v=7GeFt8suV8E";
 const DURATION_IN_PROMPT = /Duration: 8 minutes/;
-const TRANSCRIPT_IN_PROMPT = /This scraper can scrape anything\./;
+const VIDEO_SOURCE_IN_PROMPT = /attached YouTube video's audio and visuals/;
 
 test("a signed-in user can generate and save a blog with the configured AI model", async () => {
   const generatedContent = `# Master Web Scraping\n\n${"Useful article content. ".repeat(30)}`;
@@ -30,24 +30,29 @@ test("a signed-in user can generate and save a blog with the configured AI model
 
       return Promise.resolve(savedBlog);
     },
-    extractYouTubeData: (url) => {
+    extractYouTubeMetadata: (url) => {
       assert.equal(url, VIDEO_URL);
 
       return Promise.resolve({
         author: "Firecrawl",
-        captions: [
-          { dur: "2.5", start: "0", text: "This scraper can scrape anything." },
-        ],
         description: "A video about web scraping.",
         duration: "PT8M42S",
         slug: "7GeFt8suV8E",
         title: "Master Web Scraping",
       });
     },
-    generateText: ({ model, prompt }) => {
+    generateText: ({ messages, model }) => {
       assert.equal(model, "google/gemini-2.5-flash");
-      assert.match(prompt, DURATION_IN_PROMPT);
-      assert.match(prompt, TRANSCRIPT_IN_PROMPT);
+      assert.equal(messages[0].role, "user");
+      assert.equal(messages[0].content[0].type, "file");
+      assert.equal(
+        messages[0].content[0].data.toString(),
+        "https://www.youtube.com/watch?v=7GeFt8suV8E"
+      );
+      assert.equal(messages[0].content[0].mediaType, "video/mp4");
+      assert.equal(messages[0].content[1].type, "text");
+      assert.match(messages[0].content[1].text, DURATION_IN_PROMPT);
+      assert.match(messages[0].content[1].text, VIDEO_SOURCE_IN_PROMPT);
 
       return Promise.resolve({ text: generatedContent });
     },
@@ -65,10 +70,9 @@ test("a signed-in user can generate and save a blog with the configured AI model
 test("an AI provider failure retains a safe, actionable code", async () => {
   const generateBlog = createBlogGenerator({
     createBlog: () => Promise.reject(new Error("should not save")),
-    extractYouTubeData: () =>
+    extractYouTubeMetadata: () =>
       Promise.resolve({
         author: "Firecrawl",
-        captions: [{ dur: "2.5", start: "0", text: "Caption text." }],
         description: "A video about web scraping.",
         duration: "PT8M42S",
         slug: "7GeFt8suV8E",

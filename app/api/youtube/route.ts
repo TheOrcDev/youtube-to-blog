@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getBlogErrorStatus, toPublicBlogError } from "@/server/blog-errors";
-import { extractYouTubeData } from "@/server/youtube";
+import { extractYouTubeMetadata } from "@/server/youtube";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const videoData = await extractYouTubeData(url);
+    const videoData = await extractYouTubeMetadata(url);
 
     return NextResponse.json(videoData);
   } catch (error) {

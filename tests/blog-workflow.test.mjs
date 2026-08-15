@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { extractVideoId } from "../lib/youtube-url.ts";
 import { createBlogGenerator } from "../server/blog-generator.ts";
 import { createBlogRequest } from "../server/blog-request.ts";
-import { extractVideoId } from "../server/youtube.ts";
 
 const VIDEO_ID = "7GeFt8suV8E";
 const VIDEO_URL = `https://www.youtube.com/watch?v=${VIDEO_ID}`;
@@ -24,10 +24,9 @@ test("an authenticated blog can be generated, persisted, and retrieved", async (
       blogs.set(blog.slug, blog);
       return Promise.resolve(blog);
     },
-    extractYouTubeData: () =>
+    extractYouTubeMetadata: () =>
       Promise.resolve({
         author: "Firecrawl",
-        captions: [{ dur: "2.5", start: "0", text: "Caption text." }],
         description: "A video about web scraping.",
         duration: "PT8M42S",
         slug: VIDEO_ID,

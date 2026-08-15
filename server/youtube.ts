@@ -1,4 +1,5 @@
 import { getSubtitles } from "youtube-caption-extractor";
+import { cleanYouTubeUrl, extractVideoId } from "../lib/youtube-url.ts";
 import { BlogWorkflowError } from "./blog-errors.ts";
 
 export interface Subtitle {
@@ -15,6 +16,8 @@ export interface YouTubeVideoData {
   author: string;
   captions: Subtitle[];
 }
+
+export type YouTubeVideoMetadata = Omit<YouTubeVideoData, "captions">;
 
 interface YouTubeApiResponse {
   items?: Array<{
@@ -33,45 +36,78 @@ interface YouTubeExtractorDependencies {
   getSubtitles: typeof getSubtitles;
 }
 
-const VIDEO_ID_PATTERNS = [
-  /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-  /youtube\.com\/v\/([^&\n?#]+)/,
-];
+type YouTubeMetadataExtractorDependencies = Omit<
+  YouTubeExtractorDependencies,
+  "getSubtitles"
+>;
 
-const AT_PREFIX_REGEX = /^@+/;
+async function fetchVideoMetadata(
+  videoId: string,
+  apiKey: string,
+  fetchImplementation: typeof fetch
+) {
+  let response: Response;
 
-export function cleanYouTubeUrl(url: string): string {
-  let cleanedUrl = url.replace(AT_PREFIX_REGEX, "");
-  const hasProtocol =
-    cleanedUrl.startsWith("http://") || cleanedUrl.startsWith("https://");
-
-  if (!hasProtocol) {
-    cleanedUrl = `https://${cleanedUrl}`;
+  try {
+    response = await fetchImplementation(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
+    );
+  } catch (error) {
+    throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE", { cause: error });
   }
 
-  return cleanedUrl;
+  if (!response.ok) {
+    throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE");
+  }
+
+  let data: YouTubeApiResponse;
+
+  try {
+    data = (await response.json()) as YouTubeApiResponse;
+  } catch (error) {
+    throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE", { cause: error });
+  }
+
+  const video = data.items?.[0];
+
+  if (!video) {
+    throw new BlogWorkflowError("VIDEO_NOT_ACCESSIBLE");
+  }
+
+  return video;
 }
 
-export function extractVideoId(url: string): string | null {
-  for (const pattern of VIDEO_ID_PATTERNS) {
-    const match = url.match(pattern);
+async function resolveCaptions(
+  videoId: string,
+  getSubtitlesImplementation: typeof getSubtitles
+) {
+  try {
+    const captions = await getSubtitlesImplementation({
+      lang: "en",
+      videoID: videoId,
+    });
 
-    if (match) {
-      return match[1];
+    if (captions.length === 0) {
+      throw new BlogWorkflowError("CAPTIONS_UNAVAILABLE");
     }
-  }
 
-  return null;
+    return captions;
+  } catch (error) {
+    if (error instanceof BlogWorkflowError) {
+      throw error;
+    }
+
+    throw new BlogWorkflowError("CAPTION_EXTRACTION_FAILED", { cause: error });
+  }
 }
 
-export function createYouTubeExtractor({
+export function createYouTubeMetadataExtractor({
   apiKey,
   fetch: fetchImplementation,
-  getSubtitles: getSubtitlesImplementation,
-}: YouTubeExtractorDependencies) {
-  return async function extractYouTubeData(
+}: YouTubeMetadataExtractorDependencies) {
+  return async function extractYouTubeMetadata(
     url: string
-  ): Promise<YouTubeVideoData> {
+  ): Promise<YouTubeVideoMetadata> {
     if (!apiKey) {
       throw new BlogWorkflowError("YOUTUBE_NOT_CONFIGURED");
     }
@@ -82,54 +118,14 @@ export function createYouTubeExtractor({
       throw new BlogWorkflowError("INVALID_YOUTUBE_URL");
     }
 
-    let response: Response;
-
-    try {
-      response = await fetchImplementation(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
-      );
-    } catch (error) {
-      throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE", { cause: error });
-    }
-
-    if (!response.ok) {
-      throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE");
-    }
-
-    let data: YouTubeApiResponse;
-
-    try {
-      data = (await response.json()) as YouTubeApiResponse;
-    } catch (error) {
-      throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE", { cause: error });
-    }
-
-    const video = data.items?.[0];
-
-    if (!video) {
-      throw new BlogWorkflowError("VIDEO_NOT_ACCESSIBLE");
-    }
-
-    let captions: Subtitle[];
-
-    try {
-      captions = await getSubtitlesImplementation({
-        lang: "en",
-        videoID: videoId,
-      });
-    } catch (error) {
-      throw new BlogWorkflowError("CAPTION_EXTRACTION_FAILED", {
-        cause: error,
-      });
-    }
-
-    if (captions.length === 0) {
-      throw new BlogWorkflowError("CAPTIONS_UNAVAILABLE");
-    }
+    const video = await fetchVideoMetadata(
+      videoId,
+      apiKey,
+      fetchImplementation
+    );
 
     return {
       author: video.snippet?.channelTitle || "Unknown Author",
-      captions,
       description: video.snippet?.description || "",
       duration: video.contentDetails?.duration || "PT0S",
       slug: videoId,
@@ -137,6 +133,37 @@ export function createYouTubeExtractor({
     };
   };
 }
+
+export function createYouTubeExtractor({
+  apiKey,
+  fetch: fetchImplementation,
+  getSubtitles: getSubtitlesImplementation,
+}: YouTubeExtractorDependencies) {
+  const extractYouTubeMetadata = createYouTubeMetadataExtractor({
+    apiKey,
+    fetch: fetchImplementation,
+  });
+
+  return async function extractYouTubeData(
+    url: string
+  ): Promise<YouTubeVideoData> {
+    const metadata = await extractYouTubeMetadata(url);
+    const captions = await resolveCaptions(
+      metadata.slug,
+      getSubtitlesImplementation
+    );
+
+    return {
+      captions,
+      ...metadata,
+    };
+  };
+}
+
+export const extractYouTubeMetadata = createYouTubeMetadataExtractor({
+  apiKey: process.env.YOUTUBE_API_KEY,
+  fetch,
+});
 
 export const extractYouTubeData = createYouTubeExtractor({
   apiKey: process.env.YOUTUBE_API_KEY,

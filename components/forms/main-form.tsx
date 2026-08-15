@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { SelectBlog } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
+import { toPublicBlogError } from "@/server/blog-errors";
 import { requestBlog } from "@/server/request-blog";
 import { BlogCard } from "../blog-card";
 import { ButtonGroup } from "../ui/button-group";
@@ -62,10 +63,8 @@ export function MainForm() {
           ? "Blog already exists for this video."
           : "Blog has been created."
       );
-    } catch {
-      toast.error(
-        "Something went wrong while creating the blog. Please try again."
-      );
+    } catch (error) {
+      toast.error(toPublicBlogError(error).message);
     } finally {
       setIsLoading(false);
     }
