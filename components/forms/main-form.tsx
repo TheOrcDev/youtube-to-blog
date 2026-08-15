@@ -18,8 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { SelectBlog } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
-import { generateBlog } from "@/server/ai";
-import { checkBlogExists } from "@/server/blogs";
+import { requestBlog } from "@/server/request-blog";
 import { BlogCard } from "../blog-card";
 import { ButtonGroup } from "../ui/button-group";
 
@@ -50,20 +49,23 @@ export function MainForm() {
       }
 
       setIsLoading(true);
-      const check = await checkBlogExists(values.youtubeUrl);
+      const result = await requestBlog(values.youtubeUrl);
 
-      if (check) {
-        setBlog(check);
-        toast.success("Blog already exists for this video.");
+      if (!result.ok) {
+        toast.error(result.error.message);
         return;
       }
 
-      const generatedBlog = await generateBlog(values.youtubeUrl);
-
-      setBlog(generatedBlog);
-      toast.success("Blog has been created.");
+      setBlog(result.blog);
+      toast.success(
+        result.status === "existing"
+          ? "Blog already exists for this video."
+          : "Blog has been created."
+      );
     } catch {
-      toast.error("Error creating blog.");
+      toast.error(
+        "Something went wrong while creating the blog. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +90,7 @@ export function MainForm() {
                       placeholder="YouTube URL"
                       {...field}
                     />
-                    <Button aria-label="Search">
+                    <Button aria-label="Search" disabled={isLoading}>
                       {isLoading ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (

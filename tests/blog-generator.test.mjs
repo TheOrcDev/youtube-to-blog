@@ -61,3 +61,26 @@ test("a signed-in user can generate and save a blog with the configured AI model
 
   assert.deepEqual(result, savedBlog);
 });
+
+test("an AI provider failure retains a safe, actionable code", async () => {
+  const generateBlog = createBlogGenerator({
+    createBlog: () => Promise.reject(new Error("should not save")),
+    extractYouTubeData: () =>
+      Promise.resolve({
+        author: "Firecrawl",
+        captions: [{ dur: "2.5", start: "0", text: "Caption text." }],
+        description: "A video about web scraping.",
+        duration: "PT8M42S",
+        slug: "7GeFt8suV8E",
+        title: "Master Web Scraping",
+      }),
+    generateText: () =>
+      Promise.reject(new Error("gateway response included internal details")),
+    getCurrentUser: () => Promise.resolve({ user: { id: "user-123" } }),
+  });
+
+  await assert.rejects(
+    () => generateBlog(VIDEO_URL),
+    (error) => error.code === "AI_GENERATION_FAILED"
+  );
+});

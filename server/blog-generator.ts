@@ -1,3 +1,5 @@
+import { asBlogWorkflowError, BlogWorkflowError } from "./blog-errors.ts";
+
 const MIN_BLOG_LENGTH = 500;
 const MAX_CAPTION_LENGTH = 8000;
 const YOUTUBE_DURATION_REGEX = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
@@ -103,32 +105,46 @@ export function createBlogGenerator<Blog>({
   getCurrentUser,
 }: BlogGeneratorDependencies<Blog>) {
   return async function generateBlog(youtubeUrl: string): Promise<Blog> {
+    let currentUser: { user: { id: string } } | null;
+
     try {
-      const currentUser = await getCurrentUser();
+      currentUser = await getCurrentUser();
+    } catch (error) {
+      throw new BlogWorkflowError("AUTH_REQUIRED", { cause: error });
+    }
 
-      if (!currentUser) {
-        throw new Error("User not found");
-      }
+    if (!currentUser) {
+      throw new BlogWorkflowError("AUTH_REQUIRED");
+    }
 
-      const videoData = await extractYouTubeData(youtubeUrl);
+    let videoData: VideoData;
 
-      if (videoData.captions.length === 0) {
-        throw new Error(
-          "No captions available for this video. The video must have captions (auto-generated or manual) to generate a blog post."
-        );
-      }
+    try {
+      videoData = await extractYouTubeData(youtubeUrl);
+    } catch (error) {
+      throw asBlogWorkflowError(error, "CAPTION_EXTRACTION_FAILED");
+    }
 
-      const { text } = await generateText({
+    if (videoData.captions.length === 0) {
+      throw new BlogWorkflowError("CAPTIONS_UNAVAILABLE");
+    }
+
+    let text: string;
+
+    try {
+      ({ text } = await generateText({
         model: BLOG_GENERATION_MODEL,
         prompt: createPrompt(videoData),
-      });
+      }));
+    } catch (error) {
+      throw new BlogWorkflowError("AI_GENERATION_FAILED", { cause: error });
+    }
 
-      if (!text || text.length < MIN_BLOG_LENGTH) {
-        throw new Error(
-          `Generated blog post is too short or empty. Length: ${text?.length || 0} characters. Minimum required: ${MIN_BLOG_LENGTH} characters. Please try again with a different video.`
-        );
-      }
+    if (!text || text.length < MIN_BLOG_LENGTH) {
+      throw new BlogWorkflowError("AI_OUTPUT_INVALID");
+    }
 
+    try {
       return await createBlog({
         author: videoData.author,
         content: text,
@@ -137,7 +153,7 @@ export function createBlogGenerator<Blog>({
         userId: currentUser.user.id,
       });
     } catch (error) {
-      throw new Error("Failed to generate blog", { cause: error });
+      throw new BlogWorkflowError("BLOG_SAVE_FAILED", { cause: error });
     }
   };
 }

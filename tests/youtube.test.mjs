@@ -54,3 +54,45 @@ test("a captioned YouTube video can be prepared for blog generation", async () =
     title: "Master Web Scraping",
   });
 });
+
+test("caption provider failures retain a distinct error code", async () => {
+  const extractYouTubeData = createYouTubeExtractor({
+    apiKey: "youtube-api-key",
+    fetch: () =>
+      Promise.resolve(
+        Response.json({
+          items: [
+            {
+              contentDetails: { duration: "PT8M42S" },
+              snippet: { title: "Master Web Scraping" },
+            },
+          ],
+        })
+      ),
+    getSubtitles: () =>
+      Promise.reject(new Error("caption provider changed its response")),
+  });
+
+  await assert.rejects(
+    () => extractYouTubeData(VIDEO_URL),
+    (error) => error.code === "CAPTION_EXTRACTION_FAILED"
+  );
+});
+
+test("invalid YouTube URLs are rejected before external requests", async () => {
+  let fetchCalls = 0;
+  const extractYouTubeData = createYouTubeExtractor({
+    apiKey: "youtube-api-key",
+    fetch: () => {
+      fetchCalls += 1;
+      return Promise.reject(new Error("should not fetch"));
+    },
+    getSubtitles: () => Promise.reject(new Error("should not extract")),
+  });
+
+  await assert.rejects(
+    () => extractYouTubeData("https://example.com/not-youtube"),
+    (error) => error.code === "INVALID_YOUTUBE_URL"
+  );
+  assert.equal(fetchCalls, 0);
+});

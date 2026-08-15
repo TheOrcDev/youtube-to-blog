@@ -1,4 +1,5 @@
 import { getSubtitles } from "youtube-caption-extractor";
+import { BlogWorkflowError } from "./blog-errors.ts";
 
 export interface Subtitle {
   start: string;
@@ -72,43 +73,58 @@ export function createYouTubeExtractor({
     url: string
   ): Promise<YouTubeVideoData> {
     if (!apiKey) {
-      throw new Error(
-        "YouTube API key is not configured. Please set YOUTUBE_API_KEY environment variable."
-      );
+      throw new BlogWorkflowError("YOUTUBE_NOT_CONFIGURED");
     }
 
     const videoId = extractVideoId(cleanYouTubeUrl(url));
 
     if (!videoId) {
-      throw new Error("Invalid YouTube URL");
+      throw new BlogWorkflowError("INVALID_YOUTUBE_URL");
     }
 
-    const response = await fetchImplementation(
-      `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
-    );
+    let response: Response;
+
+    try {
+      response = await fetchImplementation(
+        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
+      );
+    } catch (error) {
+      throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE", { cause: error });
+    }
 
     if (!response.ok) {
-      throw new Error(
-        `YouTube API request failed: ${response.status} ${response.statusText}`
-      );
+      throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE");
     }
 
-    const data = (await response.json()) as YouTubeApiResponse;
+    let data: YouTubeApiResponse;
+
+    try {
+      data = (await response.json()) as YouTubeApiResponse;
+    } catch (error) {
+      throw new BlogWorkflowError("YOUTUBE_UNAVAILABLE", { cause: error });
+    }
+
     const video = data.items?.[0];
 
     if (!video) {
-      throw new Error("Video not found or not accessible");
+      throw new BlogWorkflowError("VIDEO_NOT_ACCESSIBLE");
     }
 
-    const captions = await getSubtitlesImplementation({
-      lang: "en",
-      videoID: videoId,
-    });
+    let captions: Subtitle[];
+
+    try {
+      captions = await getSubtitlesImplementation({
+        lang: "en",
+        videoID: videoId,
+      });
+    } catch (error) {
+      throw new BlogWorkflowError("CAPTION_EXTRACTION_FAILED", {
+        cause: error,
+      });
+    }
 
     if (captions.length === 0) {
-      throw new Error(
-        "No captions available for this video. The video must have captions (auto-generated or manual) to generate a blog post."
-      );
+      throw new BlogWorkflowError("CAPTIONS_UNAVAILABLE");
     }
 
     return {

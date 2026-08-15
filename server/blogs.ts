@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db/drizzle";
 import { blogs, type InsertBlog } from "@/db/schema";
+import { asBlogWorkflowError, BlogWorkflowError } from "./blog-errors";
 import { getCurrentUser } from "./users";
 import { cleanYouTubeUrl, extractVideoId } from "./youtube";
 
@@ -57,12 +58,12 @@ export async function checkBlogExists(youtubeUrl: string) {
     const slug = extractVideoId(cleanedUrl);
 
     if (!slug) {
-      throw new Error("Invalid YouTube URL");
+      throw new BlogWorkflowError("INVALID_YOUTUBE_URL");
     }
 
     const [blog] = await db.select().from(blogs).where(eq(blogs.slug, slug));
     return blog;
   } catch (error) {
-    throw new Error("Failed to check blog exists", { cause: error });
+    throw asBlogWorkflowError(error, "BLOG_LOOKUP_FAILED");
   }
 }

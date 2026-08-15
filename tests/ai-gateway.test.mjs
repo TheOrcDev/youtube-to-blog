@@ -3,8 +3,6 @@ import test from "node:test";
 
 import { assertAiGatewayConfiguration } from "../server/ai-gateway.ts";
 
-const INVALID_KEY_ERROR = /valid AI_GATEWAY_API_KEY/;
-
 test("an invalid AI Gateway API key is rejected before generation", () => {
   assert.throws(
     () =>
@@ -12,7 +10,16 @@ test("an invalid AI Gateway API key is rejected before generation", () => {
         apiKey: "legacy-or-wrong-key",
         oidcToken: undefined,
       }),
-    INVALID_KEY_ERROR
+    (error) => error.code === "AI_NOT_CONFIGURED"
+  );
+});
+
+test("a Vercel AI Gateway key is accepted", () => {
+  assert.doesNotThrow(() =>
+    assertAiGatewayConfiguration({
+      apiKey: "vck_replacement-key",
+      oidcToken: undefined,
+    })
   );
 });
 
