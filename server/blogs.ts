@@ -4,8 +4,8 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db/drizzle";
 import { blogs, type InsertBlog } from "@/db/schema";
-import { cleanYouTubeUrl, extractVideoId } from "@/lib/youtube";
 import { getCurrentUser } from "./users";
+import { cleanYouTubeUrl, extractVideoId } from "./youtube";
 
 export async function getBlogs() {
   try {

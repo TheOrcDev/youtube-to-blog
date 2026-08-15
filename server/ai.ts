@@ -2,9 +2,9 @@
 
 import { generateText } from "ai";
 
-import { extractYouTubeData } from "@/lib/youtube";
 import { createBlog } from "./blogs";
 import { getCurrentUser } from "./users";
+import { extractYouTubeData } from "./youtube";
 
 const SECONDS_PER_MINUTE = 60;
 const MIN_BLOG_LENGTH = 500; // Minimum blog post length to ensure quality

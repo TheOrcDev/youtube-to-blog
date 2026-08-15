@@ -81,8 +81,8 @@ importers:
         specifier: ^3.4.0
         version: 3.4.0
       youtube-caption-extractor:
-        specifier: ^1.9.1
-        version: 1.9.1
+        specifier: ^1.10.2
+        version: 1.10.2
       zod:
         specifier: ^4.3.2
         version: 4.3.2
@@ -2136,9 +2136,9 @@ packages:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
 
-  youtube-caption-extractor@1.9.1:
-    resolution: {integrity: sha512-KK1OparV3kpIIRkMgLRsQPE73Tu0hYy0CDKcWkF8O3eikyib0IqVjoDNDiGt0KhGbg0/jhh+VUOCcWn/G6nvAw==}
-    engines: {node: '>=14.0.0'}
+  youtube-caption-extractor@1.10.2:
+    resolution: {integrity: sha512-G/WSJStuTrWiqXZ5PpmMtS6LInCQueN/47lz5dNUnIPm7cRIX0RGI+fhkuNEipavQprQH6m2URBn5Xc0jhh1wA==}
+    engines: {node: '>=18.0.0'}
 
   zod@4.3.2:
     resolution: {integrity: sha512-b8L8yn4rIVfiXyHAmnr52/ZEpDumlT0bmxiq3Ws1ybrinhflGpt12Hvv54kYnEsGPRs6o/Ka3/ppA2OWY21IVg==}
@@ -3910,7 +3910,7 @@ snapshots:
 
   xtend@4.0.2: {}
 
-  youtube-caption-extractor@1.9.1:
+  youtube-caption-extractor@1.10.2:
     dependencies:
       he: 1.2.0
       striptags: 3.2.0
