@@ -8,6 +8,7 @@ export type BlogErrorCode =
   | "CAPTION_EXTRACTION_FAILED"
   | "CAPTIONS_UNAVAILABLE"
   | "INVALID_YOUTUBE_URL"
+  | "QUOTA_EXCEEDED"
   | "UNKNOWN"
   | "VIDEO_NOT_ACCESSIBLE"
   | "YOUTUBE_NOT_CONFIGURED"
@@ -34,6 +35,8 @@ const PUBLIC_ERROR_MESSAGES: Record<BlogErrorCode, string> = {
   CAPTIONS_UNAVAILABLE:
     "This video does not have English captions. Choose a captioned video.",
   INVALID_YOUTUBE_URL: "Enter a valid YouTube video URL.",
+  QUOTA_EXCEEDED:
+    "You have used all of this month's blog generations. Upgrade to Pro for a higher limit.",
   UNKNOWN: "Something went wrong while creating the blog. Please try again.",
   VIDEO_NOT_ACCESSIBLE:
     "This video could not be found or is not publicly accessible.",
@@ -79,6 +82,8 @@ export function getBlogErrorStatus(error: PublicBlogError): number {
       return 400;
     case "AUTH_REQUIRED":
       return 401;
+    case "QUOTA_EXCEEDED":
+      return 402;
     case "CAPTIONS_UNAVAILABLE":
     case "VIDEO_NOT_ACCESSIBLE":
       return 422;

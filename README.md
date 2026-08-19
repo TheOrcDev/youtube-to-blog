@@ -75,6 +75,37 @@ DATABASE_URL=your_neon_database_url_here
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
+### 4. Billing (optional)
+
+**Billing is entirely optional.** Leave `CREEM_API_KEY` unset — as any self-hosted
+deployment normally would — and the app runs with **unlimited blog generations**
+and no pricing or billing UI. Everything below only applies if you want to run a
+hosted, paid instance.
+
+The hosted version uses [Creem](https://creem.io) (merchant of record) for
+subscriptions:
+
+```bash
+# Leave CREEM_API_KEY unset to disable billing entirely (unlimited usage)
+CREEM_API_KEY=your_creem_api_key_here
+CREEM_WEBHOOK_SECRET=your_creem_webhook_secret_here
+
+# Creem product IDs for the Pro plan
+CREEM_PRO_PRODUCT_ID=your_monthly_product_id_here
+CREEM_PRO_YEARLY_PRODUCT_ID=your_yearly_product_id_here
+
+# Use Creem's test environment while developing
+CREEM_TEST_MODE=true
+```
+
+Point your Creem dashboard webhook at `/api/webhooks/creem`. When developing
+locally, expose it with a tunnel (for example
+`cloudflared tunnel --url http://localhost:3000`).
+
+Plan limits and per-tier AI models live in
+[`lib/entitlements/policy.ts`](lib/entitlements/policy.ts); prices live in
+[`lib/billing/pricing.ts`](lib/billing/pricing.ts).
+
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
@@ -97,9 +128,18 @@ pnpm install
 ### 3. Set Up the Database
 
 ```bash
-# Generate and run migrations
-npx drizzle-kit generate
-npx drizzle-kit migrate
+# Apply the checked-in migrations to a fresh database
+pnpm db:migrate
+```
+
+After changing `db/schema.ts`, generate a new migration with `pnpm db:generate`.
+
+**Upgrading a database created before this repo had migrations?** The baseline
+migration creates every table, so it cannot be replayed against a database that
+already has the auth and blogs tables. Apply just the billing tables instead:
+
+```bash
+node --env-file=.env.local scripts/apply-billing-migration.mjs
 ```
 
 ### 4. Start the Development Server
@@ -127,7 +167,21 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ### AI Model Configuration
 
-The application uses Google's Gemini 2.5 Flash model. You can customize the AI prompt in `server/ai.ts` to change the output style or format.
+Free generations use Google's Gemini 2.5 Flash; Pro subscribers get a premium
+model. Both are configured in
+[`lib/entitlements/policy.ts`](lib/entitlements/policy.ts). You can customize the
+AI prompt in `server/blog-generator.ts` to change the output style or format.
+
+### Plans and Limits
+
+| Plan | Price | Generations / month | Model |
+| --- | --- | --- | --- |
+| Free | $0 | 5 | Gemini 2.5 Flash |
+| Pro | $9/mo or $79/yr | 100 | Premium model |
+| Self-hosted | — | Unlimited | Gemini 2.5 Flash |
+
+Usage is counted per calendar month (UTC). Requesting a video that already has a
+blog costs no AI call and does not count against the limit.
 
 ## 🚀 Deployment
 
@@ -145,6 +199,13 @@ Make sure to set these in your deployment platform:
 - `YOUTUBE_API_KEY`
 - `DATABASE_URL`
 - `NEXT_PUBLIC_APP_URL` (your production URL)
+
+Only if you are running a paid, hosted instance:
+
+- `CREEM_API_KEY`
+- `CREEM_WEBHOOK_SECRET`
+- `CREEM_PRO_PRODUCT_ID`
+- `CREEM_PRO_YEARLY_PRODUCT_ID`
 
 ## 🤝 Contributing
 

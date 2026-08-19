@@ -1,11 +1,13 @@
 "use client";
 
 import {
+  CreditCardIcon,
   FileTextIcon,
   HomeIcon,
   InfoIcon,
   LogInIcon,
   SearchIcon,
+  SparklesIcon,
   UserPlusIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -29,9 +31,21 @@ const navigationItems = [
   { href: "/signup", icon: UserPlusIcon, label: "Sign up" },
 ] as const;
 
-export function CommandMenu() {
+const billingNavigationItems = [
+  { href: "/pricing", icon: SparklesIcon, label: "Pricing" },
+  { href: "/account/billing", icon: CreditCardIcon, label: "Billing" },
+] as const;
+
+export function CommandMenu({
+  billingEnabled = false,
+}: {
+  billingEnabled?: boolean;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const items = billingEnabled
+    ? [...navigationItems, ...billingNavigationItems]
+    : navigationItems;
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -72,7 +86,7 @@ export function CommandMenu() {
         <CommandList>
           <CommandEmpty>No matching page or action.</CommandEmpty>
           <CommandGroup heading="Navigate">
-            {navigationItems.map((item) => {
+            {items.map((item) => {
               const Icon = item.icon;
 
               return (

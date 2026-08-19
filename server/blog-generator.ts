@@ -1,9 +1,12 @@
+import { FREE_TIER_MODEL } from "../lib/entitlements/policy.ts";
 import { asBlogWorkflowError, BlogWorkflowError } from "./blog-errors.ts";
 
 const MIN_BLOG_LENGTH = 500;
 const YOUTUBE_DURATION_REGEX = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
 
-export const BLOG_GENERATION_MODEL = "google/gemini-2.5-flash";
+// The model is now chosen per tier by checkGenerationAllowance; this remains
+// the default for callers outside the generation flow (e.g. the smoke script).
+export const BLOG_GENERATION_MODEL = FREE_TIER_MODEL;
 
 interface VideoData {
   author: string;
@@ -22,6 +25,7 @@ interface CreateBlogInput {
 }
 
 interface BlogGeneratorDependencies<Blog> {
+  checkGenerationAllowance: (userId: string) => Promise<{ model: string }>;
   createBlog: (blog: CreateBlogInput) => Promise<Blog>;
   extractYouTubeMetadata: (youtubeUrl: string) => Promise<VideoData>;
   generateText: (options: {
@@ -84,6 +88,7 @@ function createPrompt(videoData: VideoData): string {
 }
 
 export function createBlogGenerator<Blog>({
+  checkGenerationAllowance,
   createBlog,
   extractYouTubeMetadata,
   generateText,
@@ -100,6 +105,14 @@ export function createBlogGenerator<Blog>({
 
     if (!currentUser) {
       throw new BlogWorkflowError("AUTH_REQUIRED");
+    }
+
+    let allowance: { model: string };
+
+    try {
+      allowance = await checkGenerationAllowance(currentUser.user.id);
+    } catch (error) {
+      throw asBlogWorkflowError(error, "UNKNOWN");
     }
 
     let videoData: VideoData;
@@ -129,7 +142,7 @@ export function createBlogGenerator<Blog>({
             role: "user",
           },
         ],
-        model: BLOG_GENERATION_MODEL,
+        model: allowance.model,
       }));
     } catch (error) {
       throw new BlogWorkflowError("AI_GENERATION_FAILED", { cause: error });

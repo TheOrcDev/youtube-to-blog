@@ -19,6 +19,10 @@ test("a signed-in user can generate and save a blog with the configured AI model
   };
 
   const generateBlog = createBlogGenerator({
+    checkGenerationAllowance: (userId) => {
+      assert.equal(userId, "user-123");
+      return Promise.resolve({ model: "google/gemini-2.5-flash" });
+    },
     createBlog: (blog) => {
       assert.deepEqual(blog, {
         author: "Firecrawl",
@@ -69,6 +73,8 @@ test("a signed-in user can generate and save a blog with the configured AI model
 
 test("an AI provider failure retains a safe, actionable code", async () => {
   const generateBlog = createBlogGenerator({
+    checkGenerationAllowance: () =>
+      Promise.resolve({ model: "google/gemini-2.5-flash" }),
     createBlog: () => Promise.reject(new Error("should not save")),
     extractYouTubeMetadata: () =>
       Promise.resolve({

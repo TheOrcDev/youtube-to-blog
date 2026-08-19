@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -31,6 +32,7 @@ const formSchema = z.object({
 });
 
 export function MainForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [blog, setBlog] = useState<SelectBlog | null>(null);
 
@@ -54,7 +56,15 @@ export function MainForm() {
       const result = await requestBlog(values.youtubeUrl);
 
       if (!result.ok) {
-        toast.error(result.error.message);
+        toast.error(result.error.message, {
+          action:
+            result.error.code === "QUOTA_EXCEEDED"
+              ? {
+                  label: "Upgrade",
+                  onClick: () => router.push("/pricing"),
+                }
+              : undefined,
+        });
         return;
       }
 

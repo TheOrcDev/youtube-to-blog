@@ -1,11 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
+import { isBillingEnabled } from "@/lib/billing/enabled";
 import { CommandMenu } from "./command-menu";
 import { ModeSwitcher } from "./mode-switcher";
 import { Button } from "./ui/button";
 import { UserButton } from "./user-button";
 
 export function Header() {
+  const billingEnabled = isBillingEnabled();
+
   return (
     <header className="absolute inset-x-0 top-4 flex min-w-0 items-center justify-between gap-1 px-2 sm:gap-2 sm:px-4">
       <Link className="shrink-0" href="/">
@@ -26,7 +29,16 @@ export function Header() {
             </Link>
           </Button>
         </div>
-        <CommandMenu />
+        {billingEnabled ? (
+          <div className="hidden sm:block">
+            <Button asChild size="sm" variant="ghost">
+              <Link aria-label="Pricing" href="/pricing">
+                Pricing
+              </Link>
+            </Button>
+          </div>
+        ) : null}
+        <CommandMenu billingEnabled={billingEnabled} />
         <Button
           aria-label="View source on GitHub"
           asChild

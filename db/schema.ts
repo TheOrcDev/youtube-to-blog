@@ -1,18 +1,34 @@
 import { relations } from "drizzle-orm";
-import { boolean, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
-export const blogs = pgTable("blogs", {
-  id: serial("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  slug: text("slug").notNull(),
-  title: text("title").notNull(),
-  content: text("content").notNull(),
-  author: text("author").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const blogs = pgTable(
+  "blogs",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    slug: text("slug").notNull(),
+    title: text("title").notNull(),
+    content: text("content").notNull(),
+    author: text("author").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("blogs_user_id_created_at_idx").on(table.userId, table.createdAt),
+  ]
+);
 
 export type SelectBlog = typeof blogs.$inferSelect;
 export type InsertBlog = typeof blogs.$inferInsert;
@@ -84,6 +100,67 @@ export const verification = pgTable("verification", {
     .notNull(),
 });
 
+export const userEntitlements = pgTable("user_entitlements", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  tier: text("tier").notNull().default("free"),
+  source: text("source").notNull().default("local-default"),
+  subscriptionStatus: text("subscription_status").notNull().default("none"),
+  creemCustomerId: text("creem_customer_id"),
+  creemSubscriptionId: text("creem_subscription_id"),
+  creemProductId: text("creem_product_id"),
+  billingInterval: text("billing_interval").notNull().default("month"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
+  creditsBalance: integer("credits_balance").notNull().default(0),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export type SelectUserEntitlement = typeof userEntitlements.$inferSelect;
+export type InsertUserEntitlement = typeof userEntitlements.$inferInsert;
+
+export const entitlementEvents = pgTable(
+  "entitlement_events",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    source: text("source").notNull(),
+    eventType: text("event_type").notNull(),
+    beforeJson: jsonb("before_json"),
+    afterJson: jsonb("after_json"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("entitlement_events_user_id_idx").on(table.userId)]
+);
+
+export const creemWebhookEvents = pgTable(
+  "creem_webhook_events",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    creemEventId: text("creem_event_id"),
+    eventType: text("event_type").notNull(),
+    payloadJson: jsonb("payload_json").notNull(),
+    processedAt: timestamp("processed_at"),
+    result: text("result").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("creem_webhook_events_creem_event_id_idx").on(
+      table.creemEventId
+    ),
+  ]
+);
+
 export const schema = {
   user,
   session,
@@ -91,4 +168,7 @@ export const schema = {
   verification,
   blogs,
   blogsRelations,
+  userEntitlements,
+  entitlementEvents,
+  creemWebhookEvents,
 };
