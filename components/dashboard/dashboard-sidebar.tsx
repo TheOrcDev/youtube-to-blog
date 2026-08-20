@@ -21,7 +21,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
-  useSidebar,
 } from "@/components/ui/sidebar";
 
 export interface DashboardNavItem {
@@ -67,27 +66,27 @@ export function DashboardSidebar({
   billingEnabled: boolean;
 }) {
   const pathname = usePathname();
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
   const items = getDashboardNavItems(billingEnabled);
 
   return (
     <>
       <SidebarTrigger className="absolute top-4 left-4 z-50 md:hidden" />
       <Sidebar collapsible="icon">
-        <SidebarHeader className="h-16 justify-center border-b">
-          <Link
-            aria-label="YouTube to Blog dashboard"
-            className="flex min-h-11 items-center gap-2 px-2"
-            href="/dashboard"
-          >
-            <Logo alt="" className="size-7" size={28} />
-            {isCollapsed ? null : (
-              <span className="truncate font-semibold text-sm">
-                YouTube to Blog
-              </span>
-            )}
-          </Link>
+        <SidebarHeader className="border-b">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild size="lg" tooltip="YouTube to Blog">
+                <Link aria-label="YouTube to Blog dashboard" href="/dashboard">
+                  <Logo
+                    alt=""
+                    className="size-8 shrink-0 object-contain"
+                    size={32}
+                  />
+                  <span className="font-semibold">YouTube to Blog</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
