@@ -6,6 +6,7 @@ import {
   HomeIcon,
   LogOutIcon,
   PlusIcon,
+  SettingsIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -97,6 +98,12 @@ export function DashboardUserMenu({
             <Link href="/dashboard/new">
               <PlusIcon />
               New blog
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/settings">
+              <SettingsIcon />
+              Settings
             </Link>
           </DropdownMenuItem>
           {billingEnabled ? (

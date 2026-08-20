@@ -5,6 +5,7 @@ import {
   FileTextIcon,
   type LucideIcon,
   PlusIcon,
+  SettingsIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -45,6 +46,12 @@ export function getDashboardNavItems(
       icon: PlusIcon,
       label: "New blog",
       match: (pathname) => pathname.startsWith("/dashboard/new"),
+    },
+    {
+      href: "/dashboard/settings",
+      icon: SettingsIcon,
+      label: "Settings",
+      match: (pathname) => pathname.startsWith("/dashboard/settings"),
     },
   ];
 

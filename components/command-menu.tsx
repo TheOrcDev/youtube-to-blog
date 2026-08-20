@@ -7,6 +7,7 @@ import {
   InfoIcon,
   LogInIcon,
   SearchIcon,
+  SettingsIcon,
   SparklesIcon,
   UserPlusIcon,
 } from "lucide-react";
@@ -34,6 +35,7 @@ const navigationItems = [
   { href: "/", icon: HomeIcon, label: "Create a blog", shortcut: "G H" },
   { href: "/why", icon: InfoIcon, label: "Why multiple blogs?" },
   { href: "/dashboard", icon: FileTextIcon, label: "My blogs" },
+  { href: "/dashboard/settings", icon: SettingsIcon, label: "Settings" },
   { href: "/login", icon: LogInIcon, label: "Log in" },
   { href: "/signup", icon: UserPlusIcon, label: "Sign up" },
 ] as const;

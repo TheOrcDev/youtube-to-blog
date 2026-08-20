@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         permanent: true,
         source: "/account/billing",
       },
+      {
+        destination: "/dashboard/settings",
+        permanent: true,
+        source: "/account",
+      },
     ];
   },
 };
