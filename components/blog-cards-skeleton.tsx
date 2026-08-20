@@ -1,9 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const BLOG_CARD_SKELETON_KEYS = [
@@ -13,22 +7,37 @@ const BLOG_CARD_SKELETON_KEYS = [
   "blog-card-d",
 ] as const;
 
+const LINE_KEYS = ["line-a", "line-b", "line-c"] as const;
+
 function BlogCardSkeleton() {
   return (
-    <Card className="flex h-full flex-col">
-      <CardHeader>
-        <Skeleton className="h-5 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
-      </CardHeader>
-      <CardContent className="flex-1">
+    <article className="flex h-full flex-col gap-1 rounded-2xl border bg-muted p-1">
+      <div className="rounded-lg border bg-card p-4">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="mt-2 h-5 w-3/4" />
+        <Skeleton className="mt-2 h-3 w-1/2" />
+      </div>
+      <div className="flex-1 rounded-lg border bg-card px-4 py-2">
+        {LINE_KEYS.map((key) => (
+          <div
+            className="flex items-center justify-between gap-3 py-2.5"
+            key={key}
+          >
+            <Skeleton className="h-8 w-24" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-col gap-2 rounded-lg border bg-card px-4 py-3">
         <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-5/6" />
-      </CardContent>
-      <CardFooter className="gap-2">
-        <Skeleton className="h-9 w-16" />
-        <Skeleton className="h-9 w-36" />
-      </CardFooter>
-    </Card>
+        <Skeleton className="h-4 w-2/3" />
+        <Skeleton className="h-5 w-1/3" />
+      </div>
+      <div className="flex flex-col gap-2 rounded-lg border bg-card p-3">
+        <Skeleton className="h-9 w-full" />
+        <Skeleton className="h-9 w-full" />
+      </div>
+    </article>
   );
 }
 
