@@ -33,7 +33,7 @@ import {
 
 const navigationItems = [
   { href: "/", icon: HomeIcon, label: "Create a blog", shortcut: "G H" },
-  { href: "/why", icon: InfoIcon, label: "Why multiple blogs?" },
+  { href: "/why", icon: InfoIcon, label: "Why multiple blog posts?" },
   { href: "/dashboard", icon: FileTextIcon, label: "My blogs" },
   { href: "/dashboard/settings", icon: SettingsIcon, label: "Settings" },
   { href: "/login", icon: LogInIcon, label: "Log in" },
