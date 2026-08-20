@@ -49,6 +49,29 @@ export async function BillingSummary({
     );
   }
 
+  if (summary.isAdmin) {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <CardTitle>Current plan</CardTitle>
+            <Badge>Admin</Badge>
+          </div>
+          <CardDescription>
+            Unlimited generations on the premium model. {summary.used} used this
+            month.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-muted-foreground text-sm">
+          <p>
+            This account is listed in ADMIN_EMAILS, so it is never metered and
+            does not need a subscription.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const isPro = summary.tier === "pro";
 
   return (

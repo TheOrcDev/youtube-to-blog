@@ -21,6 +21,7 @@ function buildAllowance({ billingEnabled = true, tier = "free", used = 0 }) {
       calls.tiers += 1;
       return Promise.resolve({ tier });
     },
+    isAdmin: () => false,
     isBillingEnabled: () => billingEnabled,
     now: () => NOW,
   });

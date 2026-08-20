@@ -6,6 +6,7 @@ import { db } from "@/db/drizzle";
 import { blogs } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { isBillingEnabled } from "@/lib/billing/enabled";
+import { isAdminEmail } from "@/lib/entitlements/admin";
 import {
   type EntitlementTier,
   getLimitsForTier,
@@ -37,6 +38,7 @@ export type UsageSummary =
   | {
       billingEnabled: true;
       cancelAtPeriodEnd: boolean;
+      isAdmin: boolean;
       currentPeriodEnd: Date | null;
       hasCreemCustomer: boolean;
       limit: number;
@@ -67,6 +69,7 @@ export async function getUsageSummary(): Promise<UsageSummary | null> {
   return {
     billingEnabled: true,
     cancelAtPeriodEnd: snapshot.cancelAtPeriodEnd,
+    isAdmin: isAdminEmail(session.user.email, process.env.ADMIN_EMAILS),
     currentPeriodEnd: snapshot.currentPeriodEnd,
     hasCreemCustomer: snapshot.hasCreemCustomer,
     limit: getLimitsForTier(snapshot.tier).monthlyGenerations,

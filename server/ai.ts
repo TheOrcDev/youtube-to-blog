@@ -3,6 +3,7 @@
 import { generateText as generateAiText } from "ai";
 
 import { isBillingEnabled } from "@/lib/billing/enabled";
+import { isAdminEmail } from "@/lib/entitlements/admin";
 import { assertAiGatewayConfiguration } from "./ai-gateway";
 import { createBlogGenerator } from "./blog-generator";
 import { createBlog } from "./blogs";
@@ -15,6 +16,7 @@ const generateBlogWithDependencies = createBlogGenerator({
   checkGenerationAllowance: createGenerationAllowance({
     countBlogsCreatedSince,
     getEntitlementTier,
+    isAdmin: (email) => isAdminEmail(email, process.env.ADMIN_EMAILS),
     isBillingEnabled,
   }),
   createBlog,

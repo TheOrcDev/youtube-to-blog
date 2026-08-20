@@ -13,6 +13,14 @@ export async function UsageIndicator() {
   const remaining = Math.max(summary.limit - summary.used, 0);
   const isPro = summary.tier === "pro";
 
+  if (summary.isAdmin) {
+    return (
+      <p className="mt-3 text-center text-muted-foreground text-sm">
+        {summary.used} generations this month · unlimited (admin)
+      </p>
+    );
+  }
+
   return (
     <p className="mt-3 text-center text-muted-foreground text-sm">
       {summary.used} of {summary.limit} {isPro ? "Pro" : "free"} generations

@@ -25,7 +25,10 @@ interface CreateBlogInput {
 }
 
 interface BlogGeneratorDependencies<Blog> {
-  checkGenerationAllowance: (userId: string) => Promise<{ model: string }>;
+  checkGenerationAllowance: (
+    userId: string,
+    email?: string | null
+  ) => Promise<{ model: string }>;
   createBlog: (blog: CreateBlogInput) => Promise<Blog>;
   extractYouTubeMetadata: (youtubeUrl: string) => Promise<VideoData>;
   generateText: (options: {
@@ -38,7 +41,9 @@ interface BlogGeneratorDependencies<Blog> {
     }>;
     model: string;
   }) => Promise<{ text: string }>;
-  getCurrentUser: () => Promise<{ user: { id: string } } | null>;
+  getCurrentUser: () => Promise<{
+    user: { email?: string | null; id: string };
+  } | null>;
 }
 
 function getDurationMinutes(duration: string): number {
@@ -95,7 +100,7 @@ export function createBlogGenerator<Blog>({
   getCurrentUser,
 }: BlogGeneratorDependencies<Blog>) {
   return async function generateBlog(youtubeUrl: string): Promise<Blog> {
-    let currentUser: { user: { id: string } } | null;
+    let currentUser: { user: { email?: string | null; id: string } } | null;
 
     try {
       currentUser = await getCurrentUser();
@@ -110,7 +115,10 @@ export function createBlogGenerator<Blog>({
     let allowance: { model: string };
 
     try {
-      allowance = await checkGenerationAllowance(currentUser.user.id);
+      allowance = await checkGenerationAllowance(
+        currentUser.user.id,
+        currentUser.user.email
+      );
     } catch (error) {
       throw asBlogWorkflowError(error, "UNKNOWN");
     }

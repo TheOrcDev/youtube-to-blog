@@ -98,6 +98,14 @@ CREEM_PRO_YEARLY_PRODUCT_ID=your_yearly_product_id_here
 CREEM_TEST_MODE=true
 ```
 
+Accounts listed in `ADMIN_EMAILS` are never metered: unlimited generations on the
+premium model, no subscription required. Comma-separate for several, and match
+the address the user signs in with (case and surrounding spaces are ignored).
+
+```bash
+ADMIN_EMAILS=you@example.com,teammate@example.com
+```
+
 Point your Creem dashboard webhook at `/api/webhooks/creem`. When developing
 locally, expose it with a tunnel (for example
 `cloudflared tunnel --url http://localhost:3000`).
@@ -206,6 +214,7 @@ Only if you are running a paid, hosted instance:
 - `CREEM_WEBHOOK_SECRET`
 - `CREEM_PRO_PRODUCT_ID`
 - `CREEM_PRO_YEARLY_PRODUCT_ID`
+- `ADMIN_EMAILS` (optional; accounts that bypass metering)
 
 ## 🤝 Contributing
 
