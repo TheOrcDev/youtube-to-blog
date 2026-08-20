@@ -99,9 +99,13 @@ export function MainForm() {
                 <FormControl>
                   <InputGroup className="w-full">
                     <InputGroupInput placeholder="YouTube URL" {...field} />
-                    <InputGroupAddon align="inline-end">
+                    <InputGroupAddon
+                      align="inline-end"
+                      className="h-full py-0 pr-0 has-[>button]:mr-0"
+                    >
                       <InputGroupButton
                         aria-label="Convert YouTube video to blog"
+                        className="h-full rounded-none rounded-r-[calc(var(--radius)-1px)]"
                         disabled={isLoading}
                         size="sm"
                         type="submit"
