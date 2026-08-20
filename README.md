@@ -1,204 +1,121 @@
-# 🎥 YouTube to Blog
+<p align="center">
+  <img alt="YouTube to Blog" src="https://shieldcn.dev/header/gradient.svg?title=YouTube+to+Blog&amp;subtitle=Turn+any+video+into+a+ready-to-publish+blog+post&amp;mode=dark" />
+</p>
 
-Application that turns videos into well-structured, professional blog posts using AI. Paste a YouTube link or upload your own video file — the AI watches the actual video (audio and visuals, no captions needed) and writes a ready-to-publish article. Perfect for content creators, developers, and anyone who wants to transform video content into written format.
+<p align="center">
+  <a href="https://github.com/TheOrcDev/youtube-to-blog/stargazers"><img alt="Stars" src="https://shieldcn.dev/github/stars/TheOrcDev/youtube-to-blog.svg" /></a>
+  <a href="./license.md"><img alt="License" src="https://shieldcn.dev/github/license/TheOrcDev/youtube-to-blog.svg" /></a>
+  <a href="https://github.com/TheOrcDev/youtube-to-blog/issues"><img alt="Issues" src="https://shieldcn.dev/github/issues/TheOrcDev/youtube-to-blog.svg" /></a>
+  <img alt="Next.js 16" src="https://shieldcn.dev/badge/Next.js-16-black.svg" />
+  <img alt="TypeScript" src="https://shieldcn.dev/badge/TypeScript-5.9-3178C6.svg" />
+  <img alt="Neon Postgres" src="https://shieldcn.dev/badge/Postgres-Neon-00E599.svg" />
+</p>
 
-## ✨ Features
+<p align="center">
+  <b><a href="https://www.youtube2blog.com">Live app</a></b> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#self-hosting">Self-hosting</a> ·
+  <a href="#configuration">Configuration</a>
+</p>
 
-- 🎯 **One-Click Conversion**: Paste a YouTube URL and get a professional blog post
-- 📤 **Video Uploads**: Convert your own MP4, WebM, or QuickTime files (up to 64MB) — no YouTube required
-- 👀 **True Video Understanding**: The AI watches the video itself via multimodal input — no transcript or captions needed
-- 🤖 **AI-Powered**: Models routed through the Vercel AI Gateway (Gemini 2.5 Flash on Free, a premium model on Pro)
-- 📝 **Professional Formatting**: Generates well-structured, first-person MDX blog posts
-- 🎨 **Modern UI**: Beautiful, responsive interface with dark/light mode support
-- 💾 **Persistent Storage**: Automatically saves generated blogs to avoid duplicates
-- 🔍 **Smart Detection**: Checks if a blog already exists for a YouTube video before generating
-- 🗑️ **Privacy-Friendly Uploads**: Uploaded videos are deleted as soon as the post is generated
-- 📱 **Mobile Friendly**: Fully responsive design that works on all devices
-- ⚡ **Fast Performance**: Built with Next.js 16 and optimized for speed
+---
 
-## 🚀 How It Works
+Paste a YouTube link — or upload your own video file — and get back a
+structured, first-person article you can publish as-is.
 
-### From a YouTube link
+The AI **watches the video itself**, audio and visuals, through multimodal
+input. There is no transcript step and no caption requirement, so it works on
+videos that have no subtitles at all.
 
-1. **Input**: User provides a YouTube video URL
-2. **Metadata**: System fetches the video's title, author, and duration via YouTube Data API v3
-3. **AI Processing**: The video URL is sent to the model as a multimodal video input through the Vercel AI Gateway — the AI watches the audio and visuals directly (no transcript step)
-4. **Storage**: Blog post is saved to the database with proper formatting
-5. **Output**: User can view, copy, or share the generated blog post
+## Features
 
-### From an uploaded video (Pro)
+- **One-click conversion** — paste a YouTube URL, get a finished MDX post
+- **Video uploads** — bring your own MP4, WebM, or QuickTime file (up to 64MB), no YouTube needed
+- **True video understanding** — the model reads audio *and* visuals; captions are never required
+- **Per-tier models** — Gemini 2.5 Flash on Free, a premium model on Pro, routed through the Vercel AI Gateway
+- **Duplicate detection** — a YouTube video that already has a post is returned instantly, with no AI call and no quota spent
+- **Privacy-friendly uploads** — uploaded video is deleted from storage the moment the post is generated, success or failure
+- **Markdown export** — copy the post straight into your own site
+- **Dark and light themes**, fully responsive
 
-1. **Upload**: The browser uploads the file directly to Vercel Blob (client upload, so large files bypass server body limits)
-2. **AI Processing**: The server downloads the blob and sends the raw video bytes to the model through the AI Gateway
-3. **Storage**: Blog post is saved; the title is derived from the generated article
-4. **Cleanup**: The uploaded video is deleted from Blob storage immediately — success or failure
+## How it works
 
-## 🛠️ Tech Stack
+**From a YouTube link**
 
-- **Framework**: Next.js 16 with App Router
-- **Language**: TypeScript
-- **Database**: Neon PostgreSQL with Drizzle ORM
-- **AI**: Vercel AI SDK + AI Gateway (Gemini 2.5 Flash / premium model per tier)
-- **File Storage**: Vercel Blob (uploaded videos, deleted after generation)
-- **Styling**: Tailwind CSS with shadcn/ui components
-- **YouTube API**: Official YouTube Data API v3 (metadata only)
-- **Deployment**: Vercel-ready
+1. Metadata (title, author, duration) is fetched from the YouTube Data API v3
+2. The video URL is passed to the model as multimodal video input through the AI Gateway
+3. The generated post is saved and shown, ready to copy
 
-## 📋 Prerequisites
+**From an uploaded video**
 
-Before you begin, ensure you have:
+1. The browser uploads directly to Vercel Blob, so large files bypass server body limits
+2. The server streams the blob to the model through the AI Gateway
+3. The post is saved, its title derived from the article itself
+4. The uploaded file is deleted from Blob storage immediately
 
-- Node.js 18+ installed
-- A Google Cloud Platform account
-- A Neon database account
+## Tech stack
 
-## 🔧 Environment Setup
+| | |
+| --- | --- |
+| Framework | Next.js 16 (App Router, Turbopack) |
+| Language | TypeScript |
+| Database | Neon Postgres + Drizzle ORM |
+| Auth | better-auth (email/password + Google) |
+| AI | Vercel AI SDK via AI Gateway |
+| File storage | Vercel Blob |
+| Billing | Creem (merchant of record) — optional |
+| UI | Tailwind CSS + shadcn/ui |
+| Tooling | Biome / Ultracite, `node --test` |
 
-### 1. YouTube Data API v3 Key
+## Quick start
 
-1. Go to the [Google Cloud Console](https://console.developers.google.com/)
-2. Create a new project or select an existing one
-3. Enable the YouTube Data API v3
-4. Create credentials (API Key)
-5. Copy your API key
-
-### 2. Database Setup
-
-This project uses [Neon](https://neon.tech/) for PostgreSQL database hosting:
-
-1. Go to [Neon Console](https://console.neon.tech/)
-2. Create a new project
-3. Copy your database connection string
-4. The connection string will be used as your `DATABASE_URL`
-
-### 3. Environment Variables
-
-Create a `.env.local` file in the root directory:
+**Prerequisites:** Node.js 20+, pnpm, a [Neon](https://neon.tech/) database, and a
+[YouTube Data API v3](https://console.developers.google.com/) key.
 
 ```bash
-# YouTube Data API v3 Key
-YOUTUBE_API_KEY=your_youtube_api_key_here
-
-# Neon Database URL
-DATABASE_URL=your_neon_database_url_here
-
-# App URL (for production)
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Vercel AI Gateway (one of the two; OIDC is provided automatically on Vercel)
-AI_GATEWAY_API_KEY=vck_your_gateway_key_here
-# VERCEL_OIDC_TOKEN=provided_by_vercel
-
-# Vercel Blob (required for the video upload feature)
-BLOB_READ_WRITE_TOKEN=your_blob_read_write_token_here
-```
-
-### 4. Billing (optional)
-
-**Billing is entirely optional.** Leave `CREEM_API_KEY` unset — as any self-hosted
-deployment normally would — and the app runs with **unlimited blog generations**
-and no pricing or billing UI. Everything below only applies if you want to run a
-hosted, paid instance.
-
-The hosted version uses [Creem](https://creem.io) (merchant of record) for
-subscriptions:
-
-```bash
-# Leave CREEM_API_KEY unset to disable billing entirely (unlimited usage)
-CREEM_API_KEY=your_creem_api_key_here
-CREEM_WEBHOOK_SECRET=your_creem_webhook_secret_here
-
-# Creem product IDs for the Pro plan
-CREEM_PRO_PRODUCT_ID=your_monthly_product_id_here
-CREEM_PRO_YEARLY_PRODUCT_ID=your_yearly_product_id_here
-
-# Use Creem's test environment while developing
-CREEM_TEST_MODE=true
-```
-
-Accounts listed in `ADMIN_EMAILS` are never metered: unlimited generations on the
-premium model, no subscription required. Comma-separate for several, and match
-the address the user signs in with (case and surrounding spaces are ignored).
-
-```bash
-ADMIN_EMAILS=you@example.com,teammate@example.com
-```
-
-Point your Creem dashboard webhook at `/api/webhooks/creem`. When developing
-locally, expose it with a tunnel (for example
-`cloudflared tunnel --url http://localhost:3000`).
-
-Plan limits and per-tier AI models live in
-[`lib/entitlements/policy.ts`](lib/entitlements/policy.ts); prices live in
-[`lib/billing/pricing.ts`](lib/billing/pricing.ts).
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/youtubetoblog.git
-cd youtubetoblog
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-# or
-yarn install
-# or
+git clone https://github.com/TheOrcDev/youtube-to-blog.git
+cd youtube-to-blog
 pnpm install
 ```
 
-### 3. Set Up the Database
+Create `.env.local`:
 
 ```bash
-# Apply the checked-in migrations to a fresh database
+# Required
+DATABASE_URL=your_neon_connection_string
+YOUTUBE_API_KEY=your_youtube_api_key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# AI Gateway — one of the two (OIDC is provided automatically on Vercel)
+AI_GATEWAY_API_KEY=vck_your_gateway_key
+# VERCEL_OIDC_TOKEN=provided_by_vercel
+
+# Required only for the video upload feature
+BLOB_READ_WRITE_TOKEN=your_blob_read_write_token
+```
+
+Then set up the database and start the app:
+
+```bash
 pnpm db:migrate
-```
-
-After changing `db/schema.ts`, generate a new migration with `pnpm db:generate`.
-
-**Upgrading a database created before this repo had migrations?** The baseline
-migration creates every table, so it cannot be replayed against a database that
-already has the auth and blogs tables. Apply just the billing tables instead:
-
-```bash
-node --env-file=.env.local scripts/apply-billing-migration.mjs
-```
-
-### 4. Start the Development Server
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open <http://localhost:3000>.
 
-## 🎯 Usage
+## Self-hosting
 
-1. **Add a video**: Paste any YouTube video URL, or switch to the Upload tab and drop in your own video file (MP4, WebM, or QuickTime, up to 64MB)
-2. **Click Convert**: The system will process the video and generate a blog post
-3. **View Results**: See the generated blog post with options to:
-   - View the full blog post
-   - Copy the markdown content
-   - Share the blog post
+**Billing is entirely optional and off by default.** Leave `CREEM_API_KEY`
+unset and the app runs with **unlimited generations**, no quotas, and no
+pricing or billing UI — the code skips those paths completely. Bring your own
+AI and YouTube keys and everything works.
 
-## 🔧 Configuration
+Everything under [Billing](#billing-optional) applies only if you want to run a
+paid, hosted instance.
 
-### AI Model Configuration
+## Configuration
 
-Free generations use Google's Gemini 2.5 Flash; Pro subscribers get a premium
-model. Both are configured in
-[`lib/entitlements/policy.ts`](lib/entitlements/policy.ts). You can customize the
-AI prompt in `server/blog-generator.ts` to change the output style or format.
-
-### Plans and Limits
+### Plans and limits
 
 | Plan | Price | Generations / month | Video uploads | Model |
 | --- | --- | --- | --- | --- |
@@ -206,70 +123,88 @@ AI prompt in `server/blog-generator.ts` to change the output style or format.
 | Pro | $9/mo or $79/yr | 100 | ✅ up to 64MB | Premium model |
 | Self-hosted | — | Unlimited | ✅ up to 64MB | Gemini 2.5 Flash |
 
-Usage is counted per calendar month (UTC). Requesting a YouTube video that
-already has a blog costs no AI call and does not count against the limit.
-Uploads always generate a fresh post and count as one generation.
+Usage is counted per calendar month (UTC). A YouTube video that already has a
+post costs no AI call and no quota; uploads always generate a fresh post and
+count as one.
 
 The 64MB upload cap exists because video bytes are sent inline (base64) through
-the AI Gateway, which rejects request bodies around ~100MB. The cap lives in
-[`lib/entitlements/policy.ts`](lib/entitlements/policy.ts) (`MAX_UPLOAD_BYTES`).
+the AI Gateway, which rejects bodies around ~100MB. It lives in
+[`lib/entitlements/policy.ts`](lib/entitlements/policy.ts) as `MAX_UPLOAD_BYTES`,
+alongside the per-tier limits and models. Prices live in
+[`lib/billing/pricing.ts`](lib/billing/pricing.ts).
 
-## 🚀 Deployment
+### Billing (optional)
 
-### Deploy to Vercel
+The hosted version uses [Creem](https://creem.io) for subscriptions:
 
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy!
+```bash
+CREEM_API_KEY=your_creem_api_key
+CREEM_WEBHOOK_SECRET=your_creem_webhook_secret
+CREEM_PRO_PRODUCT_ID=your_monthly_product_id
+CREEM_PRO_YEARLY_PRODUCT_ID=your_yearly_product_id
+CREEM_TEST_MODE=true   # use Creem's test environment while developing
+```
 
-### Environment Variables for Production
+Point your Creem dashboard webhook at `/api/webhooks/creem`. Locally, expose it
+with a tunnel, for example `cloudflared tunnel --url http://localhost:3000`.
 
-Make sure to set these in your deployment platform:
+### Admin accounts
 
-- `YOUTUBE_API_KEY`
-- `DATABASE_URL`
-- `NEXT_PUBLIC_APP_URL` (your production URL)
-- `BLOB_READ_WRITE_TOKEN` (for video uploads; created automatically when you add a Blob store to the Vercel project)
-- AI Gateway auth (`AI_GATEWAY_API_KEY`, or the `VERCEL_OIDC_TOKEN` Vercel provides automatically)
+Accounts listed in `ADMIN_EMAILS` are never metered — unlimited generations on
+the premium model, no subscription needed. Comma-separate for several; matching
+ignores case and surrounding whitespace.
 
-Only if you are running a paid, hosted instance:
+```bash
+ADMIN_EMAILS=you@example.com,teammate@example.com
+```
 
-- `CREEM_API_KEY`
-- `CREEM_WEBHOOK_SECRET`
-- `CREEM_PRO_PRODUCT_ID`
-- `CREEM_PRO_YEARLY_PRODUCT_ID`
-- `ADMIN_EMAILS` (optional; accounts that bypass metering)
+## Scripts
 
-## 🤝 Contributing
+| Script | Purpose |
+| --- | --- |
+| `pnpm dev` | Start the dev server |
+| `pnpm build` | Production build |
+| `pnpm test` | Run the test suite (`node --test`) |
+| `pnpm lint` | Biome check |
+| `pnpm format` | Biome format |
+| `pnpm db:generate` | Generate a migration after editing `db/schema.ts` |
+| `pnpm db:migrate` | Apply migrations to a fresh database |
+| `pnpm db:push` | Sync schema to an existing database without a migration file |
 
-We welcome contributions! Please follow these steps:
+> **Upgrading a database created before this repo had migrations?** The baseline
+> migration creates every table, so it cannot be replayed against a database
+> that already has the auth and blogs tables. Apply just the billing tables:
+> `node --env-file=.env.local scripts/apply-billing-migration.mjs`
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+## Deployment
 
-### Development Guidelines
+Deploys to Vercel as-is. Push to GitHub, import the repo, and set the
+environment variables:
 
-- Follow the existing code style
-- Add TypeScript types for new features
-- Test your changes thoroughly
-- Update documentation as needed
+- `DATABASE_URL`, `YOUTUBE_API_KEY`, `NEXT_PUBLIC_APP_URL`
+- AI Gateway auth — `AI_GATEWAY_API_KEY`, or the `VERCEL_OIDC_TOKEN` Vercel provides automatically
+- `BLOB_READ_WRITE_TOKEN` — created automatically when you add a Blob store to the project
 
-## 📝 License
+Paid instances additionally need `CREEM_API_KEY`, `CREEM_WEBHOOK_SECRET`,
+`CREEM_PRO_PRODUCT_ID`, `CREEM_PRO_YEARLY_PRODUCT_ID`, and optionally
+`ADMIN_EMAILS`.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Contributing
 
-## 📞 Support
+Pull requests are welcome.
 
-If you have any questions or need help:
+1. Fork the repo and branch off `main`
+2. Keep to the existing style — `pnpm lint` and `pnpm test` should pass
+3. Add types for new code, and update the docs when behaviour changes
+4. Open a PR describing what changed and why
 
-- Open an issue on GitHub
-- Check the documentation
-- Join our community discussions
+Found a bug or have an idea?
+[Open an issue](https://github.com/TheOrcDev/youtube-to-blog/issues).
+
+## License
+
+MIT — see [license.md](./license.md).
 
 ---
 
-Made with axe 🪓 by OrcDev
+<p align="center">Made with 🪓 by <a href="https://orcdev.com">OrcDev</a></p>
