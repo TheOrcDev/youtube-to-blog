@@ -16,6 +16,9 @@ export function Footer() {
       </span>
 
       <span className="flex items-center gap-3 rounded-md bg-background p-2">
+        <Link className="underline" href="/docs/api">
+          API
+        </Link>
         <Link className="underline" href="/terms">
           Terms
         </Link>

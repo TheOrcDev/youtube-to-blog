@@ -2,6 +2,7 @@ export type BlogErrorCode =
   | "AI_GENERATION_FAILED"
   | "AI_NOT_CONFIGURED"
   | "AI_OUTPUT_INVALID"
+  | "API_REQUIRES_PRO"
   | "AUTH_REQUIRED"
   | "BLOG_LOOKUP_FAILED"
   | "BLOG_SAVE_FAILED"
@@ -29,6 +30,8 @@ const PUBLIC_ERROR_MESSAGES: Record<BlogErrorCode, string> = {
   AI_NOT_CONFIGURED:
     "Blog generation is temporarily unavailable. Please contact support.",
   AI_OUTPUT_INVALID: "The generated blog was incomplete. Please try again.",
+  API_REQUIRES_PRO:
+    "API access is a Pro feature. Upgrade to generate blog posts programmatically.",
   AUTH_REQUIRED: "Please sign in to create a blog.",
   BLOG_LOOKUP_FAILED:
     "Existing blogs could not be checked right now. Please try again.",
@@ -93,6 +96,7 @@ export function getBlogErrorStatus(error: PublicBlogError): number {
       return 400;
     case "AUTH_REQUIRED":
       return 401;
+    case "API_REQUIRES_PRO":
     case "QUOTA_EXCEEDED":
     case "UPLOAD_REQUIRES_PRO":
       return 402;

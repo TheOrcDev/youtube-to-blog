@@ -36,6 +36,7 @@ videos that have no subtitles at all.
 - **Duplicate detection** — a YouTube video that already has a post is returned instantly, with no AI call and no quota spent
 - **Privacy-friendly uploads** — uploaded video is deleted from storage the moment the post is generated, success or failure
 - **Markdown export** — copy the post straight into your own site
+- **REST API** — generate and fetch posts programmatically with `ytb_` API keys (Pro)
 - **Dark and light themes**, fully responsive
 
 ## How it works
@@ -117,11 +118,11 @@ paid, hosted instance.
 
 ### Plans and limits
 
-| Plan | Price | Generations / month | Video uploads | Model |
-| --- | --- | --- | --- | --- |
-| Free | $0 | 5 | — | Gemini 2.5 Flash |
-| Pro | $9/mo or $79/yr | 100 | ✅ up to 64MB | Premium model |
-| Self-hosted | — | Unlimited | ✅ up to 64MB | Gemini 2.5 Flash |
+| Plan | Price | Generations / month | Video uploads | API access | Model |
+| --- | --- | --- | --- | --- | --- |
+| Free | $0 | 5 | — | — | Gemini 2.5 Flash |
+| Pro | $9/mo or $79/yr | 100 | ✅ up to 64MB | ✅ | Premium model |
+| Self-hosted | — | Unlimited | ✅ up to 64MB | ✅ | Gemini 2.5 Flash |
 
 Usage is counted per calendar month (UTC). A YouTube video that already has a
 post costs no AI call and no quota; uploads always generate a fresh post and
@@ -132,6 +133,23 @@ the AI Gateway, which rejects bodies around ~100MB. It lives in
 [`lib/entitlements/policy.ts`](lib/entitlements/policy.ts) as `MAX_UPLOAD_BYTES`,
 alongside the per-tier limits and models. Prices live in
 [`lib/billing/pricing.ts`](lib/billing/pricing.ts).
+
+### API
+
+Pro users (and self-hosted instances) can drive the app over a REST API.
+Create a key under **Dashboard → Settings → API keys**, then:
+
+```bash
+curl -X POST https://www.youtube2blog.com/api/v1/blogs \
+  -H "Authorization: Bearer ytb_your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"youtubeUrl": "https://www.youtube.com/watch?v=..."}'
+```
+
+Endpoints: `POST /api/v1/blogs` (create), `GET /api/v1/blogs` (list),
+`GET /api/v1/blogs/{slug}` (fetch with Markdown content). Keys are limited to
+10 requests per minute; generation shares the account's monthly quota. Full
+reference at [`/docs/api`](https://www.youtube2blog.com/docs/api).
 
 ### Billing (optional)
 
@@ -173,8 +191,10 @@ ADMIN_EMAILS=you@example.com,teammate@example.com
 
 > **Upgrading a database created before this repo had migrations?** The baseline
 > migration creates every table, so it cannot be replayed against a database
-> that already has the auth and blogs tables. Apply just the billing tables:
-> `node --env-file=.env.local scripts/apply-billing-migration.mjs`
+> that already has the auth and blogs tables. Apply just the additive pieces:
+> `node --env-file=.env.local scripts/apply-billing-migration.mjs` (billing tables),
+> `node --env-file=.env.local scripts/apply-upload-migration.mjs` (upload columns),
+> `node --env-file=.env.local scripts/apply-api-key-migration.mjs` (apikey table)
 
 ## Deployment
 

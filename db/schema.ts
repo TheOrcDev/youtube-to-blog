@@ -104,6 +104,33 @@ export const verification = pgTable("verification", {
     .notNull(),
 });
 
+// Managed by the better-auth apiKey plugin; the adapter maps by property name.
+export const apikey = pgTable("apikey", {
+  id: text("id").primaryKey(),
+  name: text("name"),
+  start: text("start"),
+  prefix: text("prefix"),
+  key: text("key").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  refillInterval: integer("refill_interval"),
+  refillAmount: integer("refill_amount"),
+  lastRefillAt: timestamp("last_refill_at"),
+  enabled: boolean("enabled").default(true),
+  rateLimitEnabled: boolean("rate_limit_enabled").default(true),
+  rateLimitTimeWindow: integer("rate_limit_time_window"),
+  rateLimitMax: integer("rate_limit_max"),
+  requestCount: integer("request_count").default(0),
+  remaining: integer("remaining"),
+  lastRequest: timestamp("last_request"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+  permissions: text("permissions"),
+  metadata: text("metadata"),
+});
+
 export const userEntitlements = pgTable("user_entitlements", {
   userId: text("user_id")
     .primaryKey()
@@ -170,6 +197,7 @@ export const schema = {
   session,
   account,
   verification,
+  apikey,
   blogs,
   blogsRelations,
   userEntitlements,

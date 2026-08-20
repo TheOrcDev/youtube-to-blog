@@ -16,8 +16,13 @@ export const SUPPORTED_UPLOAD_TYPES = [
   "video/quicktime",
 ] as const;
 
+// Per-key request throttle for the public API; mirrored in lib/auth.ts.
+export const API_RATE_LIMIT_PER_MINUTE = 10;
+export const API_MAX_KEYS_PER_USER = 5;
+
 export interface TierLimits {
   canUploadVideos: boolean;
+  canUseApi: boolean;
   model: string;
   monthlyGenerations: number;
 }
@@ -25,11 +30,13 @@ export interface TierLimits {
 export const TIER_LIMITS: Record<EntitlementTier, TierLimits> = {
   free: {
     canUploadVideos: false,
+    canUseApi: false,
     model: FREE_TIER_MODEL,
     monthlyGenerations: FREE_MONTHLY_GENERATIONS,
   },
   pro: {
     canUploadVideos: true,
+    canUseApi: true,
     model: PRO_TIER_MODEL,
     monthlyGenerations: PRO_MONTHLY_GENERATIONS,
   },

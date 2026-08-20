@@ -139,6 +139,11 @@ const FAQ = [
   },
   {
     answer:
+      "Yes. Pro users can generate and fetch blog posts over a REST API — create a key in dashboard settings and see the API docs at /docs/api. Perfect for automating your publishing pipeline.",
+    question: "Is there an API?",
+  },
+  {
+    answer:
       "Yes — the whole project is open source. Self-host it with your own API keys and every feature is unlocked with no limits or subscription.",
     question: "Can I self-host it?",
   },

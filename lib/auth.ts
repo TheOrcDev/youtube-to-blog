@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { lastLoginMethod } from "better-auth/plugins";
+import { apiKey, lastLoginMethod } from "better-auth/plugins";
 import { Resend } from "resend";
 import ForgotPasswordEmail from "@/components/emails/reset-password";
 import VerifyEmail from "@/components/emails/verify-email";
@@ -79,5 +79,18 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
-  plugins: [lastLoginMethod(), nextCookies()],
+  plugins: [
+    apiKey({
+      defaultPrefix: "ytb_",
+      // Per-key request throttle; the monthly generation quota is enforced
+      // separately by the blog pipeline.
+      rateLimit: {
+        enabled: true,
+        maxRequests: 10,
+        timeWindow: 60 * 1000,
+      },
+    }),
+    lastLoginMethod(),
+    nextCookies(),
+  ],
 });

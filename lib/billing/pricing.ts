@@ -33,6 +33,7 @@ export const PRO_PLAN = {
   features: [
     `${PRO_MONTHLY_GENERATIONS} blog generations per month`,
     "Upload your own videos (up to 64MB)",
+    "API access for scripts and pipelines",
     "Premium AI model for richer posts",
     "Markdown export",
     "Priority support",
