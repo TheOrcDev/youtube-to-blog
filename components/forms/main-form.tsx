@@ -98,17 +98,17 @@ export function MainForm() {
                     joined control lights up as one, and scope it to the input so
                     a keyboard user can still tell the button apart when tabbing
                     to it. */}
-                <ButtonGroup className="w-full rounded-md ring-offset-background has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2">
+                <ButtonGroup className="h-9 w-full rounded-md ring-offset-background has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2">
                   <FormControl>
                     <Input
-                      className="h-10 bg-background px-3 py-2 shadow-none focus-visible:border-input focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-background"
+                      className="h-full shadow-none focus-visible:border-input focus-visible:ring-0 focus-visible:ring-offset-0"
                       placeholder="YouTube URL"
                       {...field}
                     />
                   </FormControl>
                   <Button
                     aria-label="Convert YouTube video to blog"
-                    className="h-10 min-w-28 px-4 focus-visible:ring-2 focus-visible:ring-offset-2"
+                    className="h-full min-w-28"
                     disabled={isLoading}
                     type="submit"
                   >
