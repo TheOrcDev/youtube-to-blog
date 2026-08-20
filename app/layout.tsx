@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
+import { CommandMenuProvider } from "@/components/command-menu";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { isBillingEnabled } from "@/lib/billing/enabled";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,12 +111,11 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          <Header />
-          <main className="mt-10">{children}</main>
-          <Footer />
-
-          <Toaster />
-          <Analytics />
+          <CommandMenuProvider billingEnabled={isBillingEnabled()}>
+            {children}
+            <Toaster />
+            <Analytics />
+          </CommandMenuProvider>
         </ThemeProvider>
       </body>
     </html>

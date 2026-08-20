@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -121,27 +120,11 @@ export function MainForm() {
         </form>
       </Form>
 
-      {blog && (
-        <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
-          <div className="flex justify-end gap-2">
-            <Button asChild variant="outline">
-              <Link href={`/blog/${blog.slug}`}>View Blog</Link>
-            </Button>
-
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(blog.content);
-                toast.success("Blog has been copied to clipboard.");
-              }}
-              variant="outline"
-            >
-              Copy Markdown
-            </Button>
-          </div>
-
+      {blog ? (
+        <div className="mt-6 w-full max-w-3xl text-left">
           <BlogCard blog={blog} />
         </div>
-      )}
+      ) : null}
     </>
   );
 }

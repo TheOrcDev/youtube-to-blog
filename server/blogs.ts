@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import { db } from "@/db/drizzle";
 import { blogs, type InsertBlog } from "@/db/schema";
@@ -23,7 +23,8 @@ export async function getBlogsByUser() {
     return await db
       .select()
       .from(blogs)
-      .where(eq(blogs.userId, currentUser.user.id));
+      .where(eq(blogs.userId, currentUser.user.id))
+      .orderBy(desc(blogs.createdAt));
   } catch (error) {
     throw new Error("Failed to get posts", { cause: error });
   }

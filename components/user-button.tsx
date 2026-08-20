@@ -30,7 +30,7 @@ export function UserButton() {
       {session ? (
         <>
           <Button asChild size="sm" variant="ghost">
-            <Link href="/blogs">My Blogs</Link>
+            <Link href="/dashboard">My Blogs</Link>
           </Button>
           <Button
             aria-label="Log out"

@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Why Multiple Blogs Drive More Traffic and Conversions",
@@ -29,13 +27,6 @@ export const metadata: Metadata = {
 export default function WhyPage() {
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
-      <Button
-        asChild
-        className="absolute top-4 left-1/2 mx-auto -translate-x-1/2"
-        variant="outline"
-      >
-        <Link href="/">Back</Link>
-      </Button>
       <div className="prose prose-lg dark:prose-invert max-w-none">
         <h1 className="mb-8 font-bold text-4xl">
           Why Multiple Blogs Drive More Traffic and Conversions

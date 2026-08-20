@@ -41,14 +41,6 @@ export default function PricingPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-16">
-      <Button
-        asChild
-        className="absolute top-4 left-1/2 mx-auto -translate-x-1/2"
-        variant="outline"
-      >
-        <Link href="/">Back</Link>
-      </Button>
-
       <div className="mb-10 text-center">
         <h1 className="font-bold text-4xl">Pricing</h1>
         <p className="mt-3 text-muted-foreground">

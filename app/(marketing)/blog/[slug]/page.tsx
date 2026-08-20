@@ -2,10 +2,10 @@
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CopyMarkdownButton } from "@/components/copy-markdown-button";
 import { PostHeader } from "@/components/post-header";
 import markdownToHtml from "@/lib/markdown-to-html";
 import { getBlogs, getPostBySlug } from "@/server/blogs";
-import ActionButtons from "./_components/action-buttons";
 import markdownStyles from "./markdown-styles.module.css";
 
 export default async function Post(props: Params) {
@@ -19,8 +19,7 @@ export default async function Post(props: Params) {
   const content = await markdownToHtml(post.content || "");
 
   return (
-    <main className="mt-20">
-      <ActionButtons content={post.content || ""} />
+    <main className="py-8">
       <div className="container mx-auto px-5">
         <article className="mb-32">
           <PostHeader
@@ -28,6 +27,9 @@ export default async function Post(props: Params) {
             date={post.createdAt.toLocaleDateString()}
             title={post.title}
           />
+          <div className="mx-auto mb-8 flex max-w-2xl justify-end">
+            <CopyMarkdownButton content={post.content || ""} />
+          </div>
           <div className="mx-auto max-w-2xl">
             <div
               className={markdownStyles.markdown}

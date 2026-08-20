@@ -1,3 +1,7 @@
+import Link from "next/link";
+
+import { CopyMarkdownButton } from "@/components/copy-markdown-button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,16 +20,23 @@ const MAX_CONTENT_LENGTH = 100;
 
 export function BlogCard({ blog }: BlogCardProps) {
   return (
-    <Card>
+    <Card className="flex h-full flex-col">
       <CardHeader>
-        <CardTitle>{blog.title}</CardTitle>
-        <CardDescription>YouTube ID: {blog.slug}</CardDescription>
+        <CardTitle className="line-clamp-2">{blog.title}</CardTitle>
+        <CardDescription>
+          {blog.slug} · {blog.createdAt.toLocaleDateString()}
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <p>{blog.content.substring(0, MAX_CONTENT_LENGTH)}...</p>
+      <CardContent className="flex-1">
+        <p className="text-muted-foreground text-sm">
+          {blog.content.substring(0, MAX_CONTENT_LENGTH)}...
+        </p>
       </CardContent>
-      <CardFooter>
-        <p>Created at: {blog.createdAt.toLocaleDateString()}</p>
+      <CardFooter className="gap-2">
+        <Button asChild variant="outline">
+          <Link href={`/blog/${blog.slug}`}>View</Link>
+        </Button>
+        <CopyMarkdownButton content={blog.content} />
       </CardFooter>
     </Card>
   );

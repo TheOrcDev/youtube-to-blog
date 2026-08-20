@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       productId: getRequiredEnv(PRO_PLAN.intervals[interval].productEnvKey),
       requestId: crypto.randomUUID(),
       successUrl: new URL(
-        "/account/billing?checkout=success",
+        "/dashboard/billing?checkout=success",
         getAppUrl()
       ).toString(),
     });
