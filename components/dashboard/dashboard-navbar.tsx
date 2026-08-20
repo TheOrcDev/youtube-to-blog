@@ -1,22 +1,18 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 import { CommandMenuTrigger } from "@/components/command-menu";
 import { getDashboardNavItems } from "@/components/dashboard/dashboard-sidebar";
-import { DashboardUserMenu } from "@/components/dashboard/dashboard-user-menu";
 import { ModeSwitcher } from "@/components/mode-switcher";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function DashboardNavbar({
   billingEnabled,
-  email,
-  image,
-  name,
+  children,
 }: {
   billingEnabled: boolean;
-  email: string;
-  image: string | null;
-  name: string;
+  children: ReactNode;
 }) {
   const pathname = usePathname();
   const title =
@@ -31,12 +27,7 @@ export function DashboardNavbar({
       </h2>
       <CommandMenuTrigger />
       <ModeSwitcher />
-      <DashboardUserMenu
-        billingEnabled={billingEnabled}
-        email={email}
-        image={image}
-        name={name}
-      />
+      {children}
     </header>
   );
 }
