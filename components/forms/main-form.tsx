@@ -108,7 +108,7 @@ export function MainForm() {
                   </FormControl>
                   <Button
                     aria-label="Convert YouTube video to blog"
-                    className="h-10 min-w-28 px-4"
+                    className="h-10 min-w-28 border-0 px-4"
                     disabled={isLoading}
                     type="submit"
                   >
