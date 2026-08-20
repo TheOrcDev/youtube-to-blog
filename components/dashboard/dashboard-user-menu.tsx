@@ -9,6 +9,7 @@ import {
   SettingsIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { ProBadge } from "@/components/dashboard/pro-badge";
@@ -55,10 +56,13 @@ export function DashboardUserMenu({
   isPro: boolean;
   name: string;
 }) {
+  const router = useRouter();
+
   const handleLogout = async () => {
     try {
       await authClient.signOut();
       toast.success("Logged out successfully");
+      router.refresh();
     } catch {
       toast.error("Failed to log out");
     }

@@ -1,53 +1,39 @@
-"use client";
-
-import { LogOutIcon } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 
-import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
+import { DashboardUserMenu } from "@/components/dashboard/dashboard-user-menu";
+import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
+import { getUserEntitlementSnapshot } from "@/lib/entitlements/snapshot";
 
-import { Button } from "./ui/button";
-import { Skeleton } from "./ui/skeleton";
+export async function UserButton({
+  billingEnabled,
+}: {
+  billingEnabled: boolean;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-export function UserButton() {
-  const { data: session, isPending } = authClient.useSession();
-
-  const handleLogout = async () => {
-    try {
-      await authClient.signOut();
-      toast.success("Logged out successfully");
-    } catch {
-      toast.error("Failed to log out");
-    }
-  };
-
-  if (isPending) {
-    return <Skeleton className="h-8 w-14 sm:w-26" />;
+  if (!session) {
+    return (
+      <Button asChild size="sm" variant="ghost">
+        <Link href="/login">Login</Link>
+      </Button>
+    );
   }
 
+  const isPro =
+    billingEnabled &&
+    (await getUserEntitlementSnapshot(session.user.id)).tier === "pro";
+
   return (
-    <>
-      {session ? (
-        <>
-          <Button asChild size="sm" variant="ghost">
-            <Link href="/dashboard">My Blogs</Link>
-          </Button>
-          <Button
-            aria-label="Log out"
-            onClick={handleLogout}
-            size="icon-sm"
-            title="Log out"
-            type="button"
-            variant="ghost"
-          >
-            <LogOutIcon className="size-4" />
-          </Button>
-        </>
-      ) : (
-        <Button asChild size="sm" variant="ghost">
-          <Link href="/login">Login</Link>
-        </Button>
-      )}
-    </>
+    <DashboardUserMenu
+      billingEnabled={billingEnabled}
+      email={session.user.email}
+      image={session.user.image ?? null}
+      isPro={isPro}
+      name={session.user.name}
+    />
   );
 }

@@ -5,12 +5,11 @@ import type { Variants } from "motion/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { CommandMenuTrigger } from "@/components/command-menu";
 import { Logo } from "@/components/logo";
 import { ModeSwitcher } from "@/components/mode-switcher";
-import { UserButton } from "@/components/user-button";
 import { cn } from "@/lib/utils";
 
 const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -53,7 +52,13 @@ function GitHubLink({ className }: { className?: string }) {
   );
 }
 
-export function Navbar({ billingEnabled }: { billingEnabled: boolean }) {
+export function Navbar({
+  account,
+  billingEnabled,
+}: {
+  account: ReactNode;
+  billingEnabled: boolean;
+}) {
   const [hovered, setHovered] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
@@ -165,7 +170,7 @@ export function Navbar({ billingEnabled }: { billingEnabled: boolean }) {
               <CommandMenuTrigger />
               <GitHubLink />
               <ModeSwitcher />
-              <UserButton />
+              {account}
             </div>
 
             <button
@@ -272,7 +277,7 @@ export function Navbar({ billingEnabled }: { billingEnabled: boolean }) {
                   <CommandMenuTrigger />
                   <GitHubLink />
                   <ModeSwitcher />
-                  <UserButton />
+                  {account}
                 </div>
                 <Link
                   className={cn(
