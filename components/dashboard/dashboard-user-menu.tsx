@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { toast } from "sonner";
 
+import { ProBadge } from "@/components/dashboard/pro-badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -45,11 +46,13 @@ export function DashboardUserMenu({
   billingEnabled,
   email,
   image,
+  isPro,
   name,
 }: {
   billingEnabled: boolean;
   email: string;
   image: string | null;
+  isPro: boolean;
   name: string;
 }) {
   const handleLogout = async () => {
@@ -63,18 +66,29 @@ export function DashboardUserMenu({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        aria-label={`Open account menu for ${name || email}`}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "size-9 rounded-full p-0"
-        )}
-      >
-        <Avatar className="size-9">
-          {image ? <AvatarImage alt="" src={image} /> : null}
-          <AvatarFallback>{getInitials(name, email)}</AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
+      {/*
+        The badge sits beside the trigger rather than inside it so the
+        button's own centring never has to account for an overlay, and it
+        stays `pointer-events-none` so the corner it covers still opens the
+        menu.
+      */}
+      <div className="relative shrink-0">
+        <DropdownMenuTrigger
+          aria-label={`Open account menu for ${name || email}${
+            isPro ? ", Pro plan" : ""
+          }`}
+          className={cn(
+            buttonVariants({ variant: "ghost" }),
+            "size-9 rounded-full p-0"
+          )}
+        >
+          <Avatar className="size-9">
+            {image ? <AvatarImage alt="" src={image} /> : null}
+            <AvatarFallback>{getInitials(name, email)}</AvatarFallback>
+          </Avatar>
+        </DropdownMenuTrigger>
+        {isPro ? <ProBadge /> : null}
+      </div>
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex min-w-0 flex-col gap-0.5">

@@ -8,6 +8,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { isBillingEnabled } from "@/lib/billing/enabled";
+import { getUserEntitlementSnapshot } from "@/lib/entitlements/snapshot";
 import { getCurrentUser } from "@/server/users";
 
 export const metadata: Metadata = {
@@ -23,12 +24,16 @@ async function DashboardUserMenuFromSession({
   billingEnabled: boolean;
 }) {
   const { user } = await getCurrentUser();
+  const isPro =
+    billingEnabled &&
+    (await getUserEntitlementSnapshot(user.id)).tier === "pro";
 
   return (
     <DashboardUserMenu
       billingEnabled={billingEnabled}
       email={user.email}
       image={user.image ?? null}
+      isPro={isPro}
       name={user.name}
     />
   );
