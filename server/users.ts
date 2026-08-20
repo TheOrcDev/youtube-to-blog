@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { db } from "@/db/drizzle";
 import { account, user } from "@/db/schema";
+import { avatarUpdateSchema } from "@/lib/account/avatar";
 import { auth } from "@/lib/auth";
 
 const MIN_USERNAME_LENGTH = 3;
@@ -117,6 +118,48 @@ export const updateUsername = async (
   } catch {
     return {
       message: "Could not update your username. Please try again.",
+      ok: false,
+    };
+  }
+
+  revalidatePath("/dashboard", "layout");
+  return { ok: true };
+};
+
+export const updateUserImage = async (
+  image: string | null
+): Promise<ProfileActionResult> => {
+  const parsed = avatarUpdateSchema.safeParse({ image });
+
+  if (!parsed.success) {
+    return {
+      message: "That image could not be saved. Try a smaller one.",
+      ok: false,
+    };
+  }
+
+  const headersList = await headers();
+  const session = await auth.api.getSession({
+    headers: headersList,
+  });
+
+  if (!session) {
+    return {
+      message: "Please sign in to update your photo.",
+      ok: false,
+    };
+  }
+
+  try {
+    await auth.api.updateUser({
+      body: {
+        image: parsed.data.image,
+      },
+      headers: headersList,
+    });
+  } catch {
+    return {
+      message: "Could not update your photo. Please try again.",
       ok: false,
     };
   }

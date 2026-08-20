@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarUploadCard } from "@/components/forms/avatar-upload-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +35,6 @@ import { changeAccountPassword, updateUsername } from "@/server/users";
 const MIN_USERNAME_LENGTH = 3;
 const MAX_USERNAME_LENGTH = 50;
 const MIN_PASSWORD_LENGTH = 8;
-const NAME_SEPARATOR = /\s+/;
 
 const usernameSchema = z.object({
   username: z.string().trim().min(MIN_USERNAME_LENGTH).max(MAX_USERNAME_LENGTH),
@@ -51,20 +50,6 @@ const passwordSchema = z
     message: "Passwords do not match.",
     path: ["confirmPassword"],
   });
-
-function getInitials(name: string, email: string): string {
-  const parts = name.trim().split(NAME_SEPARATOR).filter(Boolean);
-
-  if (parts.length >= 2) {
-    return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase();
-  }
-
-  if (parts[0]?.[0]) {
-    return parts[0][0].toUpperCase();
-  }
-
-  return email[0]?.toUpperCase() ?? "?";
-}
 
 function UsernameForm({ settings }: { settings: AccountSettings }) {
   const router = useRouter();
@@ -108,22 +93,6 @@ function UsernameForm({ settings }: { settings: AccountSettings }) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="gap-6">
-            <div className="flex items-center gap-3">
-              <Avatar className="size-12">
-                {settings.image ? (
-                  <AvatarImage alt="" src={settings.image} />
-                ) : null}
-                <AvatarFallback>
-                  {getInitials(settings.name, settings.email)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="min-w-0">
-                <p className="truncate font-medium">{settings.name}</p>
-                <p className="truncate text-muted-foreground text-sm">
-                  {settings.email}
-                </p>
-              </div>
-            </div>
             <FormField
               control={form.control}
               name="username"
@@ -311,6 +280,11 @@ function PasswordForm() {
 export function SettingsForm({ settings }: { settings: AccountSettings }) {
   return (
     <div className="flex flex-col gap-6">
+      <AvatarUploadCard
+        email={settings.email}
+        image={settings.image}
+        name={settings.name}
+      />
       <UsernameForm settings={settings} />
       {settings.hasPassword ? (
         <PasswordForm />

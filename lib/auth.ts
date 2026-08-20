@@ -7,6 +7,7 @@ import ForgotPasswordEmail from "@/components/emails/reset-password";
 import VerifyEmail from "@/components/emails/verify-email";
 import { db } from "@/db/drizzle";
 import { schema } from "@/db/schema";
+import { normalizeUserImage } from "@/lib/account/avatar";
 
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
@@ -26,6 +27,35 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      mapProfileToUser: (profile) => ({
+        image: profile.picture,
+        name: profile.name,
+      }),
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: (user) =>
+          Promise.resolve({
+            data: {
+              ...user,
+              image: normalizeUserImage(user.image),
+            },
+          }),
+      },
+      update: {
+        before: (user) =>
+          Promise.resolve({
+            data:
+              "image" in user
+                ? {
+                    ...user,
+                    image: normalizeUserImage(user.image),
+                  }
+                : user,
+          }),
+      },
     },
   },
   emailAndPassword: {

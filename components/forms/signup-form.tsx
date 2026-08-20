@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { AvatarPicker } from "@/components/forms/avatar-picker";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,6 +43,7 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [isLoading, setIsLoading] = useState(false);
+  const [image, setImage] = useState<string | null>(null);
 
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -52,6 +54,9 @@ export function SignupForm({
       password: "",
     },
   });
+
+  const username = form.watch("username");
+  const email = form.watch("email");
 
   const signInWithGoogle = async () => {
     await authClient.signIn.social({
@@ -66,8 +71,9 @@ export function SignupForm({
     try {
       const { error } = await authClient.signUp.email({
         email: values.email,
-        password: values.password,
+        image: image ?? undefined,
         name: values.username,
+        password: values.password,
       });
 
       if (error) {
@@ -94,7 +100,10 @@ export function SignupForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+            <form
+              className="flex flex-col gap-8"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
               <div className="grid gap-6">
                 <div className="flex flex-col gap-4">
                   <Button
@@ -124,6 +133,22 @@ export function SignupForm({
                 </div>
                 <div className="grid gap-6">
                   <div className="grid gap-3">
+                    <div className="grid gap-2">
+                      <p className="font-medium text-sm">
+                        Profile photo{" "}
+                        <span className="font-normal text-muted-foreground">
+                          (optional)
+                        </span>
+                      </p>
+                      <AvatarPicker
+                        disabled={isLoading}
+                        email={email}
+                        image={image}
+                        name={username}
+                        onRemove={() => setImage(null)}
+                        onSelect={setImage}
+                      />
+                    </div>
                     <FormField
                       control={form.control}
                       name="username"

@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getAccountSettings } from "@/server/users";
 
 export const metadata: Metadata = {
-  description: "Update your username and review the email on your account.",
+  description: "Update your photo, username, and password.",
   title: "Settings",
 };
 
@@ -22,7 +22,7 @@ export default function DashboardSettingsPage() {
   return (
     <DashboardPageShell>
       <DashboardPageHeader
-        description="Change your username and see the email on this account."
+        description="Change your photo, username, and password."
         eyebrow="Account"
         title="Settings"
       />
