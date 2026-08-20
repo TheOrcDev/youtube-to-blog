@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,13 +15,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import type { SelectBlog } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
 import { toPublicBlogError } from "@/server/blog-errors";
 import { requestBlog } from "@/server/request-blog";
 import { BlogCard } from "../blog-card";
-import { ButtonGroup } from "../ui/button-group";
 
 const formSchema = z.object({
   youtubeUrl: z.url().min(1, {
@@ -94,24 +97,24 @@ export function MainForm() {
               <FormItem className="flex-1">
                 <FormLabel className="sr-only">YouTube URL</FormLabel>
                 <FormControl>
-                  <ButtonGroup className="w-full">
-                    <Input
-                      className="flex-1"
-                      placeholder="YouTube URL"
-                      {...field}
-                    />
-                    <Button
-                      aria-label="Convert YouTube video to blog"
-                      disabled={isLoading}
-                      type="submit"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="size-4 animate-spin" />
-                      ) : (
-                        "Convert"
-                      )}
-                    </Button>
-                  </ButtonGroup>
+                  <InputGroup className="w-full">
+                    <InputGroupInput placeholder="YouTube URL" {...field} />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label="Convert YouTube video to blog"
+                        disabled={isLoading}
+                        size="sm"
+                        type="submit"
+                        variant="default"
+                      >
+                        {isLoading ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          "Convert"
+                        )}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>
