@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,17 +16,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Input } from "@/components/ui/input";
 import type { SelectBlog } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
 import { toPublicBlogError } from "@/server/blog-errors";
 import { requestBlog } from "@/server/request-blog";
 import { BlogCard } from "../blog-card";
+import { ButtonGroup } from "../ui/button-group";
 
 const formSchema = z.object({
   youtubeUrl: z.url().min(1, {
@@ -96,30 +93,32 @@ export function MainForm() {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormLabel className="sr-only">YouTube URL</FormLabel>
-                <FormControl>
-                  <InputGroup className="w-full">
-                    <InputGroupInput placeholder="YouTube URL" {...field} />
-                    <InputGroupAddon
-                      align="inline-end"
-                      className="h-full py-0 pr-0 has-[>button]:mr-0"
-                    >
-                      <InputGroupButton
-                        aria-label="Convert YouTube video to blog"
-                        className="h-full rounded-none rounded-r-[calc(var(--radius)-1px)]"
-                        disabled={isLoading}
-                        size="sm"
-                        type="submit"
-                        variant="default"
-                      >
-                        {isLoading ? (
-                          <Loader2 className="animate-spin" />
-                        ) : (
-                          "Convert"
-                        )}
-                      </InputGroupButton>
-                    </InputGroupAddon>
-                  </InputGroup>
-                </FormControl>
+                {/* ButtonGroup gives each child its own focus ring, which stops
+                    where the button begins. Lift the ring to the wrapper so the
+                    joined control lights up as one, and scope it to the input so
+                    a keyboard user can still tell the button apart when tabbing
+                    to it. */}
+                <ButtonGroup className="w-full rounded-md ring-offset-background has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2">
+                  <FormControl>
+                    <Input
+                      className="focus-visible:ring-0 focus-visible:ring-offset-0"
+                      placeholder="YouTube URL"
+                      {...field}
+                    />
+                  </FormControl>
+                  <Button
+                    aria-label="Convert YouTube video to blog"
+                    className="min-w-28"
+                    disabled={isLoading}
+                    type="submit"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      "Convert"
+                    )}
+                  </Button>
+                </ButtonGroup>
                 <FormMessage />
               </FormItem>
             )}
