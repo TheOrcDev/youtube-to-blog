@@ -1,22 +1,15 @@
-import Image from "next/image";
 import { Suspense } from "react";
 
 import { UsageIndicator } from "@/components/billing/usage-indicator";
 import { MainForm } from "@/components/forms/main-form";
+import { Logo } from "@/components/logo";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Generate() {
   return (
     <main className="mx-auto flex min-h-[calc(100svh-10rem)] w-full max-w-3xl flex-col items-center justify-center px-4 py-16">
       <div className="flex w-full flex-col items-center text-center">
-        <Image
-          alt="YouTube to Blog"
-          className="h-auto w-32 sm:w-44"
-          height={500}
-          priority
-          src="/youtube-to-blog-logo.png"
-          width={500}
-        />
+        <Logo className="w-32 sm:w-44" priority size={176} />
 
         <h1 className="mt-4 text-balance font-bold text-3xl sm:text-4xl">
           Turn any YouTube video into a blog post

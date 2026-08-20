@@ -6,10 +6,10 @@ import {
   type LucideIcon,
   PlusIcon,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { Logo } from "@/components/logo";
 import {
   Sidebar,
   SidebarContent,
@@ -81,13 +81,7 @@ export function DashboardSidebar({
             className="flex min-h-11 items-center gap-2 px-2"
             href="/dashboard"
           >
-            <Image
-              alt=""
-              className="size-7"
-              height={28}
-              src="/youtube-to-blog-logo.png"
-              width={28}
-            />
+            <Logo alt="" className="size-7" size={28} />
             {isCollapsed ? null : (
               <span className="truncate font-semibold text-sm">
                 YouTube to Blog

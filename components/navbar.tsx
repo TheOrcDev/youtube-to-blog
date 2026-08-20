@@ -3,12 +3,12 @@
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import type { Variants } from "motion/react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { CommandMenuTrigger } from "@/components/command-menu";
+import { Logo } from "@/components/logo";
 import { ModeSwitcher } from "@/components/mode-switcher";
 import { UserButton } from "@/components/user-button";
 import { cn } from "@/lib/utils";
@@ -124,12 +124,7 @@ export function Navbar({ billingEnabled }: { billingEnabled: boolean }) {
               className={cn("flex shrink-0 items-center rounded-sm", focusRing)}
               href="/"
             >
-              <Image
-                alt="YouTube to Blog"
-                height={36}
-                src="/youtube-to-blog-logo.png"
-                width={36}
-              />
+              <Logo size={36} />
             </Link>
 
             {/* biome-ignore lint/a11y/noStaticElementInteractions: decorative hover reset on a container of links */}
@@ -217,12 +212,7 @@ export function Navbar({ billingEnabled }: { billingEnabled: boolean }) {
               }}
             >
               <div className="flex items-center justify-between border-border border-b pb-5">
-                <Image
-                  alt="YouTube to Blog"
-                  height={36}
-                  src="/youtube-to-blog-logo.png"
-                  width={36}
-                />
+                <Logo size={36} />
                 <button
                   aria-label="Close menu"
                   className={cn(
