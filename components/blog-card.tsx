@@ -51,8 +51,11 @@ export function BlogCard({ blog }: BlogCardProps) {
           label: "Author",
         },
         {
-          amount: blog.slug,
-          detail: "YouTube",
+          amount:
+            blog.sourceType === "upload"
+              ? blog.originalFilename || "Uploaded video"
+              : blog.slug,
+          detail: blog.sourceType === "upload" ? "Upload" : "YouTube",
           id: "video",
           label: "Video",
         },

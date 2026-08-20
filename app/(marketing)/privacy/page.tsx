@@ -44,6 +44,10 @@ export default function PrivacyPolicyPage() {
                 <h3 className="mb-2 font-medium text-lg">Usage Information</h3>
                 <ul className="ml-4 list-inside list-disc space-y-1">
                   <li>YouTube URLs you submit for processing</li>
+                  <li>
+                    Video files you upload for processing (deleted immediately
+                    after the blog post is generated)
+                  </li>
                   <li>Generated blog content and metadata</li>
                   <li>Service usage patterns and preferences</li>
                   <li>Device information and browser type</li>
@@ -74,7 +78,10 @@ export default function PrivacyPolicyPage() {
               <p>We use your information to:</p>
               <ul className="ml-4 list-inside list-disc space-y-2">
                 <li>Provide and maintain our service</li>
-                <li>Process YouTube videos and generate blog content</li>
+                <li>
+                  Process YouTube videos and uploaded video files to generate
+                  blog content
+                </li>
                 <li>Authenticate users and manage accounts</li>
                 <li>Send important service notifications</li>
                 <li>Improve our service and develop new features</li>

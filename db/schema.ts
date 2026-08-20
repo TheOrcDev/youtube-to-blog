@@ -22,6 +22,10 @@ export const blogs = pgTable(
     title: text("title").notNull(),
     content: text("content").notNull(),
     author: text("author").notNull(),
+    // "youtube" blogs use the video ID as slug; "upload" blogs get a generated
+    // slug and keep the original filename for display.
+    sourceType: text("source_type").notNull().default("youtube"),
+    originalFilename: text("original_filename"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },

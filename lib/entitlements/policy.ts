@@ -6,17 +6,30 @@ export const PRO_MONTHLY_GENERATIONS = 100;
 export const FREE_TIER_MODEL = "google/gemini-2.5-flash";
 export const PRO_TIER_MODEL = "anthropic/claude-sonnet-4-5";
 
+// The AI Gateway rejects request bodies around ~100MB, and video bytes are
+// base64-encoded (4/3 overhead) on the way in. 64MB raw leaves safe headroom.
+export const MAX_UPLOAD_BYTES = 64 * 1024 * 1024;
+
+export const SUPPORTED_UPLOAD_TYPES = [
+  "video/mp4",
+  "video/webm",
+  "video/quicktime",
+] as const;
+
 export interface TierLimits {
+  canUploadVideos: boolean;
   model: string;
   monthlyGenerations: number;
 }
 
 export const TIER_LIMITS: Record<EntitlementTier, TierLimits> = {
   free: {
+    canUploadVideos: false,
     model: FREE_TIER_MODEL,
     monthlyGenerations: FREE_MONTHLY_GENERATIONS,
   },
   pro: {
+    canUploadVideos: true,
     model: PRO_TIER_MODEL,
     monthlyGenerations: PRO_MONTHLY_GENERATIONS,
   },

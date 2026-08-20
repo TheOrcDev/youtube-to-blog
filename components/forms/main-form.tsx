@@ -1,130 +1,52 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Lock } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { UploadVideoForm } from "@/components/forms/upload-video-form";
+import { YoutubeUrlForm } from "@/components/forms/youtube-url-form";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SelectBlog } from "@/db/schema";
-import { authClient } from "@/lib/auth-client";
-import { toPublicBlogError } from "@/server/blog-errors";
-import { requestBlog } from "@/server/request-blog";
 import { BlogCard } from "../blog-card";
-import { ButtonGroup } from "../ui/button-group";
 
-const formSchema = z.object({
-  youtubeUrl: z.url().min(1, {
-    message: "YouTube URL must be at least 2 characters.",
-  }),
-});
+interface MainFormProps {
+  canUpload: boolean;
+}
 
-export function MainForm() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+export function MainForm({ canUpload }: MainFormProps) {
   const [blog, setBlog] = useState<SelectBlog | null>(null);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      youtubeUrl: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const user = await authClient.getSession();
-
-      if (!user.data) {
-        toast.error("Please login to create a blog.");
-        return;
-      }
-
-      setIsLoading(true);
-      const result = await requestBlog(values.youtubeUrl);
-
-      if (!result.ok) {
-        toast.error(result.error.message, {
-          action:
-            result.error.code === "QUOTA_EXCEEDED"
-              ? {
-                  label: "Upgrade",
-                  onClick: () => router.push("/pricing"),
-                }
-              : undefined,
-        });
-        return;
-      }
-
-      setBlog(result.blog);
-      toast.success(
-        result.status === "existing"
-          ? "Blog already exists for this video."
-          : "Blog has been created."
-      );
-    } catch (error) {
-      toast.error(toPublicBlogError(error).message);
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   return (
     <>
-      <Form {...form}>
-        <form
-          className="flex w-full gap-2 px-5"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="youtubeUrl"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel className="sr-only">YouTube URL</FormLabel>
-                {/* ButtonGroup gives each child its own focus ring, which stops
-                    where the button begins. Lift the ring to the wrapper so the
-                    joined control lights up as one, and scope it to the input so
-                    a keyboard user can still tell the button apart when tabbing
-                    to it. */}
-                <ButtonGroup className="w-full rounded-md ring-offset-background has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2">
-                  <FormControl>
-                    <Input
-                      className="h-10 px-3 text-sm shadow-none focus-visible:border-input focus-visible:ring-0 focus-visible:ring-offset-0"
-                      placeholder="YouTube URL"
-                      {...field}
-                    />
-                  </FormControl>
-                  <Button
-                    aria-label="Convert YouTube video to blog"
-                    className="h-10 min-w-28 border-0 px-4"
-                    disabled={isLoading}
-                    type="submit"
-                  >
-                    {isLoading ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      "Convert"
-                    )}
-                  </Button>
-                </ButtonGroup>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
+      <Tabs className="w-full items-center px-5" defaultValue="youtube">
+        <TabsList>
+          <TabsTrigger value="youtube">YouTube link</TabsTrigger>
+          <TabsTrigger value="upload">
+            Upload video
+            {canUpload ? null : <Badge variant="secondary">Pro</Badge>}
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent className="w-full" value="youtube">
+          <YoutubeUrlForm onBlogCreated={setBlog} />
+        </TabsContent>
+        <TabsContent className="w-full" value="upload">
+          {canUpload ? (
+            <UploadVideoForm onBlogCreated={setBlog} />
+          ) : (
+            <div className="flex h-24 w-full flex-col items-center justify-center gap-2 rounded-md border border-input border-dashed text-muted-foreground text-sm">
+              <p className="flex items-center gap-1.5">
+                <Lock className="size-4" />
+                Video uploads are a Pro feature.
+              </p>
+              <Button asChild size="sm" variant="outline">
+                <Link href="/pricing">Upgrade to Pro</Link>
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
 
       {blog ? (
         <div className="mt-6 w-full max-w-3xl text-left">

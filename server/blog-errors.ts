@@ -10,6 +10,10 @@ export type BlogErrorCode =
   | "INVALID_YOUTUBE_URL"
   | "QUOTA_EXCEEDED"
   | "UNKNOWN"
+  | "UPLOAD_FETCH_FAILED"
+  | "UPLOAD_REQUIRES_PRO"
+  | "UPLOAD_TOO_LARGE"
+  | "UPLOAD_UNSUPPORTED_FORMAT"
   | "VIDEO_NOT_ACCESSIBLE"
   | "YOUTUBE_NOT_CONFIGURED"
   | "YOUTUBE_UNAVAILABLE";
@@ -38,6 +42,13 @@ const PUBLIC_ERROR_MESSAGES: Record<BlogErrorCode, string> = {
   QUOTA_EXCEEDED:
     "You have used all of this month's blog generations. Upgrade to Pro for a higher limit.",
   UNKNOWN: "Something went wrong while creating the blog. Please try again.",
+  UPLOAD_FETCH_FAILED:
+    "Your uploaded video could not be processed. Please try uploading it again.",
+  UPLOAD_REQUIRES_PRO:
+    "Video uploads are a Pro feature. Upgrade to turn your own videos into blog posts.",
+  UPLOAD_TOO_LARGE: "This video is too large. The maximum upload size is 64MB.",
+  UPLOAD_UNSUPPORTED_FORMAT:
+    "This file format is not supported. Upload an MP4, WebM, or QuickTime video.",
   VIDEO_NOT_ACCESSIBLE:
     "This video could not be found or is not publicly accessible.",
   YOUTUBE_NOT_CONFIGURED:
@@ -83,8 +94,12 @@ export function getBlogErrorStatus(error: PublicBlogError): number {
     case "AUTH_REQUIRED":
       return 401;
     case "QUOTA_EXCEEDED":
+    case "UPLOAD_REQUIRES_PRO":
       return 402;
+    case "UPLOAD_TOO_LARGE":
+      return 413;
     case "CAPTIONS_UNAVAILABLE":
+    case "UPLOAD_UNSUPPORTED_FORMAT":
     case "VIDEO_NOT_ACCESSIBLE":
       return 422;
     case "AI_NOT_CONFIGURED":
@@ -93,6 +108,7 @@ export function getBlogErrorStatus(error: PublicBlogError): number {
     case "AI_GENERATION_FAILED":
     case "AI_OUTPUT_INVALID":
     case "CAPTION_EXTRACTION_FAILED":
+    case "UPLOAD_FETCH_FAILED":
     case "YOUTUBE_UNAVAILABLE":
       return 502;
     default:

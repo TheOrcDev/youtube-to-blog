@@ -24,6 +24,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@react-email/components": "^1.0.4",
     "@vercel/analytics": "^1.6.1",
+    "@vercel/blob": "^2.8.0",
     "ai": "^6.0.39",
     "better-auth": "^1.4.15",
     "class-variance-authority": "^0.7.1",

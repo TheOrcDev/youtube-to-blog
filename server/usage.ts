@@ -33,6 +33,29 @@ export async function getEntitlementTier(
   return { tier: snapshot.tier };
 }
 
+// Whether the current visitor should see the video upload UI. Signed-out
+// visitors see it too (submitting still requires auth); the server action and
+// upload route enforce the Pro gate regardless of what the client renders.
+export async function canUploadVideos(): Promise<boolean> {
+  if (!isBillingEnabled()) {
+    return true;
+  }
+
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    return true;
+  }
+
+  if (isAdminEmail(session.user.email, process.env.ADMIN_EMAILS)) {
+    return true;
+  }
+
+  const snapshot = await getUserEntitlementSnapshot(session.user.id);
+
+  return getLimitsForTier(snapshot.tier).canUploadVideos;
+}
+
 export type UsageSummary =
   | { billingEnabled: false }
   | {

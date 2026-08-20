@@ -1,36 +1,47 @@
 # 🎥 YouTube to Blog
 
-Application that automatically converts YouTube videos into well-structured, professional blog posts using AI. Perfect for content creators, developers, and anyone who wants to transform video content into written format.
+Application that turns videos into well-structured, professional blog posts using AI. Paste a YouTube link or upload your own video file — the AI watches the actual video (audio and visuals, no captions needed) and writes a ready-to-publish article. Perfect for content creators, developers, and anyone who wants to transform video content into written format.
 
 ## ✨ Features
 
-- 🎯 **One-Click Conversion**: Simply paste a YouTube URL and get a professional blog post
-- 🤖 **AI-Powered**: Uses Google's Gemini 2.5 Flash for intelligent content transformation
-- 📝 **Professional Formatting**: Converts transcripts into well-structured MDX blog posts
+- 🎯 **One-Click Conversion**: Paste a YouTube URL and get a professional blog post
+- 📤 **Video Uploads**: Convert your own MP4, WebM, or QuickTime files (up to 64MB) — no YouTube required
+- 👀 **True Video Understanding**: The AI watches the video itself via multimodal input — no transcript or captions needed
+- 🤖 **AI-Powered**: Models routed through the Vercel AI Gateway (Gemini 2.5 Flash on Free, a premium model on Pro)
+- 📝 **Professional Formatting**: Generates well-structured, first-person MDX blog posts
 - 🎨 **Modern UI**: Beautiful, responsive interface with dark/light mode support
 - 💾 **Persistent Storage**: Automatically saves generated blogs to avoid duplicates
-- 🔍 **Smart Detection**: Checks if a blog already exists for a video before generating
+- 🔍 **Smart Detection**: Checks if a blog already exists for a YouTube video before generating
+- 🗑️ **Privacy-Friendly Uploads**: Uploaded videos are deleted as soon as the post is generated
 - 📱 **Mobile Friendly**: Fully responsive design that works on all devices
-- ⚡ **Fast Performance**: Built with Next.js 15 and optimized for speed
+- ⚡ **Fast Performance**: Built with Next.js 16 and optimized for speed
 
 ## 🚀 How It Works
 
+### From a YouTube link
+
 1. **Input**: User provides a YouTube video URL
-2. **Extraction**: System extracts video metadata using YouTube Data API v3
-3. **Transcript**: Fetches video transcript using youtube-transcript library
-4. **AI Processing**: Gemini 2.5 Flash transforms the content into a professional blog post
-5. **Storage**: Blog post is saved to the database with proper formatting
-6. **Output**: User can view, copy, or share the generated blog post
+2. **Metadata**: System fetches the video's title, author, and duration via YouTube Data API v3
+3. **AI Processing**: The video URL is sent to the model as a multimodal video input through the Vercel AI Gateway — the AI watches the audio and visuals directly (no transcript step)
+4. **Storage**: Blog post is saved to the database with proper formatting
+5. **Output**: User can view, copy, or share the generated blog post
+
+### From an uploaded video (Pro)
+
+1. **Upload**: The browser uploads the file directly to Vercel Blob (client upload, so large files bypass server body limits)
+2. **AI Processing**: The server downloads the blob and sends the raw video bytes to the model through the AI Gateway
+3. **Storage**: Blog post is saved; the title is derived from the generated article
+4. **Cleanup**: The uploaded video is deleted from Blob storage immediately — success or failure
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 16 with App Router
 - **Language**: TypeScript
 - **Database**: Neon PostgreSQL with Drizzle ORM
-- **AI**: Google Gemini 2.5 Flash
+- **AI**: Vercel AI SDK + AI Gateway (Gemini 2.5 Flash / premium model per tier)
+- **File Storage**: Vercel Blob (uploaded videos, deleted after generation)
 - **Styling**: Tailwind CSS with shadcn/ui components
-- **YouTube API**: Official YouTube Data API v3
-- **Transcripts**: youtube-transcript library
+- **YouTube API**: Official YouTube Data API v3 (metadata only)
 - **Deployment**: Vercel-ready
 
 ## 📋 Prerequisites
@@ -73,6 +84,13 @@ DATABASE_URL=your_neon_database_url_here
 
 # App URL (for production)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Vercel AI Gateway (one of the two; OIDC is provided automatically on Vercel)
+AI_GATEWAY_API_KEY=vck_your_gateway_key_here
+# VERCEL_OIDC_TOKEN=provided_by_vercel
+
+# Vercel Blob (required for the video upload feature)
+BLOB_READ_WRITE_TOKEN=your_blob_read_write_token_here
 ```
 
 ### 4. Billing (optional)
@@ -164,7 +182,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## 🎯 Usage
 
-1. **Enter YouTube URL**: Paste any YouTube video URL into the input field
+1. **Add a video**: Paste any YouTube video URL, or switch to the Upload tab and drop in your own video file (MP4, WebM, or QuickTime, up to 64MB)
 2. **Click Convert**: The system will process the video and generate a blog post
 3. **View Results**: See the generated blog post with options to:
    - View the full blog post
@@ -182,14 +200,19 @@ AI prompt in `server/blog-generator.ts` to change the output style or format.
 
 ### Plans and Limits
 
-| Plan | Price | Generations / month | Model |
-| --- | --- | --- | --- |
-| Free | $0 | 5 | Gemini 2.5 Flash |
-| Pro | $9/mo or $79/yr | 100 | Premium model |
-| Self-hosted | — | Unlimited | Gemini 2.5 Flash |
+| Plan | Price | Generations / month | Video uploads | Model |
+| --- | --- | --- | --- | --- |
+| Free | $0 | 5 | — | Gemini 2.5 Flash |
+| Pro | $9/mo or $79/yr | 100 | ✅ up to 64MB | Premium model |
+| Self-hosted | — | Unlimited | ✅ up to 64MB | Gemini 2.5 Flash |
 
-Usage is counted per calendar month (UTC). Requesting a video that already has a
-blog costs no AI call and does not count against the limit.
+Usage is counted per calendar month (UTC). Requesting a YouTube video that
+already has a blog costs no AI call and does not count against the limit.
+Uploads always generate a fresh post and count as one generation.
+
+The 64MB upload cap exists because video bytes are sent inline (base64) through
+the AI Gateway, which rejects request bodies around ~100MB. The cap lives in
+[`lib/entitlements/policy.ts`](lib/entitlements/policy.ts) (`MAX_UPLOAD_BYTES`).
 
 ## 🚀 Deployment
 
@@ -207,6 +230,8 @@ Make sure to set these in your deployment platform:
 - `YOUTUBE_API_KEY`
 - `DATABASE_URL`
 - `NEXT_PUBLIC_APP_URL` (your production URL)
+- `BLOB_READ_WRITE_TOKEN` (for video uploads; created automatically when you add a Blob store to the Vercel project)
+- AI Gateway auth (`AI_GATEWAY_API_KEY`, or the `VERCEL_OIDC_TOKEN` Vercel provides automatically)
 
 Only if you are running a paid, hosted instance:
 

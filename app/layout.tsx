@@ -20,22 +20,22 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "YouTube to Blog - Convert Videos to Professional Blog Posts",
+    default: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
     template: "%s | YouTube to Blog",
   },
   description:
-    "Transform YouTube videos into well-structured, professional blog posts using AI. Perfect for content creators, developers, and anyone who wants to convert video content into written format with one click.",
+    "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches the audio and visuals and writes a structured article you can export as Markdown.",
   keywords: [
     "YouTube to blog",
     "video to blog",
+    "video to article",
     "AI blog generator",
-    "content creation",
-    "video transcription",
+    "video upload to blog post",
+    "AI video understanding",
+    "content repurposing",
     "blog writing",
-    "content conversion",
-    "YouTube transcript",
+    "Markdown export",
     "AI writing tool",
-    "video content",
   ],
   authors: [{ name: "OrcDev" }],
   creator: "OrcDev",
@@ -55,13 +55,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "/",
-    title: "YouTube to Blog - Convert Videos to Professional Blog Posts",
+    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
     description:
-      "Transform YouTube videos into well-structured, professional blog posts using AI. Perfect for content creators, developers, and anyone who wants to convert video content into written format with one click.",
+      "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches it and writes a structured article you can export as Markdown.",
     siteName: "YouTube to Blog",
     images: [
       {
-        alt: "YouTube to Blog - Convert Videos to Professional Blog Posts",
+        alt: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
         height: 630,
         url: "/og.png",
         width: 1200,
@@ -70,9 +70,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "YouTube to Blog - Convert Videos to Professional Blog Posts",
+    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
     description:
-      "Transform YouTube videos into well-structured, professional blog posts using AI. Perfect for content creators, developers, and anyone who wants to convert video content into written format with one click.",
+      "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches it and writes a structured article you can export as Markdown.",
     images: ["/og.png"],
     creator: "@orcdev",
   },

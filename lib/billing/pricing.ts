@@ -17,6 +17,7 @@ export function isBillingInterval(value: unknown): value is BillingInterval {
 export const FREE_PLAN = {
   features: [
     `${FREE_MONTHLY_GENERATIONS} blog generations per month`,
+    "Convert from YouTube links",
     "Standard AI model",
     "Markdown export",
     "Unlimited blog storage",
@@ -31,6 +32,7 @@ export const FREE_PLAN = {
 export const PRO_PLAN = {
   features: [
     `${PRO_MONTHLY_GENERATIONS} blog generations per month`,
+    "Upload your own videos (up to 64MB)",
     "Premium AI model for richer posts",
     "Markdown export",
     "Priority support",

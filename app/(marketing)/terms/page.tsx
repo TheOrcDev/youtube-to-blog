@@ -28,10 +28,13 @@ export default function TermsOfServicePage() {
               2. Description of Service
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              YouTube to Blog is a web application that converts YouTube video
-              content into blog post format. The service uses artificial
-              intelligence to analyze video content and generate written blog
-              posts based on the video's content, transcript, and metadata.
+              YouTube to Blog is a web application that converts video content
+              into blog post format. You can submit a YouTube link or upload
+              your own video file. The service uses artificial intelligence to
+              analyze the video's audio and visuals and generate a written blog
+              post from it. Uploaded video files are stored only for the
+              duration of processing and are deleted once the blog post has been
+              generated.
             </p>
           </section>
 
