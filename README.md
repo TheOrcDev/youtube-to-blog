@@ -137,7 +137,7 @@ alongside the per-tier limits and models. Prices live in
 ### API
 
 Pro users (and self-hosted instances) can drive the app over a REST API.
-Create a key under **Dashboard → Settings → API keys**, then:
+Create a key under **Dashboard → API keys**, then:
 
 ```bash
 curl -X POST https://www.youtube2blog.com/api/v1/blogs \

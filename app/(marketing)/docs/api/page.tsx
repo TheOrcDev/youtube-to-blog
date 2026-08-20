@@ -165,9 +165,9 @@ export default function ApiDocsPage() {
             Create an API key in{" "}
             <Link
               className="underline underline-offset-4"
-              href="/dashboard/settings"
+              href="/dashboard/api-keys"
             >
-              dashboard settings
+              the dashboard
             </Link>
             . Keys start with <code className="font-mono">ytb_</code> and are
             shown once at creation — store them somewhere safe. You can have up

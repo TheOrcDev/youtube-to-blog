@@ -3,6 +3,7 @@
 import {
   CreditCardIcon,
   FileTextIcon,
+  KeyIcon,
   type LucideIcon,
   PlusIcon,
   SettingsIcon,
@@ -46,6 +47,12 @@ export function getDashboardNavItems(
       icon: PlusIcon,
       label: "New blog",
       match: (pathname) => pathname.startsWith("/dashboard/new"),
+    },
+    {
+      href: "/dashboard/api-keys",
+      icon: KeyIcon,
+      label: "API keys",
+      match: (pathname) => pathname.startsWith("/dashboard/api-keys"),
     },
     {
       href: "/dashboard/settings",
