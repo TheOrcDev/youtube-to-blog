@@ -101,14 +101,14 @@ export function MainForm() {
                 <ButtonGroup className="w-full rounded-md ring-offset-background has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2">
                   <FormControl>
                     <Input
-                      className="focus-visible:ring-0 focus-visible:ring-offset-0"
+                      className="h-10 bg-background px-3 py-2 shadow-none focus-visible:border-input focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-background"
                       placeholder="YouTube URL"
                       {...field}
                     />
                   </FormControl>
                   <Button
                     aria-label="Convert YouTube video to blog"
-                    className="min-w-28"
+                    className="h-10 min-w-28 px-4 focus-visible:ring-2 focus-visible:ring-offset-2"
                     disabled={isLoading}
                     type="submit"
                   >
