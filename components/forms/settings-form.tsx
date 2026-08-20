@@ -172,7 +172,7 @@ function UsernameForm({ settings }: { settings: AccountSettings }) {
               </p>
             </div>
           </CardContent>
-          <CardFooter className="border-t">
+          <CardFooter className="mt-(--card-spacing) border-t">
             <Button
               disabled={isLoading || !form.formState.isDirty}
               type="submit"
@@ -293,7 +293,7 @@ function PasswordForm() {
               )}
             />
           </CardContent>
-          <CardFooter className="border-t">
+          <CardFooter className="mt-(--card-spacing) border-t">
             <Button disabled={isLoading} type="submit">
               {isLoading ? (
                 <Loader2 className="animate-spin" />
