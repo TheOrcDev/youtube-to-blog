@@ -125,8 +125,17 @@ const ERROR_CODES = [
 ] as const;
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "/docs/api",
+  },
   description:
     "Generate blog posts from YouTube videos programmatically. REST API reference: authentication, endpoints, errors, and rate limits.",
+  openGraph: {
+    description:
+      "Generate blog posts from YouTube videos programmatically. REST API reference: authentication, endpoints, errors, and rate limits.",
+    title: "API documentation — YouTube to Blog",
+    url: "/docs/api",
+  },
   title: "API documentation",
 };
 

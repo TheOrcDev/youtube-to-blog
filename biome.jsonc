@@ -9,6 +9,9 @@
     "includes": [
       "!public",
       "!components/ui",
+      // Satori OG image components (ogimagecn registry): rendered to PNG via
+      // next/og, so DOM rules like noImgElement don't apply.
+      "!components/og",
       "!hooks/use-mobile.ts",
       "!lib/utils.ts",
       "!.source"

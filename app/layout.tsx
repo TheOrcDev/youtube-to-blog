@@ -18,15 +18,18 @@ const dmSans = DM_Sans({
   variable: "--font-sans",
 });
 
+// OG and Twitter images come from app/opengraph-image.tsx (and the per-post
+// variant under blog/[slug]), so no static image URLs are declared here.
 export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  authors: [{ name: "OrcDev" }],
+  applicationName: "YouTube to Blog",
+  authors: [{ name: "OrcDev", url: "https://github.com/TheOrcDev" }],
   category: "technology",
   creator: "OrcDev",
   description:
-    "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches the audio and visuals and writes a structured article you can export as Markdown.",
+    "Search engines can't read videos — they read text. Paste a YouTube link or upload a video and AI turns it into an SEO-ready blog post: it watches the audio and visuals, writes a structured article, and gives you Markdown or API access.",
   formatDetection: {
     address: false,
     email: false,
@@ -43,15 +46,21 @@ export const metadata: Metadata = {
   },
   keywords: [
     "YouTube to blog",
-    "video to blog",
-    "video to article",
-    "AI blog generator",
-    "video upload to blog post",
+    "convert YouTube video to blog post",
+    "video to blog converter",
+    "video to article AI",
+    "turn video into blog post",
+    "make videos searchable on Google",
+    "video SEO content",
+    "repurpose video content",
+    "AI blog generator from video",
+    "YouTube video to article",
+    "video content repurposing tool",
+    "blog post from video upload",
+    "video to Markdown",
     "AI video understanding",
     "content repurposing",
-    "blog writing",
-    "Markdown export",
-    "AI writing tool",
+    "blog generation API",
   ],
   manifest: "/manifest.json",
   metadataBase: new URL(
@@ -59,18 +68,10 @@ export const metadata: Metadata = {
   ),
   openGraph: {
     description:
-      "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches it and writes a structured article you can export as Markdown.",
-    images: [
-      {
-        alt: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
-        height: 630,
-        url: "/og.png",
-        width: 1200,
-      },
-    ],
+      "Search engines can't read videos — they read text. AI watches your video and writes an SEO-ready blog post you can publish, export as Markdown, or fetch over the API.",
     locale: "en_US",
     siteName: "YouTube to Blog",
-    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
+    title: "YouTube to Blog — Turn Videos into SEO-Ready Blog Posts",
     type: "website",
     url: "/",
   },
@@ -87,16 +88,15 @@ export const metadata: Metadata = {
     index: true,
   },
   title: {
-    default: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
+    default: "YouTube to Blog — Turn Videos into SEO-Ready Blog Posts",
     template: "%s | YouTube to Blog",
   },
   twitter: {
     card: "summary_large_image",
     creator: "@orcdev",
     description:
-      "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches it and writes a structured article you can export as Markdown.",
-    images: ["/og.png"],
-    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
+      "Search engines can't read videos — they read text. AI watches your video and writes an SEO-ready blog post in minutes.",
+    title: "YouTube to Blog — Turn Videos into SEO-Ready Blog Posts",
   },
 };
 

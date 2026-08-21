@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "/why",
+  },
   description:
     "Discover how creating multiple blog posts from your YouTube videos can dramatically increase your search engine visibility, AI discoverability, and overall traffic potential.",
   keywords: [

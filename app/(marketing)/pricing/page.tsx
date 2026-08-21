@@ -16,8 +16,17 @@ import { isBillingEnabled } from "@/lib/billing/enabled";
 import { FREE_PLAN, PRO_PLAN } from "@/lib/billing/pricing";
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: "/pricing",
+  },
   description:
-    "Turn YouTube videos into blog posts for free, or upgrade to Pro for a higher monthly limit and a premium AI model.",
+    "Start free with monthly blog generations from YouTube links. Upgrade to Pro for video uploads, API access, a premium AI model, and a higher monthly limit.",
+  openGraph: {
+    description:
+      "Start free with monthly blog generations from YouTube links. Upgrade to Pro for video uploads, API access, a premium AI model, and a higher monthly limit.",
+    title: "Pricing — YouTube to Blog",
+    url: "/pricing",
+  },
   title: "Pricing",
 };
 

@@ -33,6 +33,7 @@
       "headers": {
         "Authorization": "Bearer ${REACTBITS_LICENSE_KEY}"
       }
-    }
+    },
+    "@ogimagecn": "https://ogimagecn.vercel.app/r/{name}.json"
   }
 }

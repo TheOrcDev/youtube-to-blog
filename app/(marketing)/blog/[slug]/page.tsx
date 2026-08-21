@@ -4,7 +4,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CopyMarkdownButton } from "@/components/copy-markdown-button";
 import { PostHeader } from "@/components/post-header";
+import { getAppUrl } from "@/lib/app-url";
 import markdownToHtml from "@/lib/markdown-to-html";
+import { excerptFromMarkdown } from "@/lib/seo";
 import { getBlogs, getPostBySlug } from "@/server/blogs";
 import markdownStyles from "./markdown-styles.module.css";
 
@@ -18,8 +20,25 @@ export default async function Post(props: Params) {
 
   const content = await markdownToHtml(post.content || "");
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    author: { "@type": "Person", name: post.author },
+    dateModified: post.updatedAt.toISOString(),
+    datePublished: post.createdAt.toISOString(),
+    description: excerptFromMarkdown(post.content || "", 160),
+    headline: post.title,
+    mainEntityOfPage: `${getAppUrl()}/blog/${post.slug}`,
+    publisher: { "@type": "Organization", name: "YouTube to Blog" },
+  };
+
   return (
     <main className="py-8">
+      <script
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is built from our own data
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        type="application/ld+json"
+      />
       <div className="container mx-auto px-5">
         <article className="mb-32">
           <PostHeader
@@ -58,12 +77,28 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
   }
 
   const title = `${post.title} | ${post.author}`;
+  const description = excerptFromMarkdown(post.content || "", 160);
 
   return {
+    alternates: {
+      canonical: `/blog/${post.slug}`,
+    },
+    authors: [{ name: post.author }],
+    description,
     openGraph: {
+      authors: [post.author],
+      description,
+      publishedTime: post.createdAt.toISOString(),
       title,
+      type: "article",
+      url: `/blog/${post.slug}`,
     },
     title,
+    twitter: {
+      card: "summary_large_image",
+      description,
+      title,
+    },
   };
 }
 
