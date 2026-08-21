@@ -13,9 +13,9 @@ import {
 } from "@react-email/components";
 
 interface ForgotPasswordEmailProps {
-  username: string;
   resetUrl: string;
   userEmail: string;
+  username: string;
 }
 
 const ForgotPasswordEmail = (props: ForgotPasswordEmailProps) => {

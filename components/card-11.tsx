@@ -104,5 +104,3 @@ export function Card11({
     </article>
   );
 }
-
-export default Card11;

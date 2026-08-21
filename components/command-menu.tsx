@@ -151,9 +151,9 @@ function CommandMenuDialog() {
               >
                 <Icon aria-hidden="true" />
                 <span>{item.label}</span>
-                {"shortcut" in item && (
+                {"shortcut" in item ? (
                   <CommandShortcut>{item.shortcut}</CommandShortcut>
-                )}
+                ) : null}
               </CommandItem>
             );
           })}

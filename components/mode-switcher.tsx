@@ -14,7 +14,7 @@ export function ModeSwitcher() {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      const target = event.target;
+      const { target } = event;
 
       if (
         target instanceof HTMLElement &&

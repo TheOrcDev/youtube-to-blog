@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Why Multiple Blog Posts Drive More Traffic and Conversions",
   description:
     "Discover how creating multiple blog posts from your YouTube videos can dramatically increase your search engine visibility, AI discoverability, and overall traffic potential.",
   keywords: [
@@ -17,11 +16,12 @@ export const metadata: Metadata = {
     "content discoverability",
   ],
   openGraph: {
-    title: "Why Multiple Blog Posts Drive More Traffic and Conversions",
     description:
       "Discover how creating multiple blog posts from your YouTube videos can dramatically increase your search engine visibility, AI discoverability, and overall traffic potential.",
+    title: "Why Multiple Blog Posts Drive More Traffic and Conversions",
     type: "article",
   },
+  title: "Why Multiple Blog Posts Drive More Traffic and Conversions",
 };
 
 export default function WhyPage() {

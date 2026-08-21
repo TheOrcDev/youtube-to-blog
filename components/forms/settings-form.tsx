@@ -42,9 +42,9 @@ const usernameSchema = z.object({
 
 const passwordSchema = z
   .object({
+    confirmPassword: z.string().min(MIN_PASSWORD_LENGTH),
     currentPassword: z.string().min(MIN_PASSWORD_LENGTH),
     newPassword: z.string().min(MIN_PASSWORD_LENGTH),
-    confirmPassword: z.string().min(MIN_PASSWORD_LENGTH),
   })
   .refine((values) => values.newPassword === values.confirmPassword, {
     message: "Passwords do not match.",

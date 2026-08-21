@@ -60,10 +60,10 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
   const title = `${post.title} | ${post.author}`;
 
   return {
-    title,
     openGraph: {
       title,
     },
+    title,
   };
 }
 

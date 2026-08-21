@@ -45,7 +45,7 @@ export function ApiKeysCard() {
   const loadKeys = useCallback(async () => {
     const { data } = await authClient.apiKey.list();
 
-    setKeys(data ?? []);
+    setKeys(data && "apiKeys" in data ? data.apiKeys : []);
     setIsLoading(false);
   }, []);
 

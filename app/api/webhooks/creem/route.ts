@@ -42,7 +42,7 @@ interface EntitlementUpdate {
 // before its side effects run and marked processed only once they succeed.
 async function processOnce<T extends EventBase>(
   event: T,
-  handler: () => Promise<void>
+  processEvent: () => Promise<void>
 ): Promise<void> {
   const shouldProcess = await recordWebhookEvent({
     eventId: event.webhookId,
@@ -54,7 +54,7 @@ async function processOnce<T extends EventBase>(
     return;
   }
 
-  await handler();
+  await processEvent();
   await markWebhookProcessed(event.webhookId);
 }
 
@@ -197,7 +197,7 @@ function getHandler() {
             );
           }
 
-          const subscription = event.subscription;
+          const { subscription } = event;
 
           await applyEntitlement({
             eventType: event.webhookEventType,

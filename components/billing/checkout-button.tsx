@@ -55,6 +55,8 @@ export function CheckoutButton({
     }
   }
 
+  const label = isPending ? "Redirecting…" : children;
+
   return (
     <div className="flex flex-col gap-2">
       <Button
@@ -64,7 +66,7 @@ export function CheckoutButton({
         type="button"
         variant={variant}
       >
-        {isPending ? "Redirecting…" : children}
+        {label}
       </Button>
       {error ? (
         <p className="text-destructive text-sm" role="alert">

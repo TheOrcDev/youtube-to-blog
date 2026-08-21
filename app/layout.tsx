@@ -19,12 +19,28 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
-    template: "%s | YouTube to Blog",
+  alternates: {
+    canonical: "/",
   },
+  authors: [{ name: "OrcDev" }],
+  category: "technology",
+  creator: "OrcDev",
   description:
     "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches the audio and visuals and writes a structured article you can export as Markdown.",
+  formatDetection: {
+    address: false,
+    email: false,
+    telephone: false,
+  },
+  icons: {
+    apple: "/apple-touch-icon.png",
+    icon: [
+      { sizes: "any", url: "/favicon.ico" },
+      { sizes: "192x192", type: "image/png", url: "/icon-192.png" },
+      { sizes: "512x512", type: "image/png", url: "/icon-512.png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
   keywords: [
     "YouTube to blog",
     "video to blog",
@@ -37,28 +53,13 @@ export const metadata: Metadata = {
     "Markdown export",
     "AI writing tool",
   ],
-  authors: [{ name: "OrcDev" }],
-  creator: "OrcDev",
-  publisher: "OrcDev",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
+  manifest: "/manifest.json",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
   ),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "/",
-    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
     description:
       "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches it and writes a structured article you can export as Markdown.",
-    siteName: "YouTube to Blog",
     images: [
       {
         alt: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
@@ -67,37 +68,36 @@ export const metadata: Metadata = {
         width: 1200,
       },
     ],
+    locale: "en_US",
+    siteName: "YouTube to Blog",
+    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
+    type: "website",
+    url: "/",
+  },
+  publisher: "OrcDev",
+  robots: {
+    follow: true,
+    googleBot: {
+      follow: true,
+      index: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+    index: true,
+  },
+  title: {
+    default: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
+    template: "%s | YouTube to Blog",
   },
   twitter: {
     card: "summary_large_image",
-    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
+    creator: "@orcdev",
     description:
       "Turn any video into a ready-to-publish blog post. Paste a YouTube link or upload your own video — AI watches it and writes a structured article you can export as Markdown.",
     images: ["/og.png"],
-    creator: "@orcdev",
+    title: "YouTube to Blog - Turn Videos & Uploads into Blog Posts",
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  icons: {
-    apple: "/apple-touch-icon.png",
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { type: "image/png", url: "/icon-192.png", sizes: "192x192" },
-      { type: "image/png", url: "/icon-512.png", sizes: "512x512" },
-    ],
-    shortcut: "/favicon.ico",
-  },
-  manifest: "/manifest.json",
-  category: "technology",
 };
 
 export default function RootLayout({

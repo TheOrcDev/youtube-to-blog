@@ -1,6 +1,10 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite/core", "ultracite/next", "ultracite/react"],
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/next",
+    "ultracite/biome/react"
+  ],
   "files": {
     "includes": [
       "!public",
@@ -9,5 +13,27 @@
       "!lib/utils.ts",
       "!.source"
     ]
-  }
+  },
+  "linter": {
+    "rules": {
+      "performance": {
+        // Inline JSX handlers are idiomatic React; this app has no render
+        // hot paths where handler identity matters.
+        "noJsxPropsBind": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      // Migration/smoke scripts run SQL statements sequentially on purpose.
+      "includes": ["scripts/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noAwaitInLoops": "off"
+          }
+        }
+      }
+    }
+  ]
 }

@@ -3,18 +3,18 @@ import { cleanYouTubeUrl, extractVideoId } from "../lib/youtube-url.ts";
 import { BlogWorkflowError } from "./blog-errors.ts";
 
 export interface Subtitle {
-  start: string;
   dur: string;
+  start: string;
   text: string;
 }
 
 export interface YouTubeVideoData {
-  title: string;
+  author: string;
+  captions: Subtitle[];
   description: string;
   duration: string;
   slug: string;
-  author: string;
-  captions: Subtitle[];
+  title: string;
 }
 
 export type YouTubeVideoMetadata = Omit<YouTubeVideoData, "captions">;
@@ -105,7 +105,7 @@ export function createYouTubeMetadataExtractor({
   apiKey,
   fetch: fetchImplementation,
 }: YouTubeMetadataExtractorDependencies) {
-  return async function extractYouTubeMetadata(
+  return async function extractMetadata(
     url: string
   ): Promise<YouTubeVideoMetadata> {
     if (!apiKey) {
@@ -139,15 +139,13 @@ export function createYouTubeExtractor({
   fetch: fetchImplementation,
   getSubtitles: getSubtitlesImplementation,
 }: YouTubeExtractorDependencies) {
-  const extractYouTubeMetadata = createYouTubeMetadataExtractor({
+  const extractMetadata = createYouTubeMetadataExtractor({
     apiKey,
     fetch: fetchImplementation,
   });
 
-  return async function extractYouTubeData(
-    url: string
-  ): Promise<YouTubeVideoData> {
-    const metadata = await extractYouTubeMetadata(url);
+  return async function extractData(url: string): Promise<YouTubeVideoData> {
+    const metadata = await extractMetadata(url);
     const captions = await resolveCaptions(
       metadata.slug,
       getSubtitlesImplementation

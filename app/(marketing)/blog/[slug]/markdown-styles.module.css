@@ -1,7 +1,7 @@
 .markdown {
+  min-width: 0;
   font-size: 1.125rem;
   line-height: 1.75rem;
-  min-width: 0;
   overflow-wrap: anywhere;
 }
 
@@ -13,8 +13,8 @@
 
 .markdown img,
 .markdown video {
-  height: auto;
   max-width: 100%;
+  height: auto;
 }
 
 .markdown p,
@@ -26,22 +26,22 @@
 }
 
 .markdown h2 {
-  font-size: 1.875rem;
   margin-top: 3rem;
   margin-bottom: 1rem;
+  font-size: 1.875rem;
   line-height: 2.25rem;
 }
 
 .markdown h3 {
-  font-size: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 1rem;
+  font-size: 1.5rem;
   line-height: 2rem;
 }
 
 .markdown img {
-  margin-left: auto;
   margin-right: auto;
+  margin-left: auto;
 }
 
 .markdown a {

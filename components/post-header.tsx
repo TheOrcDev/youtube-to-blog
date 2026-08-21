@@ -1,7 +1,7 @@
 interface Props {
-  title: string;
-  date: string;
   author: string;
+  date: string;
+  title: string;
 }
 
 export function PostHeader({ title, date, author }: Props) {

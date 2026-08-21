@@ -14,20 +14,20 @@ import {
 export const blogs = pgTable(
   "blogs",
   {
-    id: serial("id").primaryKey(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    slug: text("slug").notNull(),
-    title: text("title").notNull(),
-    content: text("content").notNull(),
     author: text("author").notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    id: serial("id").primaryKey(),
+    originalFilename: text("original_filename"),
+    slug: text("slug").notNull(),
     // "youtube" blogs use the video ID as slug; "upload" blogs get a generated
     // slug and keep the original filename for display.
     sourceType: text("source_type").notNull().default("youtube"),
-    originalFilename: text("original_filename"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    title: text("title").notNull(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
   },
   (table) => [
     index("blogs_user_id_created_at_idx").on(table.userId, table.createdAt),
@@ -45,12 +45,12 @@ export const blogsRelations = relations(blogs, ({ one }) => ({
 }));
 
 export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
+  id: text("id").primaryKey(),
   image: text("image"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  name: text("name").notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
@@ -58,14 +58,14 @@ export const user = pgTable("user", {
 });
 
 export const session = pgTable("session", {
-  id: text("id").primaryKey(),
-  expiresAt: timestamp("expires_at").notNull(),
-  token: text("token").notNull().unique(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  id: text("id").primaryKey(),
+  ipAddress: text("ip_address"),
+  token: text("token").notNull().unique(),
   updatedAt: timestamp("updated_at")
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  ipAddress: text("ip_address"),
   userAgent: text("user_agent"),
   userId: text("user_id")
     .notNull()
@@ -73,82 +73,84 @@ export const session = pgTable("session", {
 });
 
 export const account = pgTable("account", {
-  id: text("id").primaryKey(),
-  accountId: text("account_id").notNull(),
-  providerId: text("provider_id").notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
   accessToken: text("access_token"),
-  refreshToken: text("refresh_token"),
-  idToken: text("id_token"),
   accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  accountId: text("account_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  id: text("id").primaryKey(),
+  idToken: text("id_token"),
+  password: text("password"),
+  providerId: text("provider_id").notNull(),
+  refreshToken: text("refresh_token"),
   refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
   scope: text("scope"),
-  password: text("password"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
 });
 
 export const verification = pgTable("verification", {
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
   id: text("id").primaryKey(),
   identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  value: text("value").notNull(),
 });
 
-// Managed by the better-auth apiKey plugin; the adapter maps by property name.
+// Managed by the @better-auth/api-key plugin; the adapter maps by property
+// name. referenceId holds the owning user's id (references defaults to "user").
 export const apikey = pgTable("apikey", {
+  configId: text("config_id").notNull().default("default"),
+  createdAt: timestamp("created_at").notNull(),
+  enabled: boolean("enabled").default(true),
+  expiresAt: timestamp("expires_at"),
   id: text("id").primaryKey(),
-  name: text("name"),
-  start: text("start"),
-  prefix: text("prefix"),
   key: text("key").notNull(),
-  userId: text("user_id")
+  lastRefillAt: timestamp("last_refill_at"),
+  lastRequest: timestamp("last_request"),
+  metadata: text("metadata"),
+  name: text("name"),
+  permissions: text("permissions"),
+  prefix: text("prefix"),
+  rateLimitEnabled: boolean("rate_limit_enabled").default(true),
+  rateLimitMax: integer("rate_limit_max"),
+  rateLimitTimeWindow: integer("rate_limit_time_window"),
+  referenceId: text("reference_id")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
-  refillInterval: integer("refill_interval"),
   refillAmount: integer("refill_amount"),
-  lastRefillAt: timestamp("last_refill_at"),
-  enabled: boolean("enabled").default(true),
-  rateLimitEnabled: boolean("rate_limit_enabled").default(true),
-  rateLimitTimeWindow: integer("rate_limit_time_window"),
-  rateLimitMax: integer("rate_limit_max"),
-  requestCount: integer("request_count").default(0),
+  refillInterval: integer("refill_interval"),
   remaining: integer("remaining"),
-  lastRequest: timestamp("last_request"),
-  expiresAt: timestamp("expires_at"),
-  createdAt: timestamp("created_at").notNull(),
+  requestCount: integer("request_count").default(0),
+  start: text("start"),
   updatedAt: timestamp("updated_at").notNull(),
-  permissions: text("permissions"),
-  metadata: text("metadata"),
 });
 
 export const userEntitlements = pgTable("user_entitlements", {
-  userId: text("user_id")
-    .primaryKey()
-    .references(() => user.id, { onDelete: "cascade" }),
-  tier: text("tier").notNull().default("free"),
-  source: text("source").notNull().default("local-default"),
-  subscriptionStatus: text("subscription_status").notNull().default("none"),
-  creemCustomerId: text("creem_customer_id"),
-  creemSubscriptionId: text("creem_subscription_id"),
-  creemProductId: text("creem_product_id"),
   billingInterval: text("billing_interval").notNull().default("month"),
-  currentPeriodEnd: timestamp("current_period_end"),
   cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
   creditsBalance: integer("credits_balance").notNull().default(0),
+  creemCustomerId: text("creem_customer_id"),
+  creemProductId: text("creem_product_id"),
+  creemSubscriptionId: text("creem_subscription_id"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  source: text("source").notNull().default("local-default"),
+  subscriptionStatus: text("subscription_status").notNull().default("none"),
+  tier: text("tier").notNull().default("free"),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
 });
 
 export type SelectUserEntitlement = typeof userEntitlements.$inferSelect;
@@ -157,17 +159,17 @@ export type InsertUserEntitlement = typeof userEntitlements.$inferInsert;
 export const entitlementEvents = pgTable(
   "entitlement_events",
   {
+    afterJson: jsonb("after_json"),
+    beforeJson: jsonb("before_json"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    eventType: text("event_type").notNull(),
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
+    source: text("source").notNull(),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    source: text("source").notNull(),
-    eventType: text("event_type").notNull(),
-    beforeJson: jsonb("before_json"),
-    afterJson: jsonb("after_json"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [index("entitlement_events_user_id_idx").on(table.userId)]
 );
@@ -175,15 +177,15 @@ export const entitlementEvents = pgTable(
 export const creemWebhookEvents = pgTable(
   "creem_webhook_events",
   {
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    creemEventId: text("creem_event_id"),
+    eventType: text("event_type").notNull(),
     id: text("id")
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    creemEventId: text("creem_event_id"),
-    eventType: text("event_type").notNull(),
     payloadJson: jsonb("payload_json").notNull(),
     processedAt: timestamp("processed_at"),
     result: text("result").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
     uniqueIndex("creem_webhook_events_creem_event_id_idx").on(
@@ -193,14 +195,14 @@ export const creemWebhookEvents = pgTable(
 );
 
 export const schema = {
-  user,
-  session,
   account,
-  verification,
   apikey,
   blogs,
   blogsRelations,
-  userEntitlements,
-  entitlementEvents,
   creemWebhookEvents,
+  entitlementEvents,
+  session,
+  user,
+  userEntitlements,
+  verification,
 };

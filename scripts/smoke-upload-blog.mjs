@@ -13,7 +13,7 @@ import { generateText } from "ai";
 import { assertAiGatewayConfiguration } from "../server/ai-gateway.ts";
 import { BLOG_GENERATION_MODEL } from "../server/blog-generator.ts";
 
-const videoPath = process.argv[2];
+const [, , videoPath] = process.argv;
 
 if (!videoPath) {
   console.error("Usage: smoke-upload-blog.mjs <pathToVideo.mp4>");

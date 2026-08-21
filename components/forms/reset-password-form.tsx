@@ -32,8 +32,8 @@ import { cn } from "@/lib/utils";
 const MIN_PASSWORD_LENGTH = 8;
 
 const formSchema = z.object({
-  password: z.string().min(MIN_PASSWORD_LENGTH),
   confirmPassword: z.string().min(MIN_PASSWORD_LENGTH),
+  password: z.string().min(MIN_PASSWORD_LENGTH),
 });
 
 function ResetPasswordFormContent({
@@ -48,11 +48,11 @@ function ResetPasswordFormContent({
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
-      password: "",
       confirmPassword: "",
+      password: "",
     },
+    resolver: zodResolver(formSchema),
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {

@@ -114,9 +114,9 @@ export async function getUsageSummary(): Promise<UsageSummary | null> {
   return {
     billingEnabled: true,
     cancelAtPeriodEnd: snapshot.cancelAtPeriodEnd,
-    isAdmin: isAdminEmail(session.user.email, process.env.ADMIN_EMAILS),
     currentPeriodEnd: snapshot.currentPeriodEnd,
     hasCreemCustomer: snapshot.hasCreemCustomer,
+    isAdmin: isAdminEmail(session.user.email, process.env.ADMIN_EMAILS),
     limit: getLimitsForTier(snapshot.tier).monthlyGenerations,
     subscriptionStatus: snapshot.subscriptionStatus,
     tier: snapshot.tier,

@@ -89,7 +89,7 @@ export async function authenticateApiRequest(
     );
   }
 
-  const userId = verification.key?.userId;
+  const userId = verification.key?.referenceId;
 
   if (!userId) {
     return apiError(

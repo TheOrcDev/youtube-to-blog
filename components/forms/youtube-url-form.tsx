@@ -38,10 +38,10 @@ export function YoutubeUrlForm({ onBlogCreated }: YoutubeUrlFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       youtubeUrl: "",
     },
+    resolver: zodResolver(formSchema),
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
