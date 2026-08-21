@@ -35,7 +35,7 @@ export function MainForm({ canUpload, defaultStyle }: MainFormProps) {
   );
 
   return (
-    <>
+    <div className="flex w-full min-w-0 flex-col items-center">
       <Tabs className="w-full items-center px-5" defaultValue="youtube">
         <TabsList>
           <TabsTrigger value="youtube">YouTube link</TabsTrigger>
@@ -88,10 +88,10 @@ export function MainForm({ canUpload, defaultStyle }: MainFormProps) {
       </Tabs>
 
       {blog ? (
-        <div className="mt-6 w-full max-w-3xl text-left">
+        <div className="mt-6 w-full max-w-3xl px-5">
           <BlogCard blog={blog} />
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
