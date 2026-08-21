@@ -98,7 +98,7 @@ test("an admin generates without limits and never hits the database", async () =
   const allowance = await check("user-123", "orc@orcdev.com");
 
   assert.equal(allowance.remaining, null);
-  assert.equal(allowance.model, "anthropic/claude-sonnet-4-5");
+  assert.equal(allowance.model, "google/gemini-2.5-pro");
 });
 
 test("a non-admin on the free tier is still metered", async () => {

@@ -19,7 +19,7 @@ test("an authenticated blog can be generated, persisted, and retrieved", async (
   const generateBlog = createBlogGenerator({
     checkGenerationAllowance: () => {
       allowanceCalls += 1;
-      return Promise.resolve({ model: "anthropic/claude-sonnet-4-5" });
+      return Promise.resolve({ model: "google/gemini-2.5-pro" });
     },
     createBlog: (input) => {
       const blog = {
@@ -65,7 +65,7 @@ test("an authenticated blog can be generated, persisted, and retrieved", async (
   assert.equal(viewedBlog.title, "Master Web Scraping");
 
   // The tier's model reaches the provider.
-  assert.equal(modelUsed, "anthropic/claude-sonnet-4-5");
+  assert.equal(modelUsed, "google/gemini-2.5-pro");
 
   const existing = await requestBlog(VIDEO_URL);
   assert.equal(existing.ok, true);

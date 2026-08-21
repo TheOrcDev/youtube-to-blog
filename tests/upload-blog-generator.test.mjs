@@ -22,7 +22,7 @@ function makeGeneratedContent(title) {
 function makeDependencies(overrides = {}) {
   return {
     checkGenerationAllowance: () =>
-      Promise.resolve({ model: "anthropic/claude-sonnet-4-5" }),
+      Promise.resolve({ model: "google/gemini-2.5-pro" }),
     checkUploadAllowance: () => Promise.resolve(),
     createBlog: (blog) => Promise.resolve({ ...blog, id: 1 }),
     deleteUpload: () => Promise.resolve(),
@@ -52,7 +52,7 @@ test("a pro user can generate a blog from an uploaded video", async () => {
         return Promise.resolve();
       },
       generateText: ({ messages, model }) => {
-        assert.equal(model, "anthropic/claude-sonnet-4-5");
+        assert.equal(model, "google/gemini-2.5-pro");
         assert.equal(messages[0].content[0].type, "file");
         assert.equal(messages[0].content[0].mediaType, "video/mp4");
         sentBytes = messages[0].content[0].data;

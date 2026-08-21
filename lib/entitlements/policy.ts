@@ -4,7 +4,9 @@ export const FREE_MONTHLY_GENERATIONS = 5;
 export const PRO_MONTHLY_GENERATIONS = 100;
 
 export const FREE_TIER_MODEL = "google/gemini-2.5-flash";
-export const PRO_TIER_MODEL = "anthropic/claude-sonnet-4-5";
+// Must be a video-capable model: generation sends the video itself (YouTube
+// URL or uploaded bytes) as a file part. Claude models reject video input.
+export const PRO_TIER_MODEL = "google/gemini-2.5-pro";
 
 // The AI Gateway rejects request bodies around ~100MB, and video bytes are
 // base64-encoded (4/3 overhead) on the way in. 64MB raw leaves safe headroom.

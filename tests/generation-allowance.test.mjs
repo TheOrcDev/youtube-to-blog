@@ -71,7 +71,7 @@ test("a pro user gets the premium model and the higher limit", async () => {
   const allowance = await checkGenerationAllowance(USER_ID);
 
   assert.equal(allowance.remaining, 1);
-  assert.equal(allowance.model, "anthropic/claude-sonnet-4-5");
+  assert.equal(allowance.model, "google/gemini-2.5-pro");
 });
 
 test("a pro user at the monthly limit is blocked", async () => {
