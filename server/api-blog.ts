@@ -17,9 +17,10 @@ import { extractYouTubeMetadata } from "./youtube";
 
 const TRAILING_SLASH_REGEX = /\/$/;
 
-// Direct insert: API callers are authenticated by key, not session, so the
-// session-bound createBlog server action cannot be used here.
-async function insertBlog(blog: InsertBlog): Promise<SelectBlog> {
+// Direct insert: API callers are authenticated by key (and the streaming
+// route by its own session check), so the session-bound createBlog server
+// action cannot be used here.
+export async function insertBlog(blog: InsertBlog): Promise<SelectBlog> {
   const [row] = await db.insert(blogs).values(blog).returning();
 
   return row;

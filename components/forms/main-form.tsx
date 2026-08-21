@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { UploadVideoForm } from "@/components/forms/upload-video-form";
 import { YoutubeUrlForm } from "@/components/forms/youtube-url-form";
+import { GenerationProgress } from "@/components/generation-progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +17,10 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SelectBlog } from "@/db/schema";
+import {
+  type GenerateInput,
+  useBlogGeneration,
+} from "@/hooks/use-blog-generation";
 import {
   DEFAULT_WRITING_STYLE_ID,
   WRITING_STYLES,
@@ -33,6 +38,14 @@ export function MainForm({ canUpload, defaultStyle }: MainFormProps) {
   const [styleId, setStyleId] = useState<WritingStyleId>(
     defaultStyle ?? DEFAULT_WRITING_STYLE_ID
   );
+  const { generate, progress } = useBlogGeneration();
+
+  // The selected writing style lives here (next to the picker), so it is
+  // injected into whatever the active form submits.
+  const handleGenerate = (input: GenerateInput) => {
+    setBlog(null);
+    return generate({ ...input, styleId });
+  };
 
   return (
     <div className="flex w-full min-w-0 flex-col items-center">
@@ -45,11 +58,14 @@ export function MainForm({ canUpload, defaultStyle }: MainFormProps) {
           </TabsTrigger>
         </TabsList>
         <TabsContent className="w-full" value="youtube">
-          <YoutubeUrlForm onBlogCreated={setBlog} styleId={styleId} />
+          <YoutubeUrlForm onBlogCreated={setBlog} onGenerate={handleGenerate} />
         </TabsContent>
         <TabsContent className="w-full" value="upload">
           {canUpload ? (
-            <UploadVideoForm onBlogCreated={setBlog} styleId={styleId} />
+            <UploadVideoForm
+              onBlogCreated={setBlog}
+              onGenerate={handleGenerate}
+            />
           ) : (
             <div className="flex h-24 w-full flex-col items-center justify-center gap-2 rounded-md border border-input border-dashed text-muted-foreground text-sm">
               <p className="flex items-center gap-1.5">
@@ -87,7 +103,13 @@ export function MainForm({ canUpload, defaultStyle }: MainFormProps) {
         </div>
       </Tabs>
 
-      {blog ? (
+      {progress.isRunning ? (
+        <div className="mt-6 w-full max-w-3xl px-5">
+          <GenerationProgress progress={progress} />
+        </div>
+      ) : null}
+
+      {blog && !progress.isRunning ? (
         <div className="mt-6 w-full max-w-3xl px-5">
           <BlogCard blog={blog} />
         </div>

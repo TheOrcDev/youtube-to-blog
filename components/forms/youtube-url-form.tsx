@@ -18,9 +18,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import type { SelectBlog } from "@/db/schema";
+import type {
+  GenerateInput,
+  GenerateOutcome,
+} from "@/hooks/use-blog-generation";
 import { authClient } from "@/lib/auth-client";
 import { toPublicBlogError } from "@/server/blog-errors";
-import { requestBlog } from "@/server/request-blog";
 import { ButtonGroup } from "../ui/button-group";
 
 const formSchema = z.object({
@@ -31,12 +34,12 @@ const formSchema = z.object({
 
 interface YoutubeUrlFormProps {
   onBlogCreated: (blog: SelectBlog) => void;
-  styleId?: string;
+  onGenerate: (input: GenerateInput) => Promise<GenerateOutcome>;
 }
 
 export function YoutubeUrlForm({
   onBlogCreated,
-  styleId,
+  onGenerate,
 }: YoutubeUrlFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +61,10 @@ export function YoutubeUrlForm({
       }
 
       setIsLoading(true);
-      const result = await requestBlog(values.youtubeUrl, styleId);
+      const result = await onGenerate({
+        source: "youtube",
+        youtubeUrl: values.youtubeUrl,
+      });
 
       if (!result.ok) {
         toast.error(result.error.message, {

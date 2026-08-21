@@ -7,13 +7,16 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { SelectBlog } from "@/db/schema";
+import type {
+  GenerateInput,
+  GenerateOutcome,
+} from "@/hooks/use-blog-generation";
 import { authClient } from "@/lib/auth-client";
 import {
   MAX_UPLOAD_BYTES,
   SUPPORTED_UPLOAD_TYPES,
 } from "@/lib/entitlements/policy";
 import { toPublicBlogError } from "@/server/blog-errors";
-import { requestUploadBlog } from "@/server/request-upload-blog";
 
 const BYTES_PER_MB = 1024 * 1024;
 const MAX_UPLOAD_MB = Math.floor(MAX_UPLOAD_BYTES / BYTES_PER_MB);
@@ -39,12 +42,12 @@ function validateFile(file: File): string | null {
 
 interface UploadVideoFormProps {
   onBlogCreated: (blog: SelectBlog) => void;
-  styleId?: string;
+  onGenerate: (input: GenerateInput) => Promise<GenerateOutcome>;
 }
 
 export function UploadVideoForm({
   onBlogCreated,
-  styleId,
+  onGenerate,
 }: UploadVideoFormProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -93,14 +96,12 @@ export function UploadVideoForm({
 
       setPhase("generating");
 
-      const result = await requestUploadBlog(
-        {
-          filename: file.name,
-          mediaType: file.type,
-          uploadUrl: blob.url,
-        },
-        styleId
-      );
+      const result = await onGenerate({
+        filename: file.name,
+        mediaType: file.type,
+        source: "upload",
+        uploadUrl: blob.url,
+      });
 
       if (!result.ok) {
         const needsUpgrade =
