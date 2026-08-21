@@ -86,6 +86,10 @@ export async function requestUploadBlog(
 
     return { blog, ok: true, status: "created" };
   } catch (error) {
+    // The client only ever sees a safe code and message, so the real cause
+    // chain must land in the server logs or production failures are opaque.
+    console.error("Upload blog generation failed:", error);
+
     return { error: toPublicBlogError(error), ok: false };
   }
 }
