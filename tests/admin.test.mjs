@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { isAdminEmail, parseAdminEmails } from "../lib/entitlements/admin.ts";
+import {
+  isAdminEmail,
+  parseAdminEmails,
+  shouldShowProBadge,
+} from "../lib/entitlements/admin.ts";
 import { createGenerationAllowance } from "../server/generation-allowance.ts";
 
 test("admin emails are parsed from a comma separated list", () => {
@@ -27,6 +31,56 @@ test("admin matching ignores case and surrounding whitespace", () => {
 test("a missing or empty admin list grants nobody admin", () => {
   assert.equal(isAdminEmail("orc@orcdev.com", undefined), false);
   assert.equal(isAdminEmail("orc@orcdev.com", ""), false);
+});
+
+test("the account Pro badge shows for admins and billed Pro users", () => {
+  const adminEmails = "orc@orcdev.com";
+
+  assert.equal(
+    shouldShowProBadge({
+      adminEmails,
+      billingEnabled: true,
+      email: "orc@orcdev.com",
+      tier: "free",
+    }),
+    true
+  );
+  assert.equal(
+    shouldShowProBadge({
+      adminEmails,
+      billingEnabled: false,
+      email: "orc@orcdev.com",
+      tier: "free",
+    }),
+    true
+  );
+  assert.equal(
+    shouldShowProBadge({
+      adminEmails,
+      billingEnabled: true,
+      email: "someone@else.com",
+      tier: "pro",
+    }),
+    true
+  );
+  assert.equal(
+    shouldShowProBadge({
+      adminEmails,
+      billingEnabled: true,
+      email: "someone@else.com",
+      tier: "free",
+    }),
+    false
+  );
+  assert.equal(
+    shouldShowProBadge({
+      adminEmails,
+      billingEnabled: false,
+      email: "someone@else.com",
+      tier: "pro",
+    }),
+    false
+  );
 });
 
 test("an admin generates without limits and never hits the database", async () => {

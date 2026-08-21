@@ -20,8 +20,8 @@ export function DashboardNavbar({
       ?.label ?? "Dashboard";
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 sm:px-6">
-      <SidebarTrigger className="min-h-11 max-md:hidden" />
+    <header className="sticky top-0 z-40 flex h-16 min-w-0 shrink-0 items-center gap-2 border-b bg-background px-4 max-md:pl-16 sm:px-6">
+      <SidebarTrigger className="min-h-11 shrink-0 max-md:hidden" />
       <h2 className="min-w-0 flex-1 truncate font-semibold text-base">
         {title}
       </h2>

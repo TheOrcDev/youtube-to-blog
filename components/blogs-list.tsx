@@ -33,7 +33,7 @@ export async function BlogsList() {
   }
 
   return (
-    <section className="grid gap-4 sm:grid-cols-2">
+    <section className="grid min-w-0 gap-4 sm:grid-cols-2">
       {blogs.map((blog) => (
         <BlogCard blog={blog} key={blog.id} />
       ))}

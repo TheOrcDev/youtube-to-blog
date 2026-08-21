@@ -84,7 +84,7 @@ export function DashboardSidebar({
 
   return (
     <>
-      <SidebarTrigger className="absolute top-4 left-4 z-50 md:hidden" />
+      <SidebarTrigger className="absolute top-2.5 left-3 z-50 min-h-11 md:hidden" />
       <Sidebar collapsible="icon">
         <SidebarHeader className="border-b">
           <SidebarMenu>

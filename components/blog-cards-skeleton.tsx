@@ -11,7 +11,7 @@ const LINE_KEYS = ["line-a", "line-b", "line-c"] as const;
 
 function BlogCardSkeleton() {
   return (
-    <article className="flex h-full flex-col gap-1 rounded-2xl border bg-muted p-1">
+    <article className="flex h-full min-w-0 flex-col gap-1 overflow-hidden rounded-2xl border bg-muted p-1">
       <div className="rounded-lg border bg-card p-4">
         <Skeleton className="h-3 w-16" />
         <Skeleton className="mt-2 h-5 w-3/4" />
@@ -46,7 +46,7 @@ export function BlogCardsSkeleton() {
     <section
       aria-busy="true"
       aria-label="Loading blogs"
-      className="grid gap-4 sm:grid-cols-2"
+      className="grid min-w-0 gap-4 sm:grid-cols-2"
     >
       {BLOG_CARD_SKELETON_KEYS.map((key) => (
         <BlogCardSkeleton key={key} />

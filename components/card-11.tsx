@@ -39,7 +39,7 @@ export function Card11({
   totals: Card11Total[];
 }) {
   return (
-    <article className="flex h-full flex-col gap-1 rounded-2xl border bg-muted p-1">
+    <article className="flex h-full min-w-0 flex-col gap-1 overflow-hidden rounded-2xl border bg-muted p-1">
       <div className={cn(panel, "p-4")}>
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
           {eyebrow}
@@ -74,7 +74,7 @@ export function Card11({
                   {line.detail}
                 </span>
               </span>
-              <span className="shrink-0 text-[13px] text-muted-foreground tabular-nums">
+              <span className="min-w-0 max-w-[55%] truncate text-right text-[13px] text-muted-foreground tabular-nums">
                 {line.amount}
               </span>
             </li>
@@ -86,7 +86,7 @@ export function Card11({
         {totals.map((row) => (
           <div className="flex items-center justify-between gap-3" key={row.id}>
             <dt className="text-[13px] text-muted-foreground">{row.label}</dt>
-            <dd className="text-[13px] text-muted-foreground tabular-nums">
+            <dd className="min-w-0 truncate text-right text-[13px] text-muted-foreground tabular-nums">
               {row.value}
             </dd>
           </div>

@@ -27,3 +27,17 @@ export function isAdminEmail(
 
   return parseAdminEmails(raw).includes(normalized);
 }
+
+export function shouldShowProBadge({
+  adminEmails,
+  billingEnabled,
+  email,
+  tier,
+}: {
+  adminEmails: string | null | undefined;
+  billingEnabled: boolean;
+  email: string | null | undefined;
+  tier: string;
+}): boolean {
+  return isAdminEmail(email, adminEmails) || (billingEnabled && tier === "pro");
+}

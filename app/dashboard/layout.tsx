@@ -8,6 +8,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { isBillingEnabled } from "@/lib/billing/enabled";
+import { shouldShowProBadge } from "@/lib/entitlements/admin";
 import { getUserEntitlementSnapshot } from "@/lib/entitlements/snapshot";
 import { getCurrentUser } from "@/server/users";
 
@@ -24,9 +25,12 @@ async function DashboardUserMenuFromSession({
   billingEnabled: boolean;
 }) {
   const { user } = await getCurrentUser();
-  const isPro =
-    billingEnabled &&
-    (await getUserEntitlementSnapshot(user.id)).tier === "pro";
+  const isPro = shouldShowProBadge({
+    adminEmails: process.env.ADMIN_EMAILS,
+    billingEnabled,
+    email: user.email,
+    tier: (await getUserEntitlementSnapshot(user.id)).tier,
+  });
 
   return (
     <DashboardUserMenu
@@ -46,13 +50,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <TooltipProvider>
       <SidebarProvider>
         <DashboardSidebar billingEnabled={billingEnabled} />
-        <SidebarInset>
+        <SidebarInset className="min-w-0">
           <DashboardNavbar billingEnabled={billingEnabled}>
             <Suspense fallback={<Skeleton className="size-9 rounded-full" />}>
               <DashboardUserMenuFromSession billingEnabled={billingEnabled} />
             </Suspense>
           </DashboardNavbar>
-          <div className="flex w-full flex-1 flex-col" id="main-content">
+          <div
+            className="flex w-full min-w-0 flex-1 flex-col"
+            id="main-content"
+          >
             {children}
           </div>
         </SidebarInset>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { DashboardUserMenu } from "@/components/dashboard/dashboard-user-menu";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
+import { shouldShowProBadge } from "@/lib/entitlements/admin";
 import { getUserEntitlementSnapshot } from "@/lib/entitlements/snapshot";
 
 export async function UserButton({
@@ -23,9 +24,12 @@ export async function UserButton({
     );
   }
 
-  const isPro =
-    billingEnabled &&
-    (await getUserEntitlementSnapshot(session.user.id)).tier === "pro";
+  const isPro = shouldShowProBadge({
+    adminEmails: process.env.ADMIN_EMAILS,
+    billingEnabled,
+    email: session.user.email,
+    tier: (await getUserEntitlementSnapshot(session.user.id)).tier,
+  });
 
   return (
     <DashboardUserMenu
