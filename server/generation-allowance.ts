@@ -6,6 +6,7 @@ import {
 import { asBlogWorkflowError, BlogWorkflowError } from "./blog-errors.ts";
 
 export interface GenerationAllowance {
+  canUseCustomStyles: boolean;
   model: string;
   // null means unlimited: billing is disabled, or the user is an admin.
   remaining: number | null;
@@ -32,13 +33,21 @@ export function createGenerationAllowance({
   ): Promise<GenerationAllowance> {
     // Self-hosted deployments skip the lookups entirely.
     if (!isBillingEnabled()) {
-      return { model: getLimitsForTier("free").model, remaining: null };
+      return {
+        canUseCustomStyles: true,
+        model: getLimitsForTier("free").model,
+        remaining: null,
+      };
     }
 
     // Admins are never metered and always get the premium model. Checked before
     // any lookup so it holds even if the entitlement row is missing.
     if (isAdmin(email)) {
-      return { model: PRO_TIER_MODEL, remaining: null };
+      return {
+        canUseCustomStyles: true,
+        model: PRO_TIER_MODEL,
+        remaining: null,
+      };
     }
 
     let tier: string;
@@ -67,6 +76,7 @@ export function createGenerationAllowance({
     }
 
     return {
+      canUseCustomStyles: limits.canUseCustomStyles,
       model: limits.model,
       remaining: limits.monthlyGenerations - used,
     };

@@ -133,6 +133,16 @@ export const apikey = pgTable("apikey", {
   updatedAt: timestamp("updated_at").notNull(),
 });
 
+// One row per user; created lazily the first time preferences are saved.
+export const userPreferences = pgTable("user_preferences", {
+  styleInstructions: text("style_instructions"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  writingStyle: text("writing_style").notNull().default("personal"),
+});
+
 export const userEntitlements = pgTable("user_entitlements", {
   billingInterval: text("billing_interval").notNull().default("month"),
   cancelAtPeriodEnd: boolean("cancel_at_period_end").notNull().default(false),
@@ -204,5 +214,6 @@ export const schema = {
   session,
   user,
   userEntitlements,
+  userPreferences,
   verification,
 };

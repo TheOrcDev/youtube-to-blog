@@ -1,8 +1,12 @@
 import { type PublicBlogError, toPublicBlogError } from "./blog-errors.ts";
+import type { WritingStyleOverride } from "./writing-style.ts";
 
 interface BlogRequestDependencies<Blog> {
   checkBlogExists: (youtubeUrl: string) => Promise<Blog | null | undefined>;
-  generateBlog: (youtubeUrl: string) => Promise<Blog>;
+  generateBlog: (
+    youtubeUrl: string,
+    styleOverride?: WritingStyleOverride
+  ) => Promise<Blog>;
 }
 
 export type BlogRequestResult<Blog> =
@@ -21,7 +25,8 @@ export function createBlogRequest<Blog>({
   generateBlog,
 }: BlogRequestDependencies<Blog>) {
   return async function requestBlog(
-    youtubeUrl: string
+    youtubeUrl: string,
+    styleOverride?: WritingStyleOverride
   ): Promise<BlogRequestResult<Blog>> {
     try {
       const existingBlog = await checkBlogExists(youtubeUrl);
@@ -34,7 +39,7 @@ export function createBlogRequest<Blog>({
         };
       }
 
-      const blog = await generateBlog(youtubeUrl);
+      const blog = await generateBlog(youtubeUrl, styleOverride);
 
       return {
         blog,

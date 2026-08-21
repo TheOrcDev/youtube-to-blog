@@ -6,6 +6,7 @@ import { DashboardPageShell } from "@/components/dashboard/dashboard-page-shell"
 import { MainForm } from "@/components/forms/main-form";
 import { Skeleton } from "@/components/ui/skeleton";
 import { canUploadVideos } from "@/server/usage";
+import { getWritingPreferences } from "@/server/user-preferences";
 
 export const metadata: Metadata = {
   title: "New blog",
@@ -18,9 +19,14 @@ export const maxDuration = 300;
 // canUploadVideos reads auth headers, so it must render inside <Suspense> to
 // keep the rest of the page statically prerenderable.
 async function ConvertForm() {
-  const canUpload = await canUploadVideos();
+  const [canUpload, preferences] = await Promise.all([
+    canUploadVideos(),
+    getWritingPreferences(),
+  ]);
 
-  return <MainForm canUpload={canUpload} />;
+  return (
+    <MainForm canUpload={canUpload} defaultStyle={preferences?.writingStyle} />
+  );
 }
 
 export default function NewBlogPage() {

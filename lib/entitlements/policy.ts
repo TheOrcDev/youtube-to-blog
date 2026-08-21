@@ -25,6 +25,9 @@ export const API_MAX_KEYS_PER_USER = 5;
 export interface TierLimits {
   canUploadVideos: boolean;
   canUseApi: boolean;
+  // Writing style presets are free for everyone; free-form style instructions
+  // are Pro-only.
+  canUseCustomStyles: boolean;
   model: string;
   monthlyGenerations: number;
 }
@@ -33,12 +36,14 @@ export const TIER_LIMITS: Record<EntitlementTier, TierLimits> = {
   free: {
     canUploadVideos: false,
     canUseApi: false,
+    canUseCustomStyles: false,
     model: FREE_TIER_MODEL,
     monthlyGenerations: FREE_MONTHLY_GENERATIONS,
   },
   pro: {
     canUploadVideos: true,
     canUseApi: true,
+    canUseCustomStyles: true,
     model: PRO_TIER_MODEL,
     monthlyGenerations: PRO_MONTHLY_GENERATIONS,
   },

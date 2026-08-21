@@ -5,11 +5,13 @@ import { generateText as generateAiText } from "ai";
 
 import { isBillingEnabled } from "@/lib/billing/enabled";
 import { isAdminEmail } from "@/lib/entitlements/admin";
+import { isWritingStyleId } from "@/lib/writing-styles";
 import { assertAiGatewayConfiguration } from "./ai-gateway";
 import { toPublicBlogError } from "./blog-errors";
 import type { BlogRequestResult } from "./blog-request";
 import { createBlog } from "./blogs";
 import { createGenerationAllowance } from "./generation-allowance";
+import { getSavedWritingStyleForUser } from "./preferences";
 import { createUploadAllowance } from "./upload-allowance";
 import {
   createUploadBlogGenerator,
@@ -62,10 +64,14 @@ const generateBlogFromUpload = createUploadBlogGenerator({
   fetchUploadBytes,
   generateText: ({ messages, model }) => generateAiText({ messages, model }),
   getCurrentUser,
+  getSavedWritingStyle: getSavedWritingStyleForUser,
 });
 
+// styleId is client-provided, so it's validated rather than trusted; an
+// unknown value falls back to the user's saved default.
 export async function requestUploadBlog(
-  input: UploadBlogInput
+  input: UploadBlogInput,
+  styleId?: string
 ): Promise<BlogRequestResult<Awaited<ReturnType<typeof createBlog>>>> {
   try {
     assertAiGatewayConfiguration({
@@ -73,7 +79,10 @@ export async function requestUploadBlog(
       oidcToken: process.env.VERCEL_OIDC_TOKEN,
     });
 
-    const blog = await generateBlogFromUpload(input);
+    const blog = await generateBlogFromUpload(
+      input,
+      styleId && isWritingStyleId(styleId) ? { id: styleId } : undefined
+    );
 
     return { blog, ok: true, status: "created" };
   } catch (error) {

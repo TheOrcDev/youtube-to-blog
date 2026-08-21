@@ -35,8 +35,9 @@ videos that have no subtitles at all.
 - **Per-tier models** — Gemini 2.5 Flash on Free, a premium model on Pro, routed through the Vercel AI Gateway
 - **Duplicate detection** — a YouTube video that already has a post is returned instantly, with no AI call and no quota spent
 - **Privacy-friendly uploads** — uploaded video is deleted from storage the moment the post is generated, success or failure
+- **Writing styles** — five preset voices (personal, professional, technical deep-dive, tutorial, punchy), switchable per generation; Pro users can add free-text custom style notes so posts sound like them
 - **Markdown export** — copy the post straight into your own site
-- **REST API** — generate and fetch posts programmatically with `ytb_` API keys (Pro)
+- **REST API** — generate and fetch posts programmatically with `ytb_` API keys (Pro), including `style` and `styleInstructions` fields
 - **Dark and light themes**, fully responsive
 
 ## How it works
@@ -118,11 +119,11 @@ paid, hosted instance.
 
 ### Plans and limits
 
-| Plan | Price | Generations / month | Video uploads | API access | Model |
-| --- | --- | --- | --- | --- | --- |
-| Free | $0 | 5 | — | — | Gemini 2.5 Flash |
-| Pro | $9/mo or $79/yr | 100 | ✅ up to 64MB | ✅ | Premium model |
-| Self-hosted | — | Unlimited | ✅ up to 64MB | ✅ | Gemini 2.5 Flash |
+| Plan | Price | Generations / month | Video uploads | API access | Custom style notes | Model |
+| --- | --- | --- | --- | --- | --- | --- |
+| Free | $0 | 5 | — | — | — (presets only) | Gemini 2.5 Flash |
+| Pro | $9/mo or $79/yr | 100 | ✅ up to 64MB | ✅ | ✅ | Premium model |
+| Self-hosted | — | Unlimited | ✅ up to 64MB | ✅ | ✅ | Gemini 2.5 Flash |
 
 Usage is counted per calendar month (UTC). A YouTube video that already has a
 post costs no AI call and no quota; uploads always generate a fresh post and

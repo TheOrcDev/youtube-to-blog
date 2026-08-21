@@ -4,6 +4,11 @@ import { z } from "zod";
 
 import { db } from "@/db/drizzle";
 import { blogs } from "@/db/schema";
+import {
+  MAX_STYLE_INSTRUCTIONS_LENGTH,
+  WRITING_STYLE_IDS,
+  type WritingStyleId,
+} from "@/lib/writing-styles";
 import { authenticateApiRequest } from "@/server/api-auth";
 import { requestBlogForApiUser, serializeBlog } from "@/server/api-blog";
 import { getBlogErrorStatus, toPublicBlogError } from "@/server/blog-errors";
@@ -16,6 +21,10 @@ const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 
 const createBlogSchema = z.object({
+  style: z
+    .enum(WRITING_STYLE_IDS as [WritingStyleId, ...WritingStyleId[]])
+    .optional(),
+  styleInstructions: z.string().max(MAX_STYLE_INSTRUCTIONS_LENGTH).optional(),
   youtubeUrl: z.url(),
 });
 
@@ -46,7 +55,11 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     const result = await requestBlogForApiUser(
       authResult.user,
-      parsedBody.youtubeUrl
+      parsedBody.youtubeUrl,
+      {
+        id: parsedBody.style,
+        instructions: parsedBody.styleInstructions,
+      }
     );
 
     if (!result.ok) {

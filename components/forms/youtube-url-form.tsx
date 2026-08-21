@@ -31,9 +31,13 @@ const formSchema = z.object({
 
 interface YoutubeUrlFormProps {
   onBlogCreated: (blog: SelectBlog) => void;
+  styleId?: string;
 }
 
-export function YoutubeUrlForm({ onBlogCreated }: YoutubeUrlFormProps) {
+export function YoutubeUrlForm({
+  onBlogCreated,
+  styleId,
+}: YoutubeUrlFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,7 +58,7 @@ export function YoutubeUrlForm({ onBlogCreated }: YoutubeUrlFormProps) {
       }
 
       setIsLoading(true);
-      const result = await requestBlog(values.youtubeUrl);
+      const result = await requestBlog(values.youtubeUrl, styleId);
 
       if (!result.ok) {
         toast.error(result.error.message, {

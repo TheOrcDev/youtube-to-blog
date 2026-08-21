@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getAppUrl } from "@/lib/app-url";
 import { PRO_PLAN } from "@/lib/billing/pricing";
 import { canUploadVideos } from "@/server/usage";
+import { getWritingPreferences } from "@/server/user-preferences";
 
 // Blog generation runs inside a server action invoked from this page; long
 // videos need more than the default function duration.
@@ -22,6 +23,7 @@ const APP_JSON_LD = {
     "Convert YouTube videos to blog posts",
     "Upload your own videos",
     "AI video understanding (audio and visuals)",
+    "Writing style presets and custom voice instructions",
     "Markdown export",
     "REST API for automated blog generation",
   ],
@@ -40,9 +42,14 @@ const APP_JSON_LD = {
 // canUploadVideos reads auth headers, so it must render inside <Suspense> to
 // keep the rest of the page statically prerenderable.
 async function ConvertForm() {
-  const canUpload = await canUploadVideos();
+  const [canUpload, preferences] = await Promise.all([
+    canUploadVideos(),
+    getWritingPreferences(),
+  ]);
 
-  return <MainForm canUpload={canUpload} />;
+  return (
+    <MainForm canUpload={canUpload} defaultStyle={preferences?.writingStyle} />
+  );
 }
 
 export default function Home() {

@@ -19,7 +19,10 @@ test("an authenticated blog can be generated, persisted, and retrieved", async (
   const generateBlog = createBlogGenerator({
     checkGenerationAllowance: () => {
       allowanceCalls += 1;
-      return Promise.resolve({ model: "google/gemini-2.5-pro" });
+      return Promise.resolve({
+        canUseCustomStyles: true,
+        model: "google/gemini-2.5-pro",
+      });
     },
     createBlog: (input) => {
       const blog = {
@@ -45,6 +48,7 @@ test("an authenticated blog can be generated, persisted, and retrieved", async (
       return Promise.resolve({ text: generatedContent });
     },
     getCurrentUser: () => Promise.resolve({ user: { id: "user-123" } }),
+    getSavedWritingStyle: () => Promise.resolve(null),
   });
 
   const requestBlog = createBlogRequest({
@@ -92,6 +96,7 @@ test("an exhausted monthly quota blocks generation before any AI call", async ()
       return Promise.resolve({ text: "unused" });
     },
     getCurrentUser: () => Promise.resolve({ user: { id: "user-123" } }),
+    getSavedWritingStyle: () => Promise.resolve(null),
   });
 
   const requestBlog = createBlogRequest({

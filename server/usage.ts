@@ -56,6 +56,28 @@ export async function canUploadVideos(): Promise<boolean> {
   return getLimitsForTier(snapshot.tier).canUploadVideos;
 }
 
+// Whether the signed-in user may save custom style instructions. Generation
+// re-checks the tier, so this only controls what the settings UI shows.
+export async function canUseCustomStyles(): Promise<boolean> {
+  if (!isBillingEnabled()) {
+    return true;
+  }
+
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    return false;
+  }
+
+  if (isAdminEmail(session.user.email, process.env.ADMIN_EMAILS)) {
+    return true;
+  }
+
+  const snapshot = await getUserEntitlementSnapshot(session.user.id);
+
+  return getLimitsForTier(snapshot.tier).canUseCustomStyles;
+}
+
 // Whether the signed-in user may manage API keys. The API itself re-checks the
 // tier on every request, so this only controls what the settings UI shows.
 export async function canUseApiKeys(): Promise<boolean> {

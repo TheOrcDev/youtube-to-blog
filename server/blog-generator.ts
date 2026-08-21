@@ -1,5 +1,10 @@
 import { FREE_TIER_MODEL } from "../lib/entitlements/policy.ts";
 import { asBlogWorkflowError, BlogWorkflowError } from "./blog-errors.ts";
+import {
+  resolveWritingStyle,
+  type SavedWritingStyle,
+  type WritingStyleOverride,
+} from "./writing-style.ts";
 
 const MIN_BLOG_LENGTH = 500;
 const YOUTUBE_DURATION_REGEX = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
@@ -28,7 +33,7 @@ interface BlogGeneratorDependencies<Blog> {
   checkGenerationAllowance: (
     userId: string,
     email?: string | null
-  ) => Promise<{ model: string }>;
+  ) => Promise<{ canUseCustomStyles: boolean; model: string }>;
   createBlog: (blog: CreateBlogInput) => Promise<Blog>;
   extractYouTubeMetadata: (youtubeUrl: string) => Promise<VideoData>;
   generateText: (options: {
@@ -44,6 +49,7 @@ interface BlogGeneratorDependencies<Blog> {
   getCurrentUser: () => Promise<{
     user: { email?: string | null; id: string };
   } | null>;
+  getSavedWritingStyle: (userId: string) => Promise<SavedWritingStyle | null>;
 }
 
 function getDurationMinutes(duration: string): number {
@@ -60,7 +66,7 @@ function getDurationMinutes(duration: string): number {
   return Math.floor((hours * 3600 + minutes * 60 + seconds) / 60);
 }
 
-function createPrompt(videoData: VideoData): string {
+function createPrompt(videoData: VideoData, styleSection: string): string {
   const durationMinutes = getDurationMinutes(videoData.duration);
 
   return `Generate a high-quality MDX blog post based on the attached YouTube video's audio and visuals.
@@ -71,23 +77,24 @@ function createPrompt(videoData: VideoData): string {
 - Duration: ${durationMinutes} minutes
 - Description: ${videoData.description}
 
-**Objective:** Create a personal, engaging MDX blog post based primarily on the attached public video. Transform its spoken and visual content into a first-person narrative that feels like you're sharing your experience and knowledge directly with the reader.
+**Objective:** Create an engaging MDX blog post based primarily on the attached public video, transforming its spoken and visual content into a written article in the voice defined below.
 
 **Target Audience Detection:** Analyze the video's title, audio, and visuals to automatically determine the appropriate target audience (e.g., developers, designers, marketers, general audience, etc.). Write the blog post for that specific audience.
 
+${styleSection}
+
 **Style Guide:**
-1. **Content Creation:** Base the blog post on the video's actual content, writing in first person ("I", "my", "me") as if you're personally sharing your experience and knowledge
+1. **Content Creation:** Base the blog post on the video's actual content
 2. **Structure & Formatting:**
    * Use Markdown for the main structure
    * Format as a single, valid **MDX** file
    * Start with a compelling title (adapt the video title if needed)
-   * Use a clear **Introduction** section that explains what you'll be sharing
+   * Use a clear **Introduction** section that explains what the post covers
    * Organize content using level-2 headings ('##') for major sections and level-3 headings ('###') for sub-points
-   * End with a **Conclusion** that summarizes your key takeaways
-3. **Code Inclusion:** Include relevant code examples mentioned in the transcript, presented as your own examples
-4. **Educational Value:** Ensure the content provides educational value by sharing your insights and experiences
-5. **Personal Tone:** Write in a conversational, personal tone - like you're talking to a friend or colleague about what you learned
-6. **Transcription Fidelity:** Stay true to the original content while making it sound personal and authentic
+   * End with a **Conclusion** that summarizes the key takeaways
+3. **Code Inclusion:** Include relevant code examples mentioned in the video
+4. **Educational Value:** Ensure the content provides educational value
+5. **Content Fidelity:** Stay true to the original content while writing in the voice defined above
 
 **Output Format:** Complete, ready-to-publish MDX content starting with the title and ending with the conclusion. NO frontmatter (YAML metadata with --- markers).`;
 }
@@ -98,8 +105,12 @@ export function createBlogGenerator<Blog>({
   extractYouTubeMetadata,
   generateText,
   getCurrentUser,
+  getSavedWritingStyle,
 }: BlogGeneratorDependencies<Blog>) {
-  return async function generateBlog(youtubeUrl: string): Promise<Blog> {
+  return async function generateBlog(
+    youtubeUrl: string,
+    styleOverride?: WritingStyleOverride
+  ): Promise<Blog> {
     let currentUser: { user: { email?: string | null; id: string } } | null;
 
     try {
@@ -112,7 +123,7 @@ export function createBlogGenerator<Blog>({
       throw new BlogWorkflowError("AUTH_REQUIRED");
     }
 
-    let allowance: { model: string };
+    let allowance: { canUseCustomStyles: boolean; model: string };
 
     try {
       allowance = await checkGenerationAllowance(
@@ -122,6 +133,12 @@ export function createBlogGenerator<Blog>({
     } catch (error) {
       throw asBlogWorkflowError(error, "UNKNOWN");
     }
+
+    const styleSection = resolveWritingStyle({
+      canUseCustomInstructions: allowance.canUseCustomStyles,
+      override: styleOverride,
+      saved: await getSavedWritingStyle(currentUser.user.id),
+    });
 
     let videoData: VideoData;
 
@@ -145,7 +162,7 @@ export function createBlogGenerator<Blog>({
                 mediaType: "video/mp4",
                 type: "file",
               },
-              { text: createPrompt(videoData), type: "text" },
+              { text: createPrompt(videoData, styleSection), type: "text" },
             ],
             role: "user",
           },

@@ -10,6 +10,7 @@ export type BlogErrorCode =
   | "CAPTIONS_UNAVAILABLE"
   | "INVALID_YOUTUBE_URL"
   | "QUOTA_EXCEEDED"
+  | "STYLE_REQUIRES_PRO"
   | "UNKNOWN"
   | "UPLOAD_FETCH_FAILED"
   | "UPLOAD_REQUIRES_PRO"
@@ -44,6 +45,8 @@ const PUBLIC_ERROR_MESSAGES: Record<BlogErrorCode, string> = {
   INVALID_YOUTUBE_URL: "Enter a valid YouTube video URL.",
   QUOTA_EXCEEDED:
     "You have used all of this month's blog generations. Upgrade to Pro for a higher limit.",
+  STYLE_REQUIRES_PRO:
+    "Custom style instructions are a Pro feature. Upgrade to write in your own voice, or pick one of the preset styles.",
   UNKNOWN: "Something went wrong while creating the blog. Please try again.",
   UPLOAD_FETCH_FAILED:
     "Your uploaded video could not be processed. Please try uploading it again.",
@@ -98,6 +101,7 @@ export function getBlogErrorStatus(error: PublicBlogError): number {
       return 401;
     case "API_REQUIRES_PRO":
     case "QUOTA_EXCEEDED":
+    case "STYLE_REQUIRES_PRO":
     case "UPLOAD_REQUIRES_PRO":
       return 402;
     case "UPLOAD_TOO_LARGE":

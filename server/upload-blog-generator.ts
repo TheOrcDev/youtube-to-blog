@@ -3,6 +3,11 @@ import {
   SUPPORTED_UPLOAD_TYPES,
 } from "../lib/entitlements/policy.ts";
 import { asBlogWorkflowError, BlogWorkflowError } from "./blog-errors.ts";
+import {
+  resolveWritingStyle,
+  type SavedWritingStyle,
+  type WritingStyleOverride,
+} from "./writing-style.ts";
 
 const MIN_BLOG_LENGTH = 500;
 const MAX_SLUG_BASE_LENGTH = 60;
@@ -39,7 +44,7 @@ interface UploadBlogGeneratorDependencies<Blog> {
   checkGenerationAllowance: (
     userId: string,
     email?: string | null
-  ) => Promise<{ model: string }>;
+  ) => Promise<{ canUseCustomStyles: boolean; model: string }>;
   checkUploadAllowance: (
     userId: string,
     email?: string | null
@@ -60,6 +65,7 @@ interface UploadBlogGeneratorDependencies<Blog> {
   getCurrentUser: () => Promise<{
     user: { email?: string | null; id: string; name?: string | null };
   } | null>;
+  getSavedWritingStyle: (userId: string) => Promise<SavedWritingStyle | null>;
   randomSlugSuffix?: () => string;
 }
 
@@ -92,29 +98,33 @@ export function slugifyTitle(title: string, suffix: string): string {
   return base ? `${base}-${suffix}` : suffix;
 }
 
-export function createUploadPrompt(filename: string): string {
+export function createUploadPrompt(
+  filename: string,
+  styleSection: string
+): string {
   return `Generate a high-quality MDX blog post based on the attached video's audio and visuals.
 
 **Video Information:**
 - Original filename: ${filename}
 
-**Objective:** Create a personal, engaging MDX blog post based primarily on the attached video. Transform its spoken and visual content into a first-person narrative that feels like you're sharing your experience and knowledge directly with the reader.
+**Objective:** Create an engaging MDX blog post based primarily on the attached video, transforming its spoken and visual content into a written article in the voice defined below.
 
 **Target Audience Detection:** Analyze the video's audio and visuals to automatically determine the appropriate target audience (e.g., developers, designers, marketers, general audience, etc.). Write the blog post for that specific audience.
 
+${styleSection}
+
 **Style Guide:**
-1. **Content Creation:** Base the blog post on the video's actual content, writing in first person ("I", "my", "me") as if you're personally sharing your experience and knowledge
+1. **Content Creation:** Base the blog post on the video's actual content
 2. **Structure & Formatting:**
    * Use Markdown for the main structure
    * Format as a single, valid **MDX** file
    * Start with a compelling title as a level-1 heading ('# Title') on the first line
-   * Use a clear **Introduction** section that explains what you'll be sharing
+   * Use a clear **Introduction** section that explains what the post covers
    * Organize content using level-2 headings ('##') for major sections and level-3 headings ('###') for sub-points
-   * End with a **Conclusion** that summarizes your key takeaways
-3. **Code Inclusion:** Include relevant code examples shown or mentioned in the video, presented as your own examples
-4. **Educational Value:** Ensure the content provides educational value by sharing your insights and experiences
-5. **Personal Tone:** Write in a conversational, personal tone - like you're talking to a friend or colleague about what you learned
-6. **Content Fidelity:** Stay true to the original content while making it sound personal and authentic
+   * End with a **Conclusion** that summarizes the key takeaways
+3. **Code Inclusion:** Include relevant code examples shown or mentioned in the video
+4. **Educational Value:** Ensure the content provides educational value
+5. **Content Fidelity:** Stay true to the original content while writing in the voice defined above
 
 **Output Format:** Complete, ready-to-publish MDX content starting with the title and ending with the conclusion. NO frontmatter (YAML metadata with --- markers).`;
 }
@@ -168,6 +178,7 @@ export function createUploadBlogGenerator<Blog>({
   fetchUploadBytes,
   generateText,
   getCurrentUser,
+  getSavedWritingStyle,
   randomSlugSuffix = defaultRandomSlugSuffix,
 }: UploadBlogGeneratorDependencies<Blog>) {
   async function runGeneration(
@@ -178,11 +189,12 @@ export function createUploadBlogGenerator<Blog>({
       uploadUrl,
     }: UploadBlogInput & {
       mediaType: SupportedUploadType;
-    }
+    },
+    styleOverride?: WritingStyleOverride
   ): Promise<Blog> {
     await checkUploadAllowance(currentUser.user.id, currentUser.user.email);
 
-    let allowance: { model: string };
+    let allowance: { canUseCustomStyles: boolean; model: string };
 
     try {
       allowance = await checkGenerationAllowance(
@@ -192,6 +204,12 @@ export function createUploadBlogGenerator<Blog>({
     } catch (error) {
       throw asBlogWorkflowError(error, "UNKNOWN");
     }
+
+    const styleSection = resolveWritingStyle({
+      canUseCustomInstructions: allowance.canUseCustomStyles,
+      override: styleOverride,
+      saved: await getSavedWritingStyle(currentUser.user.id),
+    });
 
     const bytes = await loadUploadBytes(fetchUploadBytes, uploadUrl);
 
@@ -203,7 +221,10 @@ export function createUploadBlogGenerator<Blog>({
           {
             content: [
               { data: bytes, mediaType, type: "file" },
-              { text: createUploadPrompt(filename), type: "text" },
+              {
+                text: createUploadPrompt(filename, styleSection),
+                type: "text",
+              },
             ],
             role: "user",
           },
@@ -237,7 +258,8 @@ export function createUploadBlogGenerator<Blog>({
   }
 
   return async function generateBlogFromUpload(
-    input: UploadBlogInput
+    input: UploadBlogInput,
+    styleOverride?: WritingStyleOverride
   ): Promise<Blog> {
     if (!isSupportedUploadType(input.mediaType)) {
       throw new BlogWorkflowError("UPLOAD_UNSUPPORTED_FORMAT");
@@ -246,10 +268,14 @@ export function createUploadBlogGenerator<Blog>({
     const currentUser = await resolveCurrentUser(getCurrentUser);
 
     try {
-      return await runGeneration(currentUser, {
-        ...input,
-        mediaType: input.mediaType,
-      });
+      return await runGeneration(
+        currentUser,
+        {
+          ...input,
+          mediaType: input.mediaType,
+        },
+        styleOverride
+      );
     } finally {
       // The blog text is the durable artifact; the uploaded video is deleted
       // whether generation succeeded or failed. Best-effort: a leaked blob

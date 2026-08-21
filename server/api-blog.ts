@@ -10,7 +10,9 @@ import { createBlogGenerator } from "./blog-generator";
 import { type BlogRequestResult, createBlogRequest } from "./blog-request";
 import { checkBlogExists } from "./blogs";
 import { createGenerationAllowance } from "./generation-allowance";
+import { getSavedWritingStyleForUser } from "./preferences";
 import { countBlogsCreatedSince, getEntitlementTier } from "./usage";
+import type { WritingStyleOverride } from "./writing-style";
 import { extractYouTubeMetadata } from "./youtube";
 
 const TRAILING_SLASH_REGEX = /\/$/;
@@ -25,7 +27,8 @@ async function insertBlog(blog: InsertBlog): Promise<SelectBlog> {
 
 export async function requestBlogForApiUser(
   user: ApiUser,
-  youtubeUrl: string
+  youtubeUrl: string,
+  styleOverride?: WritingStyleOverride
 ): Promise<BlogRequestResult<SelectBlog>> {
   const generateBlog = createBlogGenerator<SelectBlog>({
     checkGenerationAllowance: createGenerationAllowance({
@@ -38,6 +41,7 @@ export async function requestBlogForApiUser(
     extractYouTubeMetadata,
     generateText: ({ messages, model }) => generateAiText({ messages, model }),
     getCurrentUser: () => Promise.resolve({ user }),
+    getSavedWritingStyle: getSavedWritingStyleForUser,
   });
 
   const requestBlog = createBlogRequest({ checkBlogExists, generateBlog });
@@ -47,7 +51,7 @@ export async function requestBlogForApiUser(
     oidcToken: process.env.VERCEL_OIDC_TOKEN,
   });
 
-  return await requestBlog(youtubeUrl);
+  return await requestBlog(youtubeUrl, styleOverride);
 }
 
 export interface ApiBlog {

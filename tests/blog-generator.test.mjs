@@ -21,7 +21,10 @@ test("a signed-in user can generate and save a blog with the configured AI model
   const generateBlog = createBlogGenerator({
     checkGenerationAllowance: (userId) => {
       assert.equal(userId, "user-123");
-      return Promise.resolve({ model: "google/gemini-2.5-flash" });
+      return Promise.resolve({
+        canUseCustomStyles: false,
+        model: "google/gemini-2.5-flash",
+      });
     },
     createBlog: (blog) => {
       assert.deepEqual(blog, {
@@ -64,6 +67,7 @@ test("a signed-in user can generate and save a blog with the configured AI model
       Promise.resolve({
         user: { id: "user-123" },
       }),
+    getSavedWritingStyle: () => Promise.resolve(null),
   });
 
   const result = await generateBlog(VIDEO_URL);
@@ -74,7 +78,10 @@ test("a signed-in user can generate and save a blog with the configured AI model
 test("an AI provider failure retains a safe, actionable code", async () => {
   const generateBlog = createBlogGenerator({
     checkGenerationAllowance: () =>
-      Promise.resolve({ model: "google/gemini-2.5-flash" }),
+      Promise.resolve({
+        canUseCustomStyles: false,
+        model: "google/gemini-2.5-flash",
+      }),
     createBlog: () => Promise.reject(new Error("should not save")),
     extractYouTubeMetadata: () =>
       Promise.resolve({
@@ -87,6 +94,7 @@ test("an AI provider failure retains a safe, actionable code", async () => {
     generateText: () =>
       Promise.reject(new Error("gateway response included internal details")),
     getCurrentUser: () => Promise.resolve({ user: { id: "user-123" } }),
+    getSavedWritingStyle: () => Promise.resolve(null),
   });
 
   await assert.rejects(

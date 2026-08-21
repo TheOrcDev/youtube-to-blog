@@ -39,9 +39,13 @@ function validateFile(file: File): string | null {
 
 interface UploadVideoFormProps {
   onBlogCreated: (blog: SelectBlog) => void;
+  styleId?: string;
 }
 
-export function UploadVideoForm({ onBlogCreated }: UploadVideoFormProps) {
+export function UploadVideoForm({
+  onBlogCreated,
+  styleId,
+}: UploadVideoFormProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -89,11 +93,14 @@ export function UploadVideoForm({ onBlogCreated }: UploadVideoFormProps) {
 
       setPhase("generating");
 
-      const result = await requestUploadBlog({
-        filename: file.name,
-        mediaType: file.type,
-        uploadUrl: blob.url,
-      });
+      const result = await requestUploadBlog(
+        {
+          filename: file.name,
+          mediaType: file.type,
+          uploadUrl: blob.url,
+        },
+        styleId
+      );
 
       if (!result.ok) {
         const needsUpgrade =

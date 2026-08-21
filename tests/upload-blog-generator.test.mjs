@@ -22,7 +22,10 @@ function makeGeneratedContent(title) {
 function makeDependencies(overrides = {}) {
   return {
     checkGenerationAllowance: () =>
-      Promise.resolve({ model: "google/gemini-2.5-pro" }),
+      Promise.resolve({
+        canUseCustomStyles: true,
+        model: "google/gemini-2.5-pro",
+      }),
     checkUploadAllowance: () => Promise.resolve(),
     createBlog: (blog) => Promise.resolve({ ...blog, id: 1 }),
     deleteUpload: () => Promise.resolve(),
@@ -30,6 +33,7 @@ function makeDependencies(overrides = {}) {
     generateText: () =>
       Promise.resolve({ text: makeGeneratedContent("My Upload Story") }),
     getCurrentUser: () => Promise.resolve(CURRENT_USER),
+    getSavedWritingStyle: () => Promise.resolve(null),
     randomSlugSuffix: () => "abcd1234",
     ...overrides,
   };

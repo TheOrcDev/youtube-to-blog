@@ -7,16 +7,32 @@ import { UploadVideoForm } from "@/components/forms/upload-video-form";
 import { YoutubeUrlForm } from "@/components/forms/youtube-url-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SelectBlog } from "@/db/schema";
+import {
+  DEFAULT_WRITING_STYLE_ID,
+  WRITING_STYLES,
+  type WritingStyleId,
+} from "@/lib/writing-styles";
 import { BlogCard } from "../blog-card";
 
 interface MainFormProps {
   canUpload: boolean;
+  defaultStyle?: WritingStyleId;
 }
 
-export function MainForm({ canUpload }: MainFormProps) {
+export function MainForm({ canUpload, defaultStyle }: MainFormProps) {
   const [blog, setBlog] = useState<SelectBlog | null>(null);
+  const [styleId, setStyleId] = useState<WritingStyleId>(
+    defaultStyle ?? DEFAULT_WRITING_STYLE_ID
+  );
 
   return (
     <>
@@ -29,11 +45,11 @@ export function MainForm({ canUpload }: MainFormProps) {
           </TabsTrigger>
         </TabsList>
         <TabsContent className="w-full" value="youtube">
-          <YoutubeUrlForm onBlogCreated={setBlog} />
+          <YoutubeUrlForm onBlogCreated={setBlog} styleId={styleId} />
         </TabsContent>
         <TabsContent className="w-full" value="upload">
           {canUpload ? (
-            <UploadVideoForm onBlogCreated={setBlog} />
+            <UploadVideoForm onBlogCreated={setBlog} styleId={styleId} />
           ) : (
             <div className="flex h-24 w-full flex-col items-center justify-center gap-2 rounded-md border border-input border-dashed text-muted-foreground text-sm">
               <p className="flex items-center gap-1.5">
@@ -46,6 +62,29 @@ export function MainForm({ canUpload }: MainFormProps) {
             </div>
           )}
         </TabsContent>
+
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+          <span>Writing style</span>
+          <Select
+            onValueChange={(value) => setStyleId(value as WritingStyleId)}
+            value={styleId}
+          >
+            <SelectTrigger
+              aria-label="Writing style"
+              className="h-8 w-auto gap-1.5 border-none bg-transparent px-2 font-medium text-foreground shadow-none"
+              size="sm"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {WRITING_STYLES.map((style) => (
+                <SelectItem key={style.id} value={style.id}>
+                  {style.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </Tabs>
 
       {blog ? (

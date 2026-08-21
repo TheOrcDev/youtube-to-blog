@@ -10,6 +10,10 @@ import {
   API_MAX_KEYS_PER_USER,
   API_RATE_LIMIT_PER_MINUTE,
 } from "@/lib/entitlements/policy";
+import {
+  MAX_STYLE_INSTRUCTIONS_LENGTH,
+  WRITING_STYLES,
+} from "@/lib/writing-styles";
 
 const BASE_URL = "https://www.youtube2blog.com";
 
@@ -29,6 +33,15 @@ const CREATE_EXAMPLE = `curl -X POST ${BASE_URL}/api/v1/blogs \\
   -H "Authorization: Bearer ytb_your_api_key" \\
   -H "Content-Type: application/json" \\
   -d '{"youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}'`;
+
+const STYLE_EXAMPLE = `curl -X POST ${BASE_URL}/api/v1/blogs \\
+  -H "Authorization: Bearer ytb_your_api_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "style": "technical",
+    "styleInstructions": "Short sentences. Address the reader as you. Never use emoji."
+  }'`;
 
 const CREATE_RESPONSE = `{
   "status": "created",
@@ -96,6 +109,12 @@ const ERROR_CODES = [
     code: "INVALID_REQUEST",
     description: "The request body is not valid JSON or is missing youtubeUrl.",
     status: "400",
+  },
+  {
+    code: "STYLE_REQUIRES_PRO",
+    description:
+      "styleInstructions was sent but the account is no longer on the Pro plan.",
+    status: "402",
   },
   {
     code: "INVALID_YOUTUBE_URL",
@@ -215,6 +234,38 @@ export default function ApiDocsPage() {
             The <code className="font-mono">content</code> field contains the
             complete post as Markdown, ready to publish anywhere.
           </p>
+          <h3 className="mt-8 font-semibold text-lg tracking-tight">
+            Writing style
+          </h3>
+          <p className="mt-3 text-muted-foreground leading-7">
+            Two optional fields control the voice of the generated post. When
+            omitted, the account&apos;s saved writing style from{" "}
+            <Link
+              className="underline underline-offset-4"
+              href="/dashboard/settings"
+            >
+              settings
+            </Link>{" "}
+            is used.
+          </p>
+          <ul className="mt-3 list-disc space-y-2 pl-6 text-muted-foreground leading-7">
+            <li>
+              <code className="font-mono">style</code> — one of{" "}
+              {WRITING_STYLES.map((style, index) => (
+                <span key={style.id}>
+                  {index > 0 ? ", " : null}
+                  <code className="font-mono">{style.id}</code>
+                </span>
+              ))}
+              .
+            </li>
+            <li>
+              <code className="font-mono">styleInstructions</code> — free-text
+              voice notes (up to {MAX_STYLE_INSTRUCTIONS_LENGTH} characters)
+              applied on top of the selected style.
+            </li>
+          </ul>
+          <DocsCodeBlock code={STYLE_EXAMPLE} label="Request with style" />
         </section>
 
         <section className="mt-12" id="list-blogs">
