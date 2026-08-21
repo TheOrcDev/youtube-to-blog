@@ -72,25 +72,38 @@ export const session = pgTable("session", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
-export const account = pgTable("account", {
-  accessToken: text("access_token"),
-  accessTokenExpiresAt: timestamp("access_token_expires_at"),
-  accountId: text("account_id").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  id: text("id").primaryKey(),
-  idToken: text("id_token"),
-  password: text("password"),
-  providerId: text("provider_id").notNull(),
-  refreshToken: text("refresh_token"),
-  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
-  scope: text("scope"),
-  updatedAt: timestamp("updated_at")
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-});
+// better-auth 1.7 keys provider identity on the unique (issuer, accountId)
+// pair: OIDC providers use their trusted issuer (e.g. Google's), credential
+// accounts use "local:credential".
+export const account = pgTable(
+  "account",
+  {
+    accessToken: text("access_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    accountId: text("account_id").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    id: text("id").primaryKey(),
+    idToken: text("id_token"),
+    issuer: text("issuer").notNull(),
+    password: text("password"),
+    providerId: text("provider_id").notNull(),
+    refreshToken: text("refresh_token"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+    scope: text("scope"),
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    uniqueIndex("account_issuer_accountId_uidx").on(
+      table.issuer,
+      table.accountId
+    ),
+  ]
+);
 
 export const verification = pgTable("verification", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
