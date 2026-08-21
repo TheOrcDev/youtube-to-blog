@@ -76,17 +76,17 @@ export function DashboardUserMenu({
         stays `pointer-events-none` so the corner it covers still opens the
         menu.
       */}
-      <div className="relative shrink-0">
+      <div className="relative flex size-8 shrink-0 items-center justify-center self-center">
         <DropdownMenuTrigger
           aria-label={`Open account menu for ${name || email}${
             isPro ? ", Pro plan" : ""
           }`}
           className={cn(
-            buttonVariants({ variant: "ghost" }),
-            "size-9 rounded-full p-0"
+            buttonVariants({ size: "icon-sm", variant: "ghost" }),
+            "rounded-full p-0"
           )}
         >
-          <Avatar className="size-9">
+          <Avatar className="size-8">
             {image ? <AvatarImage alt="" src={image} /> : null}
             <AvatarFallback>{getInitials(name, email)}</AvatarFallback>
           </Avatar>

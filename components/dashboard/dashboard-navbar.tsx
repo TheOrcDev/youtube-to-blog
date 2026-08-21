@@ -25,9 +25,11 @@ export function DashboardNavbar({
       <h2 className="min-w-0 flex-1 truncate font-semibold text-base">
         {title}
       </h2>
-      <CommandMenuTrigger />
-      <ModeSwitcher />
-      {children}
+      <div className="flex shrink-0 items-center gap-2">
+        <CommandMenuTrigger />
+        <ModeSwitcher />
+        {children}
+      </div>
     </header>
   );
 }

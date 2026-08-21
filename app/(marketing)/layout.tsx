@@ -14,7 +14,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
     <>
       <Navbar
         account={
-          <Suspense fallback={<Skeleton className="size-9 rounded-full" />}>
+          <Suspense fallback={<Skeleton className="size-8 rounded-full" />}>
             <UserButton billingEnabled={billingEnabled} />
           </Suspense>
         }

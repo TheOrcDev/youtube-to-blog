@@ -52,7 +52,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <DashboardSidebar billingEnabled={billingEnabled} />
         <SidebarInset className="min-w-0">
           <DashboardNavbar billingEnabled={billingEnabled}>
-            <Suspense fallback={<Skeleton className="size-9 rounded-full" />}>
+            <Suspense fallback={<Skeleton className="size-8 rounded-full" />}>
               <DashboardUserMenuFromSession billingEnabled={billingEnabled} />
             </Suspense>
           </DashboardNavbar>
