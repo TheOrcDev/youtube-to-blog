@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { isBillingEnabled } from "@/lib/billing/enabled";
 import { FREE_PLAN, PRO_PLAN } from "@/lib/billing/pricing";
+import { siteOgImages } from "@/lib/og";
 
 export const metadata: Metadata = {
   alternates: {
@@ -24,10 +25,15 @@ export const metadata: Metadata = {
   openGraph: {
     description:
       "Start free with monthly blog generations from YouTube links. Upgrade to Pro for video uploads, API access, a premium AI model, and a higher monthly limit.",
+    images: siteOgImages,
     title: "Pricing - YouTube to Blog",
     url: "/pricing",
   },
   title: "Pricing",
+  twitter: {
+    card: "summary_large_image",
+    images: siteOgImages,
+  },
 };
 
 const GITHUB_URL = "https://github.com/TheOrcDev/youtube-to-blog";

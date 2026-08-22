@@ -6,6 +6,7 @@ import { CopyMarkdownButton } from "@/components/copy-markdown-button";
 import { PostHeader } from "@/components/post-header";
 import { getAppUrl } from "@/lib/app-url";
 import markdownToHtml from "@/lib/markdown-to-html";
+import { postOgImages } from "@/lib/og";
 import { excerptFromMarkdown } from "@/lib/seo";
 import { getBlogs, getPostBySlug } from "@/server/blogs";
 import markdownStyles from "./markdown-styles.module.css";
@@ -88,6 +89,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     openGraph: {
       authors: [post.author],
       description,
+      images: postOgImages(post.slug, title),
       publishedTime: post.createdAt.toISOString(),
       title,
       type: "article",
@@ -97,6 +99,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       description,
+      images: postOgImages(post.slug, title),
       title,
     },
   };

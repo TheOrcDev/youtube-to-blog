@@ -6,6 +6,7 @@ import { CommandMenuProvider } from "@/components/command-menu";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { isBillingEnabled } from "@/lib/billing/enabled";
+import { siteOgImages } from "@/lib/og";
 import { cn } from "@/lib/utils";
 
 const outfitHeading = Outfit({
@@ -18,8 +19,6 @@ const dmSans = DM_Sans({
   variable: "--font-sans",
 });
 
-// OG and Twitter images come from app/opengraph-image.tsx (and the per-post
-// variant under blog/[slug]), so no static image URLs are declared here.
 export const metadata: Metadata = {
   alternates: {
     canonical: "/",
@@ -69,6 +68,7 @@ export const metadata: Metadata = {
   openGraph: {
     description:
       "Search engines can't read videos - they read text. AI watches your video and writes an SEO-ready blog post you can publish, export as Markdown, or fetch over the API.",
+    images: siteOgImages,
     locale: "en_US",
     siteName: "YouTube to Blog",
     title: "YouTube to Blog - Turn Videos into SEO-Ready Blog Posts",
@@ -96,6 +96,7 @@ export const metadata: Metadata = {
     creator: "@orcdev",
     description:
       "Search engines can't read videos - they read text. AI watches your video and writes an SEO-ready blog post in minutes.",
+    images: siteOgImages,
     title: "YouTube to Blog - Turn Videos into SEO-Ready Blog Posts",
   },
 };

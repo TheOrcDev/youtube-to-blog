@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImages } from "@/lib/og";
 
 export const metadata: Metadata = {
   alternates: {
@@ -21,10 +22,15 @@ export const metadata: Metadata = {
   openGraph: {
     description:
       "Discover how creating multiple blog posts from your YouTube videos can dramatically increase your search engine visibility, AI discoverability, and overall traffic potential.",
+    images: siteOgImages,
     title: "Why Multiple Blog Posts Drive More Traffic and Conversions",
     type: "article",
   },
   title: "Why Multiple Blog Posts Drive More Traffic and Conversions",
+  twitter: {
+    card: "summary_large_image",
+    images: siteOgImages,
+  },
 };
 
 export default function WhyPage() {

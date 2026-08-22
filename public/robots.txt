@@ -4,6 +4,11 @@ Allow: /
 # Disallow crawling of blog pages
 Disallow: /blog/
 
+# Share cards still need the generated cover images
+Allow: /blog/*/opengraph-image
+Allow: /blog/*/opengraph.png
+Allow: /blog/*/twitter-image
+
 # Allow crawling of main pages
 Allow: /
 Allow: /api/

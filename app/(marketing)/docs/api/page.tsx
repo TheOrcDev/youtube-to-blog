@@ -10,6 +10,7 @@ import {
   API_MAX_KEYS_PER_USER,
   API_RATE_LIMIT_PER_MINUTE,
 } from "@/lib/entitlements/policy";
+import { siteOgImages } from "@/lib/og";
 import {
   MAX_STYLE_INSTRUCTIONS_LENGTH,
   WRITING_STYLES,
@@ -152,10 +153,15 @@ export const metadata: Metadata = {
   openGraph: {
     description:
       "Generate blog posts from YouTube videos programmatically. REST API reference: authentication, endpoints, errors, and rate limits.",
+    images: siteOgImages,
     title: "API documentation - YouTube to Blog",
     url: "/docs/api",
   },
   title: "API documentation",
+  twitter: {
+    card: "summary_large_image",
+    images: siteOgImages,
+  },
 };
 
 export default function ApiDocsPage() {

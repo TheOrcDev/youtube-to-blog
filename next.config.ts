@@ -21,6 +21,26 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        destination: "/opengraph.png",
+        source: "/og.png",
+      },
+      {
+        destination: "/opengraph.png",
+        source: "/opengraph-image",
+      },
+      {
+        destination: "/opengraph.png",
+        source: "/twitter-image",
+      },
+      {
+        destination: "/blog/:slug/opengraph.png",
+        source: "/blog/:slug/opengraph-image",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
