@@ -144,7 +144,7 @@ export function ApiKeysCard() {
         {createdKey ? (
           <div className="flex flex-col gap-2 rounded-md border border-primary/50 bg-muted/50 p-3">
             <p className="font-medium text-sm">
-              Copy your new key now — it will not be shown again.
+              Copy your new key now - it will not be shown again.
             </p>
             <div className="flex items-center gap-2">
               <code className="min-w-0 flex-1 truncate rounded bg-background px-2 py-1.5 font-mono text-xs">

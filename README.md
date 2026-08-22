@@ -20,7 +20,7 @@
 
 ---
 
-Paste a YouTube link — or upload your own video file — and get back a
+Paste a YouTube link - or upload your own video file - and get back a
 structured, first-person article you can publish as-is.
 
 The AI **watches the video itself**, audio and visuals, through multimodal
@@ -29,15 +29,15 @@ videos that have no subtitles at all.
 
 ## Features
 
-- **One-click conversion** — paste a YouTube URL, get a finished MDX post
-- **Video uploads** — bring your own MP4, WebM, or QuickTime file (up to 64MB), no YouTube needed
-- **True video understanding** — the model reads audio *and* visuals; captions are never required
-- **Per-tier models** — Gemini 2.5 Flash on Free, a premium model on Pro, routed through the Vercel AI Gateway
-- **Duplicate detection** — a YouTube video that already has a post is returned instantly, with no AI call and no quota spent
-- **Privacy-friendly uploads** — uploaded video is deleted from storage the moment the post is generated, success or failure
-- **Writing styles** — five preset voices (personal, professional, technical deep-dive, tutorial, punchy), switchable per generation; Pro users can add free-text custom style notes so posts sound like them
-- **Markdown export** — copy the post straight into your own site
-- **REST API** — generate and fetch posts programmatically with `ytb_` API keys (Pro), including `style` and `styleInstructions` fields
+- **One-click conversion** - paste a YouTube URL, get a finished MDX post
+- **Video uploads** - bring your own MP4, WebM, or QuickTime file (up to 64MB), no YouTube needed
+- **True video understanding** - the model reads audio *and* visuals; captions are never required
+- **Per-tier models** - Gemini 2.5 Flash on Free, a premium model on Pro, routed through the Vercel AI Gateway
+- **Duplicate detection** - a YouTube video that already has a post is returned instantly, with no AI call and no quota spent
+- **Privacy-friendly uploads** - uploaded video is deleted from storage the moment the post is generated, success or failure
+- **Writing styles** - five preset voices (personal, professional, technical deep-dive, tutorial, punchy), switchable per generation; Pro users can add free-text custom style notes so posts sound like them
+- **Markdown export** - copy the post straight into your own site
+- **REST API** - generate and fetch posts programmatically with `ytb_` API keys (Pro), including `style` and `styleInstructions` fields
 - **Dark and light themes**, fully responsive
 
 ## How it works
@@ -65,7 +65,7 @@ videos that have no subtitles at all.
 | Auth | better-auth (email/password + Google) |
 | AI | Vercel AI SDK via AI Gateway |
 | File storage | Vercel Blob |
-| Billing | Creem (merchant of record) — optional |
+| Billing | Creem (merchant of record) - optional |
 | UI | Tailwind CSS + shadcn/ui |
 | Tooling | Biome / Ultracite, `node --test` |
 
@@ -88,7 +88,7 @@ DATABASE_URL=your_neon_connection_string
 YOUTUBE_API_KEY=your_youtube_api_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# AI Gateway — one of the two (OIDC is provided automatically on Vercel)
+# AI Gateway - one of the two (OIDC is provided automatically on Vercel)
 AI_GATEWAY_API_KEY=vck_your_gateway_key
 # VERCEL_OIDC_TOKEN=provided_by_vercel
 
@@ -109,7 +109,7 @@ Open <http://localhost:3000>.
 
 **Billing is entirely optional and off by default.** Leave `CREEM_API_KEY`
 unset and the app runs with **unlimited generations**, no quotas, and no
-pricing or billing UI — the code skips those paths completely. Bring your own
+pricing or billing UI - the code skips those paths completely. Bring your own
 AI and YouTube keys and everything works.
 
 Everything under [Billing](#billing-optional) applies only if you want to run a
@@ -121,9 +121,9 @@ paid, hosted instance.
 
 | Plan | Price | Generations / month | Video uploads | API access | Custom style notes | Model |
 | --- | --- | --- | --- | --- | --- | --- |
-| Free | $0 | 5 | — | — | — (presets only) | Gemini 2.5 Flash |
+| Free | $0 | 5 | - | - | - (presets only) | Gemini 2.5 Flash |
 | Pro | $9/mo or $79/yr | 100 | ✅ up to 64MB | ✅ | ✅ | Premium model |
-| Self-hosted | — | Unlimited | ✅ up to 64MB | ✅ | ✅ | Gemini 2.5 Flash |
+| Self-hosted | - | Unlimited | ✅ up to 64MB | ✅ | ✅ | Gemini 2.5 Flash |
 
 Usage is counted per calendar month (UTC). A YouTube video that already has a
 post costs no AI call and no quota; uploads always generate a fresh post and
@@ -169,7 +169,7 @@ with a tunnel, for example `cloudflared tunnel --url http://localhost:3000`.
 
 ### Admin accounts
 
-Accounts listed in `ADMIN_EMAILS` are never metered — unlimited generations on
+Accounts listed in `ADMIN_EMAILS` are never metered - unlimited generations on
 the premium model, no subscription needed. Comma-separate for several; matching
 ignores case and surrounding whitespace.
 
@@ -203,8 +203,8 @@ Deploys to Vercel as-is. Push to GitHub, import the repo, and set the
 environment variables:
 
 - `DATABASE_URL`, `YOUTUBE_API_KEY`, `NEXT_PUBLIC_APP_URL`
-- AI Gateway auth — `AI_GATEWAY_API_KEY`, or the `VERCEL_OIDC_TOKEN` Vercel provides automatically
-- `BLOB_READ_WRITE_TOKEN` — created automatically when you add a Blob store to the project
+- AI Gateway auth - `AI_GATEWAY_API_KEY`, or the `VERCEL_OIDC_TOKEN` Vercel provides automatically
+- `BLOB_READ_WRITE_TOKEN` - created automatically when you add a Blob store to the project
 
 Paid instances additionally need `CREEM_API_KEY`, `CREEM_WEBHOOK_SECRET`,
 `CREEM_PRO_PRODUCT_ID`, `CREEM_PRO_YEARLY_PRODUCT_ID`, and optionally
@@ -215,7 +215,7 @@ Paid instances additionally need `CREEM_API_KEY`, `CREEM_WEBHOOK_SECRET`,
 Pull requests are welcome.
 
 1. Fork the repo and branch off `main`
-2. Keep to the existing style — `pnpm lint` and `pnpm test` should pass
+2. Keep to the existing style - `pnpm lint` and `pnpm test` should pass
 3. Add types for new code, and update the docs when behaviour changes
 4. Open a PR describing what changed and why
 
@@ -224,7 +224,7 @@ Found a bug or have an idea?
 
 ## License
 
-MIT — see [license.md](./license.md).
+MIT - see [license.md](./license.md).
 
 ---
 

@@ -240,7 +240,7 @@ Part mapping: Root→Root, Trigger→Trigger, Anchor→(Positioner `anchor` prop
 
 | Radix prop | Type / default | Base UI equivalent | Migration note |
 | --- | --- | --- | --- |
-| `asChild` | `boolean` / `false` | `render` | Radix renders an `<svg>`; Base renders a `<div>` — supply your own SVG child. |
+| `asChild` | `boolean` / `false` | `render` | Radix renders an `<svg>`; Base renders a `<div>` - supply your own SVG child. |
 | `width` | `number` / `10` | dropped | Size the arrow element/SVG via CSS. |
 | `height` | `number` / `5` | dropped | Size via CSS. Arrow must be a child of Popup (inside Positioner). |
 

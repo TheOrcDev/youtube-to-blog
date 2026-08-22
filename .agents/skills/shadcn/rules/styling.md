@@ -39,7 +39,7 @@ See [customization.md](../customization.md) for theming, CSS variables, and addi
 
 ## No raw color values for status/state indicators
 
-For positive, negative, or status indicators, use Badge variants, semantic tokens like `text-destructive`, or define custom CSS variables — don't reach for raw Tailwind colors.
+For positive, negative, or status indicators, use Badge variants, semantic tokens like `text-destructive`, or define custom CSS variables - don't reach for raw Tailwind colors.
 
 **Incorrect:**
 
@@ -100,9 +100,9 @@ Use `className` for layout (e.g. `max-w-md`, `mx-auto`, `mt-4`), **not** for ove
 ```
 
 To customize a component's appearance, prefer these approaches in order:
-1. **Built-in variants** — `variant="outline"`, `variant="destructive"`, etc.
-2. **Semantic color tokens** — `bg-primary`, `text-muted-foreground`.
-3. **CSS variables** — define custom colors in the global CSS file (see [customization.md](../customization.md)).
+1. **Built-in variants** - `variant="outline"`, `variant="destructive"`, etc.
+2. **Semantic color tokens** - `bg-primary`, `text-muted-foreground`.
+3. **CSS variables** - define custom colors in the global CSS file (see [customization.md](../customization.md)).
 
 ---
 
@@ -134,7 +134,7 @@ Use `gap-*` instead. `space-y-4` → `flex flex-col gap-4`. `space-x-2` → `fle
 
 ## No manual dark: color overrides
 
-Use semantic tokens — they handle light/dark via CSS variables. `bg-background text-foreground` not `bg-white dark:bg-gray-950`.
+Use semantic tokens - they handle light/dark via CSS variables. `bg-background text-foreground` not `bg-white dark:bg-gray-950`.
 
 ---
 

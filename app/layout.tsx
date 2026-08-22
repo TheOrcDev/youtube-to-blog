@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   category: "technology",
   creator: "OrcDev",
   description:
-    "Search engines can't read videos — they read text. Paste a YouTube link or upload a video and AI turns it into an SEO-ready blog post: it watches the audio and visuals, writes a structured article, and gives you Markdown or API access.",
+    "Search engines can't read videos - they read text. Paste a YouTube link or upload a video and AI turns it into an SEO-ready blog post: it watches the audio and visuals, writes a structured article, and gives you Markdown or API access.",
   formatDetection: {
     address: false,
     email: false,
@@ -68,10 +68,10 @@ export const metadata: Metadata = {
   ),
   openGraph: {
     description:
-      "Search engines can't read videos — they read text. AI watches your video and writes an SEO-ready blog post you can publish, export as Markdown, or fetch over the API.",
+      "Search engines can't read videos - they read text. AI watches your video and writes an SEO-ready blog post you can publish, export as Markdown, or fetch over the API.",
     locale: "en_US",
     siteName: "YouTube to Blog",
-    title: "YouTube to Blog — Turn Videos into SEO-Ready Blog Posts",
+    title: "YouTube to Blog - Turn Videos into SEO-Ready Blog Posts",
     type: "website",
     url: "/",
   },
@@ -88,15 +88,15 @@ export const metadata: Metadata = {
     index: true,
   },
   title: {
-    default: "YouTube to Blog — Turn Videos into SEO-Ready Blog Posts",
+    default: "YouTube to Blog - Turn Videos into SEO-Ready Blog Posts",
     template: "%s | YouTube to Blog",
   },
   twitter: {
     card: "summary_large_image",
     creator: "@orcdev",
     description:
-      "Search engines can't read videos — they read text. AI watches your video and writes an SEO-ready blog post in minutes.",
-    title: "YouTube to Blog — Turn Videos into SEO-Ready Blog Posts",
+      "Search engines can't read videos - they read text. AI watches your video and writes an SEO-ready blog post in minutes.",
+    title: "YouTube to Blog - Turn Videos into SEO-Ready Blog Posts",
   },
 };
 

@@ -14,7 +14,7 @@ export const WRITING_STYLES = [
     id: "personal",
     label: "Personal & conversational",
     voiceRules: `* Write in first person ("I", "my", "me") as if you're personally sharing your experience and knowledge
-* Keep a conversational, personal tone — like you're talking to a friend or colleague about what you learned`,
+* Keep a conversational, personal tone - like you're talking to a friend or colleague about what you learned`,
   },
   {
     description: "Polished and authoritative, suited to company blogs.",
@@ -29,7 +29,7 @@ export const WRITING_STYLES = [
     id: "technical",
     label: "Technical deep-dive",
     voiceRules: `* Write for experienced practitioners: precise terminology, no hand-holding, no marketing language
-* Go deep on the how and why — include implementation details, trade-offs, and edge cases covered in the video
+* Go deep on the how and why - include implementation details, trade-offs, and edge cases covered in the video
 * Prefer code, commands, and concrete numbers over abstract description wherever the video provides them`,
   },
   {
@@ -46,7 +46,7 @@ export const WRITING_STYLES = [
     label: "Punchy & opinionated",
     voiceRules: `* Write in short, punchy sentences with strong, defensible opinions
 * Cut every filler word; get to the point immediately and keep paragraphs to three sentences or fewer
-* Take clear positions where the video does — hedge only when the video itself hedges`,
+* Take clear positions where the video does - hedge only when the video itself hedges`,
   },
 ] as const satisfies readonly WritingStyle[];
 

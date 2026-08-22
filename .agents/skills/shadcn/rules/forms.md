@@ -13,7 +13,7 @@
 
 ## Forms use FieldGroup + Field
 
-Always use `FieldGroup` + `Field` — never raw `div` with `space-y-*`:
+Always use `FieldGroup` + `Field` - never raw `div` with `space-y-*`:
 
 ```tsx
 <FieldGroup>
@@ -153,7 +153,7 @@ Combine with `Field` for labelled toggle groups:
 
 ## FieldSet + FieldLegend for grouping related fields
 
-Use `FieldSet` + `FieldLegend` for related checkboxes, radios, or switches — not `div` with a heading:
+Use `FieldSet` + `FieldLegend` for related checkboxes, radios, or switches - not `div` with a heading:
 
 ```tsx
 <FieldSet>
@@ -172,7 +172,7 @@ Use `FieldSet` + `FieldLegend` for related checkboxes, radios, or switches — n
 
 ## Field validation and disabled states
 
-Both attributes are needed — `data-invalid`/`data-disabled` styles the field (label, description), while `aria-invalid`/`disabled` styles the control.
+Both attributes are needed - `data-invalid`/`data-disabled` styles the field (label, description), while `aria-invalid`/`disabled` styles the control.
 
 ```tsx
 // Invalid.

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     description:
       "Start free with monthly blog generations from YouTube links. Upgrade to Pro for video uploads, API access, a premium AI model, and a higher monthly limit.",
-    title: "Pricing — YouTube to Blog",
+    title: "Pricing - YouTube to Blog",
     url: "/pricing",
   },
   title: "Pricing",
@@ -117,7 +117,7 @@ export default function PricingPage() {
           <CardHeader>
             <CardTitle>Billing is disabled on this deployment</CardTitle>
             <CardDescription>
-              Blog generation is unlimited here — no plans, no limits.
+              Blog generation is unlimited here - no plans, no limits.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-muted-foreground text-sm">
@@ -147,7 +147,7 @@ export default function PricingPage() {
         >
           Grab the source
         </Link>{" "}
-        and bring your own API keys — no limits, no subscription.
+        and bring your own API keys - no limits, no subscription.
       </p>
     </main>
   );

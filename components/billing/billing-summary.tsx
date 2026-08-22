@@ -83,7 +83,7 @@ export async function BillingSummary({
             <CardDescription>
               {isPro
                 ? "Your Pro plan is active."
-                : "We are confirming your payment. This page will show Pro once it lands — refresh in a moment."}
+                : "We are confirming your payment. This page will show Pro once it lands - refresh in a moment."}
             </CardDescription>
           </CardHeader>
         </Card>

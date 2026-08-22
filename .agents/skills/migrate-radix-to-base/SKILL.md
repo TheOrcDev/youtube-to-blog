@@ -98,7 +98,7 @@ transforming, and record gaps in the report.
 
 **Whole project** (only when explicitly asked): same per-component work in
 dependency order (leaf/shared wrappers like button and label first). After
-wrappers, sweep ALL app code against `consumer-props.md` — the call-site
+wrappers, sweep ALL app code against `consumer-props.md` - the call-site
 break surface is much larger than asChild. Then remove radix deps, install,
 full build.
 

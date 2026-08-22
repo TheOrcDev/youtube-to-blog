@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { Simple } from "@/components/og/simple";
 
 export const alt =
-  "YouTube to Blog — Turn videos into SEO-ready blog posts with AI";
+  "YouTube to Blog - Turn videos into SEO-ready blog posts with AI";
 export const size = { height: 630, width: 1200 };
 export const contentType = "image/png";
 

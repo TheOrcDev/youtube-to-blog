@@ -1,7 +1,7 @@
 /**
  * End-to-end smoke test for the upload pipeline (minus auth/entitlements):
  * uploads a small video to Vercel Blob, downloads the bytes back, sends them
- * through the AI Gateway, and deletes the blob — mirroring
+ * through the AI Gateway, and deletes the blob - mirroring
  * server/request-upload-blog.ts.
  *
  * Usage:  node --env-file=.env --env-file=.env.local scripts/smoke-upload-blog.mjs [pathToVideo]

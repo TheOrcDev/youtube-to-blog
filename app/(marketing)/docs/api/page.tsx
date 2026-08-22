@@ -152,7 +152,7 @@ export const metadata: Metadata = {
   openGraph: {
     description:
       "Generate blog posts from YouTube videos programmatically. REST API reference: authentication, endpoints, errors, and rate limits.",
-    title: "API documentation — YouTube to Blog",
+    title: "API documentation - YouTube to Blog",
     url: "/docs/api",
   },
   title: "API documentation",
@@ -198,7 +198,7 @@ export default function ApiDocsPage() {
               the dashboard
             </Link>
             . Keys start with <code className="font-mono">ytb_</code> and are
-            shown once at creation — store them somewhere safe. You can have up
+            shown once at creation - store them somewhere safe. You can have up
             to {API_MAX_KEYS_PER_USER} active keys and revoke any of them at any
             time.
           </p>
@@ -250,7 +250,7 @@ export default function ApiDocsPage() {
           </p>
           <ul className="mt-3 list-disc space-y-2 pl-6 text-muted-foreground leading-7">
             <li>
-              <code className="font-mono">style</code> — one of{" "}
+              <code className="font-mono">style</code> - one of{" "}
               {WRITING_STYLES.map((style, index) => (
                 <span key={style.id}>
                   {index > 0 ? ", " : null}
@@ -260,7 +260,7 @@ export default function ApiDocsPage() {
               .
             </li>
             <li>
-              <code className="font-mono">styleInstructions</code> — free-text
+              <code className="font-mono">styleInstructions</code> - free-text
               voice notes (up to {MAX_STYLE_INSTRUCTIONS_LENGTH} characters)
               applied on top of the selected style.
             </li>
@@ -337,7 +337,7 @@ export default function ApiDocsPage() {
             </li>
             <li>
               Blog generation counts against your account&apos;s monthly
-              generation quota — the same quota the web app uses. When it runs
+              generation quota - the same quota the web app uses. When it runs
               out, <code className="font-mono">POST /api/v1/blogs</code> returns{" "}
               <code className="font-mono">402 QUOTA_EXCEEDED</code>.
             </li>

@@ -164,7 +164,7 @@ Sheet: slide animations rewritten from animate-in/out to
 `data-starting-style` / `data-ending-style` with explicit translate per
 `data-[side=...]`. Centered modals: no Positioner.
 
-### drawer (vaul -> Base UI) — OPT-IN ONLY, not part of a radix migration
+### drawer (vaul -> Base UI) - OPT-IN ONLY, not part of a radix migration
 Vaul is NOT radix: during a radix -> base-ui migration, leave drawer.tsx
 untouched and report it (hard rule in SKILL.md). This mapping exists only for
 when the user EXPLICITLY asks to also move their drawer off vaul.

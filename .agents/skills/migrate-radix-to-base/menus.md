@@ -155,7 +155,7 @@ Cross-cutting rules (apply to every part below):
 
 ## SubContent → Menu.Portal > Menu.Positioner > Menu.Popup (inside SubmenuRoot)
 
-Same prop fates as **Content** above; Radix-specific defaults to be aware of: `align` default is `"start"` on SubContent (Base Positioner default is `'center'` — set `align="start"` explicitly if you relied on the Radix default; in practice submenu popups anchor to the trigger item and our wrappers set this). Radix SubContent has no `side` prop (side is implied); Base Positioner accepts `side` (use `'inline-end'` for RTL-aware submenus). All outside/escape callbacks, `forceMount`, `loop`, collision props map identically to Content.
+Same prop fates as **Content** above; Radix-specific defaults to be aware of: `align` default is `"start"` on SubContent (Base Positioner default is `'center'` - set `align="start"` explicitly if you relied on the Radix default; in practice submenu popups anchor to the trigger item and our wrappers set this). Radix SubContent has no `side` prop (side is implied); Base Positioner accepts `side` (use `'inline-end'` for RTL-aware submenus). All outside/escape callbacks, `forceMount`, `loop`, collision props map identically to Content.
 
 ## Base UI only props worth knowing (Menu)
 
@@ -334,7 +334,7 @@ Base UI only on Root: `closeDelay` (`50`), `actionsRef` (`{ unmount() }`), `onOp
 
 | Radix prop | Type / default | Base UI equivalent | Migration note |
 | --- | --- | --- | --- |
-| `asChild` | `boolean` / `false` | `render` (+ `nativeButton`, default `true`) | `[data-state="open" \| "closed"]` → `data-popup-open`; `[data-disabled]` dropped (no disabled prop either — gate at the item level yourself). |
+| `asChild` | `boolean` / `false` | `render` (+ `nativeButton`, default `true`) | `[data-state="open" \| "closed"]` → `data-popup-open`; `[data-disabled]` dropped (no disabled prop either - gate at the item level yourself). |
 
 ## Content → NavigationMenu.Content
 
@@ -353,7 +353,7 @@ Base UI only on Root: `closeDelay` (`50`), `actionsRef` (`{ unmount() }`), `onOp
 | --- | --- | --- | --- |
 | `asChild` | `boolean` / `false` | `render` | For framework links: `render={<NextLink href=... />}`. |
 | `active` | `boolean` / `false` | `active` (`boolean`, `false`) | Same (sets `aria-current` + `data-active`). |
-| `onSelect` | `(event: Event) => void` / – | – | Dropped. Use `onClick` (plain DOM prop) and `closeOnClick` (`boolean`, `false`) — note Radix closed the menu on link select by default, Base does not; set `closeOnClick` for parity. |
+| `onSelect` | `(event: Event) => void` / – | – | Dropped. Use `onClick` (plain DOM prop) and `closeOnClick` (`boolean`, `false`) - note Radix closed the menu on link select by default, Base does not; set `closeOnClick` for parity. |
 
 ## Indicator → NavigationMenu.Icon (per wrapper ground truth)
 
@@ -373,7 +373,7 @@ Base UI only on Root: `closeDelay` (`50`), `actionsRef` (`{ unmount() }`), `onOp
 ## Base UI only props worth knowing (NavigationMenu)
 
 - Root: `closeDelay`, `actionsRef`, `onOpenChangeComplete`.
-- New parts: `Backdrop`, `Arrow`, `Positioner` (real collision-aware positioning — Radix nav-menu had none), `Icon`.
+- New parts: `Backdrop`, `Arrow`, `Positioner` (real collision-aware positioning - Radix nav-menu had none), `Icon`.
 - `Content.keepMounted` for crawler-visible SSR content.
 - `Link.closeOnClick`.
 - All parts accept `className`/`style` state-callback forms and `render`.
@@ -386,7 +386,7 @@ Base UI only on Root: `closeDelay` (`50`), `actionsRef` (`{ unmount() }`), `onOp
 | Trigger `[data-state="open" \| "closed"]` | `data-popup-open` on Trigger (and on Icon). |
 | Trigger `[data-disabled]` | Dropped. |
 | Content `[data-state="open" \| "closed"]` | `data-open` / `data-closed` on Content (also on Positioner/Popup/Backdrop). |
-| Content `[data-motion="to-start" \| "to-end" \| "from-start" \| "from-end"]` | `data-activation-direction` (`'left' \| 'right' \| 'up' \| 'down'`) on Content — direction the newly-activated trigger is relative to the previous one; use for enter/exit animations. |
+| Content `[data-motion="to-start" \| "to-end" \| "from-start" \| "from-end"]` | `data-activation-direction` (`'left' \| 'right' \| 'up' \| 'down'`) on Content - direction the newly-activated trigger is relative to the previous one; use for enter/exit animations. |
 | Link `[data-active]` | `data-active` (same). |
 | Indicator `[data-state="visible" \| "hidden"]` | No equivalent (see Indicator row). Arrow exposes `data-open`/`data-closed`/`data-uncentered`/`data-side`/`data-align`. |
 | Viewport `[data-state]`, `[data-orientation]` | `data-open`/`data-closed` + `data-starting-style`/`data-ending-style` on Popup/Positioner; Viewport itself exposes none. |
@@ -396,7 +396,7 @@ Base UI only on Root: `closeDelay` (`50`), `actionsRef` (`{ unmount() }`), `onOp
 
 | Radix | Base UI |
 | --- | --- |
-| `--radix-navigation-menu-viewport-width` (on Viewport) | `--popup-width` (`number`, on **Popup**) — fixed width of the popup; animate `width: var(--popup-width)`. |
+| `--radix-navigation-menu-viewport-width` (on Viewport) | `--popup-width` (`number`, on **Popup**) - fixed width of the popup; animate `width: var(--popup-width)`. |
 | `--radix-navigation-menu-viewport-height` (on Viewport) | `--popup-height` (`number`, on **Popup**). |
 | – | Positioner also exposes `--anchor-width`, `--anchor-height`, `--available-width`, `--available-height`, `--positioner-width`, `--positioner-height`, `--transform-origin`. |
 
@@ -404,6 +404,6 @@ Base UI only on Root: `closeDelay` (`50`), `actionsRef` (`{ unmount() }`), `onOp
 
 ## Gaps / caveats
 
-- Radix prop descriptions are rendered in JS popovers; types/defaults above were extracted from the pages' embedded type payloads (`(open: boolean) => void`, `(checked: boolean) => void`, `(value: string) => void`, `(event: KeyboardEvent) => void`, `(event: PointerDownOutsideEvent) => void`, `(event: FocusOutsideEvent) => void`, `(event: PointerDownOutsideEvent | FocusOutsideEvent) => void`, `(event: Event) => void` for `onSelect`/`onCloseAutoFocus`, `Boundary = Element | null | Array<Element | null>`, `sticky: "partial" | "always"`, `dir: "ltr" | "rtl"`) — all verified against the fetched HTML.
+- Radix prop descriptions are rendered in JS popovers; types/defaults above were extracted from the pages' embedded type payloads (`(open: boolean) => void`, `(checked: boolean) => void`, `(value: string) => void`, `(event: KeyboardEvent) => void`, `(event: PointerDownOutsideEvent) => void`, `(event: FocusOutsideEvent) => void`, `(event: PointerDownOutsideEvent | FocusOutsideEvent) => void`, `(event: Event) => void` for `onSelect`/`onCloseAutoFocus`, `Boundary = Element | null | Array<Element | null>`, `sticky: "partial" | "always"`, `dir: "ltr" | "rtl"`) - all verified against the fetched HTML.
 - Base UI ContextMenu.Root genuinely lacks `modal`; Menubar lacks the value/onValueChange system; ContextMenu.Trigger lacks `disabled`. These are the three hard drops with no one-line workaround.
 - Base UI docs fetched from the `.md` endpoints reflect Base UI 1.x (repo currently pins 1.6.0).

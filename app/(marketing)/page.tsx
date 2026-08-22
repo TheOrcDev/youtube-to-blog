@@ -71,8 +71,8 @@ export default function Home() {
         </h1>
 
         <p className="mt-3 max-w-xl text-balance text-muted-foreground">
-          Paste a YouTube link or upload a video. AI watches it — audio and
-          visuals — and writes a structured, ready-to-publish article you can
+          Paste a YouTube link or upload a video. AI watches it - audio and
+          visuals - and writes a structured, ready-to-publish article you can
           export as Markdown or fetch over the API.
         </p>
 

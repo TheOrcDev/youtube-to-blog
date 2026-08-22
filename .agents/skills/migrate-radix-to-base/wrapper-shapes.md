@@ -69,10 +69,10 @@ SubContent duplicates the full content class list (including translucent menu
 styling) rather than composing. When a golden pair exists, copy the golden
 shape; this example is the fallback.
 
-DANGER — do not confuse SubContent defaults with main-Content defaults. The
+DANGER - do not confuse SubContent defaults with main-Content defaults. The
 values above are ONLY for the *submenu* wrappers (DropdownMenuSubContent /
 ContextMenuSubContent). The MAIN ContextMenuContent (the pointer-anchored
-right-click menu) keeps its own positioning — do NOT apply
+right-click menu) keeps its own positioning - do NOT apply
 `side="right"`/`alignOffset` to it, or every right-click menu mispositions.
 - ContextMenu SUBContent defaults: `align="start" alignOffset={4} side="right" sideOffset={0}`.
 - DropdownMenu SUBContent defaults: `align="start" alignOffset={-3} side="right" sideOffset={0}`.
